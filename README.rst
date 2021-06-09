@@ -1,6 +1,6 @@
-===========
-EAGine core
-===========
+==========
+EAGine SSL
+==========
 
 :Author: Matúš Chochlík <chochlik@gmail.com>
 
@@ -8,7 +8,7 @@ Cloning the repo
 ================
 ::
 
- git clone --recursive https://github.com/matus-chochlik/eagine-core.git
+ git clone --recursive https://github.com/matus-chochlik/eagine-ssl.git
 
 License
 =======
