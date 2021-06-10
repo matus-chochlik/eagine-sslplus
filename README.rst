@@ -8,7 +8,7 @@ Cloning the repo
 ================
 ::
 
- git clone --recursive https://github.com/matus-chochlik/eagine-ssl.git
+ git clone https://github.com/matus-chochlik/eagine-ssl.git
 
 License
 =======

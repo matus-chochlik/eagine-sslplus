@@ -6,8 +6,11 @@
 cmake_minimum_required(VERSION 3.10)
 
 project(EAGineSSL)
+if(NOT EAGINE_CORE_ROOT)
+	set(EAGINE_CORE_ROOT ${PROJECT_SOURCE_DIR}/submodules/eagine-core)
+endif()
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/config)
-list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/submodules/eagine-core/config)
+list(APPEND CMAKE_MODULE_PATH ${EAGINE_CORE_ROOT}/config)
 
 find_package(EAGineOpenSSL REQUIRED)
 
