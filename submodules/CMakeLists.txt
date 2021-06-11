@@ -11,5 +11,5 @@ if(NOT TARGET EAGine::Core)
 			WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/eagine-core"
 		)
 	endif()
-	add_subdirectory(eagine-core)
+	add_subdirectory(eagine-core EXCLUDE_FROM_ALL)
 endif()
