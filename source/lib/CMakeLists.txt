@@ -3,13 +3,6 @@
 # See accompanying file LICENSE_1_0.txt or copy at
 #  http://www.boost.org/LICENSE_1_0.txt
 
-# generated files
-configure_file(ssl_resources.cpp.in ssl_resources.cpp @ONLY)
-set_source_files_properties(
-	ssl_resources.cpp PROPERTIES
-	GENERATED 1
-)
-
 add_library(
 	eagine-ssl
 	ssl_resources.cpp

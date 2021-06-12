@@ -16,7 +16,6 @@
 #include <eagine/user_info.hpp>
 #include "implement.inl"
 
-#define EAGINE_EMBED_CA_CERT "@EAGINE_EMBED_CA_CERT@"
 #include <eagine/ssl_resources.hpp>
 
 #include "epilogue.inl"
