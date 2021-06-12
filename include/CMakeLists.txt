@@ -4,9 +4,7 @@
 #  http://www.boost.org/LICENSE_1_0.txt
 #
 configure_file(eagine/ssl_resources.inl.in eagine/ssl_resources.inl @ONLY)
-
-file(GLOB_RECURSE HEADERS RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.hpp)
-set(PUB_INLS eagine/ssl_api.inl)
+include(./Sources.cmake)
 set(LIB_INLS eagine/ssl_resources.inl)
 # - regular headers ------------------------------------------------------------
 add_library(eagine-ssl-headers INTERFACE)
