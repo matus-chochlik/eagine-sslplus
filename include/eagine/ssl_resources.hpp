@@ -22,7 +22,7 @@ auto ca_certificate_pem(
 auto ca_certificate_pem(memory::const_block embedded_blk, main_ctx& ctx)
   -> memory::const_block;
 //------------------------------------------------------------------------------
-memory::const_block ca_certificate_pem(main_ctx&);
+auto ca_certificate_pem(main_ctx&) -> memory::const_block;
 //------------------------------------------------------------------------------
 } // namespace eagine
 
