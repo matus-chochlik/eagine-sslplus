@@ -16,6 +16,6 @@
 #include <eagine/user_info.hpp>
 #include "implement.inl"
 
-#include <eagine/ssl_resources.hpp>
+#include <eagine/ssl/resources.hpp>
 
 #include "epilogue.inl"

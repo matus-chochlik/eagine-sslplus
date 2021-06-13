@@ -5,7 +5,7 @@
 
 add_library(
 	eagine-ssl
-	ssl_resources.cpp
+	resources.cpp
 )
 eagine_embed_target_resources(
 	TARGET eagine-ssl

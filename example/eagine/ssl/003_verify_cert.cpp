@@ -8,9 +8,9 @@
 #include <eagine/file_contents.hpp>
 #include <eagine/logging/logger.hpp>
 #include <eagine/main.hpp>
+#include <eagine/ssl/openssl.hpp>
 
-#include <eagine/ssl.hpp>
-#include <eagine/ssl_api.hpp>
+#include <eagine/ssl/api.hpp>
 
 #include <array>
 

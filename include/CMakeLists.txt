@@ -3,9 +3,13 @@
 # See accompanying file LICENSE_1_0.txt or copy at
 #  http://www.boost.org/LICENSE_1_0.txt
 #
-configure_file(eagine/ssl_resources.gen.in eagine/ssl_resources.gen.inl @ONLY)
+configure_file(
+	eagine/ssl/resources.gen.in
+	eagine/ssl/resources.gen.inl 
+	@ONLY
+)
+set(GEN_INLS eagine/ssl/resources.gen.inl)
 include(./Sources.cmake)
-set(GEN_INLS eagine/ssl_resources.gen.inl)
 # - regular headers ------------------------------------------------------------
 add_library(eagine-ssl-headers INTERFACE)
 

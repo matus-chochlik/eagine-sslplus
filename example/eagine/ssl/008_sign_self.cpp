@@ -5,13 +5,13 @@
 /// See accompanying file LICENSE_1_0.txt or copy at
 ///  http://www.boost.org/LICENSE_1_0.txt
 ///
-#include <eagine/logging/logger.hpp>
-#include <eagine/main.hpp>
-
 #include <eagine/embed.hpp>
 #include <eagine/file_contents.hpp>
-#include <eagine/ssl.hpp>
-#include <eagine/ssl_api.hpp>
+#include <eagine/logging/logger.hpp>
+#include <eagine/main.hpp>
+#include <eagine/ssl/openssl.hpp>
+
+#include <eagine/ssl/api.hpp>
 
 #include <array>
 
