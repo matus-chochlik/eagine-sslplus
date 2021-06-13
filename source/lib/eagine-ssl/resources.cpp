@@ -12,6 +12,7 @@
 #include <eagine/logging/entry.hpp>
 #include <eagine/logging/root_logger.hpp>
 #include <eagine/main_ctx.hpp>
+#include <eagine/resources.hpp>
 #include <eagine/system_info.hpp>
 #include <eagine/user_info.hpp>
 #include "implement.inl"
