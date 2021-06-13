@@ -27,6 +27,7 @@ auto ca_certificate_pem(main_ctx&) -> memory::const_block;
 } // namespace eagine
 
 #if !EAGINE_SSL_LIBRARY || defined(EAGINE_IMPLEMENTING_LIBRARY)
+#include <eagine/ssl_resources.gen.inl>
 #include <eagine/ssl_resources.inl>
 #endif
 

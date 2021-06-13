@@ -32,11 +32,5 @@ auto ca_certificate_pem(memory::const_block embedded_blk, main_ctx& ctx)
       embedded_blk, ctx.scratch_space(), ctx.config(), ctx.log());
 }
 //------------------------------------------------------------------------------
-EAGINE_LIB_FUNC
-auto ca_certificate_pem(main_ctx& ctx) -> memory::const_block {
-    return ca_certificate_pem(
-      eagine::embed(EAGINE_ID(eagiCaCert), "@EAGINE_EMBED_CA_CERT@"), ctx);
-}
-//------------------------------------------------------------------------------
 } // namespace eagine
 

@@ -18,6 +18,7 @@ get_target_property(EAGINE_CORE_LIBS EAGine::Core INTERFACE_LINK_LIBRARIES)
 install(
 	TARGETS
 		eagine-ssl-generated-headers
+		eagine-ssl-private-headers
 		eagine-ssl-headers
 		eagine-ssl
 	EXPORT SSL

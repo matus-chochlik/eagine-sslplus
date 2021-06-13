@@ -23,5 +23,6 @@ set(PUB_INLS
 )
 
 set(LIB_INLS
+    eagine/ssl_resources.inl
 )
 
