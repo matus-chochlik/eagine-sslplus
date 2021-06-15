@@ -6,8 +6,15 @@
 add_custom_target(eagine-ssl-examples ALL)
 set_target_properties(
 	eagine-ssl-examples
-	PROPERTIES FOLDER "Example/EAGine/SSL"
+	PROPERTIES FOLDER "Example/SSL"
 )
+
+function(eagine_install_example TARGET_NAME)
+	install(
+		TARGETS ${TARGET_NAME}
+		DESTINATION share/eagine/example/ssl
+	)
+endfunction()
 
 function(eagine_example_common EXAMPLE_NAME)
 	add_executable(
@@ -26,7 +33,7 @@ function(eagine_example_common EXAMPLE_NAME)
 
 	set_target_properties(
 		eagine-${EXAMPLE_NAME}
-		PROPERTIES FOLDER "Example/EAGine/SSL"
+		PROPERTIES FOLDER "Example/SSL"
 	)
 	eagine_install_example(eagine-${EXAMPLE_NAME})
 endfunction()
