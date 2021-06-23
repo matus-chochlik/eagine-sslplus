@@ -5,6 +5,10 @@
 /// See accompanying file LICENSE_1_0.txt or copy at
 ///  http://www.boost.org/LICENSE_1_0.txt
 ///
+// clang-format off
+#include <eagine/ssl/api/c_api.inl>
+#include <eagine/ssl/api/api.inl>
+// clang-format on
 
 namespace eagine::sslp {
 //------------------------------------------------------------------------------
