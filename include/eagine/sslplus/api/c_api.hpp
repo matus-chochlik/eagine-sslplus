@@ -32,6 +32,8 @@ struct basic_ssl_c_api {
     static constexpr bool has_api = ssl_types::has_api;
     using ui_method_type = ssl_types::ui_method_type;
     using engine_type = ssl_types::engine_type;
+    using asn1_object_type = ssl_types::asn1_object_type;
+    using asn1_string_type = ssl_types::asn1_string_type;
     using asn1_integer_type = ssl_types::asn1_integer_type;
     using bio_method_type = ssl_types::bio_method_type;
     using bio_type = ssl_types::bio_type;
@@ -43,6 +45,8 @@ struct basic_ssl_c_api {
     using evp_md_type = ssl_types::evp_md_type;
     using x509_lookup_method_type = ssl_types::x509_lookup_method_type;
     using x509_lookup_type = ssl_types::x509_lookup_type;
+    using x509_name_type = ssl_types::x509_name_type;
+    using x509_name_entry_type = ssl_types::x509_name_entry_type;
     using x509_store_ctx_type = ssl_types::x509_store_ctx_type;
     using x509_store_type = ssl_types::x509_store_type;
     using x509_crl_type = ssl_types::x509_crl_type;
@@ -184,6 +188,17 @@ struct basic_ssl_c_api {
       evp_pkey_type*(engine_type*, const char*, ui_method_type*, void*),
       EAGINE_SSL_STATIC_FUNC(ENGINE_load_public_key)>
       engine_load_public_key;
+
+    // ASN1
+    ssl_api_function<
+      int(std::int64_t*, const asn1_integer_type*),
+      EAGINE_SSL_STATIC_FUNC(ASN1_INTEGER_get_int64)>
+      asn1_integer_get_int64;
+
+    ssl_api_function<
+      int(std::uint64_t*, const asn1_integer_type*),
+      EAGINE_SSL_STATIC_FUNC(ASN1_INTEGER_get_uint64)>
+      asn1_integer_get_uint64;
 
     // bio
     ssl_api_function<
@@ -597,8 +612,44 @@ struct basic_ssl_c_api {
       EAGINE_SSL_STATIC_FUNC(X509_get0_serialNumber)>
       x509_get0_serial_number;
 
+    ssl_api_function<
+      x509_name_type*(const x509_type*),
+      EAGINE_SSL_STATIC_FUNC(X509_get_issuer_name)>
+      x509_get_issuer_name;
+
+    ssl_api_function<
+      x509_name_type*(const x509_type*),
+      EAGINE_SSL_STATIC_FUNC(X509_get_subject_name)>
+      x509_get_subject_name;
+
+    ssl_api_function<
+      int(const x509_type*),
+      EAGINE_SSL_STATIC_FUNC(X509_get_ext_count)>
+      x509_get_ext_count;
+
     ssl_api_function<void(x509_type*), EAGINE_SSL_STATIC_FUNC(X509_free)>
       x509_free;
+
+    // x509 name (entry)
+    ssl_api_function<
+      int(const x509_name_type*),
+      EAGINE_SSL_STATIC_FUNC(X509_NAME_entry_count)>
+      x509_name_entry_count;
+
+    ssl_api_function<
+      x509_name_entry_type*(const x509_name_type*, int),
+      EAGINE_SSL_STATIC_FUNC(X509_NAME_get_entry)>
+      x509_name_get_entry;
+
+    ssl_api_function<
+      asn1_object_type*(const x509_name_entry_type*),
+      EAGINE_SSL_STATIC_FUNC(X509_NAME_ENTRY_get_object)>
+      x509_name_entry_get_object;
+
+    ssl_api_function<
+      asn1_string_type*(const x509_name_entry_type*),
+      EAGINE_SSL_STATIC_FUNC(X509_NAME_ENTRY_get_data)>
+      x509_name_entry_get_data;
 
     // pem
     ssl_api_function<

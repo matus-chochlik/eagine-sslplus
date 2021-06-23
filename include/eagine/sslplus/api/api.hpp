@@ -332,6 +332,27 @@ public:
         }
     } load_engine_public_key;
 
+    // ASN1
+    // get_int64
+    struct : func<SSLPAFP(asn1_integer_get_int64)> {
+        using func<SSLPAFP(asn1_integer_get_int64)>::func;
+
+        constexpr auto operator()(asn1_integer ai) const noexcept {
+            std::int64_t result{};
+            return this->_chkcall(ai).replaced_with(result);
+        }
+    } get_int64;
+
+    // get_uint64
+    struct : func<SSLPAFP(asn1_integer_get_uint64)> {
+        using func<SSLPAFP(asn1_integer_get_uint64)>::func;
+
+        constexpr auto operator()(asn1_integer ai) const noexcept {
+            std::uint64_t result{};
+            return this->_chkcall(ai).replaced_with(result);
+        }
+    } get_uint64;
+
     // new_basic_io
     struct : func<SSLPAFP(bio_new)> {
         using func<SSLPAFP(bio_new)>::func;

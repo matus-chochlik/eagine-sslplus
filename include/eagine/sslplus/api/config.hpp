@@ -30,6 +30,8 @@ struct ssl_types {
     static constexpr bool has_api = true;
     using ui_method_type = ::UI_METHOD;
     using engine_type = ::ENGINE;
+    using asn1_object_type = ::ASN1_OBJECT;
+    using asn1_string_type = ::ASN1_STRING;
     using asn1_integer_type = ::ASN1_INTEGER;
     using bio_method_type = ::BIO_METHOD;
     using bio_type = ::BIO;
@@ -41,6 +43,8 @@ struct ssl_types {
     using evp_md_type = ::EVP_MD;
     using x509_lookup_method_type = ::X509_LOOKUP_METHOD;
     using x509_lookup_type = ::X509_LOOKUP;
+    using x509_name_type = ::X509_NAME;
+    using x509_name_entry_type = ::X509_NAME_ENTRY;
     using x509_store_ctx_type = ::X509_STORE_CTX;
     using x509_store_type = ::X509_STORE;
     using x509_crl_type = ::X509_CRL;
@@ -49,7 +53,9 @@ struct ssl_types {
 #else
     static constexpr bool has_api = false;
     using engine_type = nothing_t;
-    using asn1_integer_type = int;
+    using asn1_object_type = nothing_t;
+    using asn1_string_type = nothing_t;
+    using asn1_integer_type = nothing_t;
     using bio_method_type = nothing_t;
     using bio_type = nothing_t;
     using evp_pkey_ctx_type = nothing_t;
@@ -60,6 +66,8 @@ struct ssl_types {
     using evp_md_type = nothing_t;
     using x509_lookup_method_type = nothing_t;
     using x509_lookup_type = nothing_t;
+    using x509_name_type = nothing_t;
+    using x509_name_entry_type = nothing_t;
     using x509_store_ctx_type = nothing_t;
     using x509_store_type = nothing_t;
     using x509_crl_type = nothing_t;

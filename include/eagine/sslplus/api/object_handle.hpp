@@ -16,6 +16,9 @@ namespace eagine::sslplus {
 //------------------------------------------------------------------------------
 using ui_method_tag = EAGINE_MSG_TYPE(ssl, UIMethod);
 using engine_tag = EAGINE_MSG_TYPE(ssl, Engine);
+using asn1_object_tag = EAGINE_MSG_TYPE(ssl, ASN1Object);
+using asn1_string_tag = EAGINE_MSG_TYPE(ssl, ASN1String);
+using asn1_integer_tag = EAGINE_MSG_TYPE(ssl, ASN1Integr);
 using basic_io_tag = EAGINE_MSG_TYPE(ssl, BIO);
 using basic_io_method_tag = EAGINE_MSG_TYPE(ssl, BIOMethod);
 using cipher_type_tag = EAGINE_MSG_TYPE(ssl, CipherType);
@@ -26,6 +29,8 @@ using pkey_tag = EAGINE_MSG_TYPE(ssl, PKey);
 using pkey_ctx_tag = EAGINE_MSG_TYPE(ssl, PKeyCtx);
 using x509_lookup_method_tag = EAGINE_MSG_TYPE(ssl, X509LkpMtd);
 using x509_lookup_tag = EAGINE_MSG_TYPE(ssl, X509Lookup);
+using x509_name_tag = EAGINE_MSG_TYPE(ssl, X509Name);
+using x509_name_entry_tag = EAGINE_MSG_TYPE(ssl, X509NamEnt);
 using x509_store_ctx_tag = EAGINE_MSG_TYPE(ssl, X509StrCtx);
 using x509_store_tag = EAGINE_MSG_TYPE(ssl, X509Store);
 using x509_crl_tag = EAGINE_MSG_TYPE(ssl, X509Crl);
@@ -35,6 +40,15 @@ using ui_method =
   basic_handle<ui_method_tag, ssl_types::ui_method_type*, nullptr>;
 
 using engine = basic_handle<engine_tag, ssl_types::engine_type*, nullptr>;
+
+using asn1_object =
+  basic_handle<asn1_object_tag, ssl_types::asn1_object_type*, nullptr>;
+
+using asn1_string =
+  basic_handle<asn1_string_tag, ssl_types::asn1_string_type*, nullptr>;
+
+using asn1_integer =
+  basic_handle<asn1_integer_tag, ssl_types::asn1_integer_type*, nullptr>;
 
 using basic_io = basic_handle<basic_io_tag, ssl_types::bio_type*, nullptr>;
 
@@ -62,6 +76,12 @@ using x509_lookup_method = basic_handle<
   x509_lookup_method_tag,
   ssl_types::x509_lookup_method_type*,
   nullptr>;
+
+using x509_name =
+  basic_handle<x509_name_tag, ssl_types::x509_name_type*, nullptr>;
+
+using x509_name_entry =
+  basic_handle<x509_name_entry_tag, ssl_types::x509_name_entry_type*, nullptr>;
 
 using x509_store_ctx =
   basic_handle<x509_store_ctx_tag, ssl_types::x509_store_ctx_type*, nullptr>;
