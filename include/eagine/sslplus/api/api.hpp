@@ -5,8 +5,8 @@
 /// See accompanying file LICENSE_1_0.txt or copy at
 ///  http://www.boost.org/LICENSE_1_0.txt
 ///
-#ifndef EAGINE_SSL_API_API_HPP
-#define EAGINE_SSL_API_API_HPP
+#ifndef EAGINE_SSLPLUS_API_API_HPP
+#define EAGINE_SSLPLUS_API_API_HPP
 
 #include "c_api.hpp"
 #include "object_handle.hpp"
@@ -16,7 +16,7 @@
 #include <eagine/scope_exit.hpp>
 #include <eagine/string_list.hpp>
 
-namespace eagine::sslp {
+namespace eagine::sslplus {
 //------------------------------------------------------------------------------
 #define SSLPAFP(FUNC) decltype(c_api::FUNC), &c_api::FUNC
 //------------------------------------------------------------------------------
@@ -1280,6 +1280,6 @@ public:
 //------------------------------------------------------------------------------
 #undef SSLPAFP
 //------------------------------------------------------------------------------
-} // namespace eagine::sslp
+} // namespace eagine::sslplus
 
-#endif // EAGINE_SSL_API_API_HPP
+#endif // EAGINE_SSLPLUS_API_API_HPP

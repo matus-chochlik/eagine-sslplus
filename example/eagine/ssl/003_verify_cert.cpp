@@ -8,9 +8,9 @@
 #include <eagine/file_contents.hpp>
 #include <eagine/logging/logger.hpp>
 #include <eagine/main.hpp>
-#include <eagine/ssl/openssl.hpp>
+#include <eagine/sslplus/openssl.hpp>
 
-#include <eagine/ssl/api.hpp>
+#include <eagine/sslplus/api.hpp>
 
 #include <array>
 
@@ -21,7 +21,7 @@ auto main(main_ctx& ctx) -> int {
     string_view cert_path{"example.crt"};
     file_contents cert_pem{cert_path};
 
-    sslp::ssl_api ssl{};
+    sslplus::ssl_api ssl{};
 
     if(ok cert{ssl.parse_x509(cert_pem, {})}) {
         auto del_cert{ssl.delete_x509.raii(cert)};

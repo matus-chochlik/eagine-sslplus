@@ -5,12 +5,12 @@
 /// See accompanying file LICENSE_1_0.txt or copy at
 ///  http://www.boost.org/LICENSE_1_0.txt
 ///
-#ifndef EAGINE_SSL_API_API_TRAITS_HPP
-#define EAGINE_SSL_API_API_TRAITS_HPP
+#ifndef EAGINE_SSLPLUS_API_API_TRAITS_HPP
+#define EAGINE_SSLPLUS_API_API_TRAITS_HPP
 
 #include "result.hpp"
 
-namespace eagine::sslp {
+namespace eagine::sslplus {
 //------------------------------------------------------------------------------
 class ssl_api_traits : public default_c_api_traits {
 public:
@@ -27,6 +27,6 @@ public:
 private:
 };
 //------------------------------------------------------------------------------
-} // namespace eagine::sslp
+} // namespace eagine::sslplus
 
-#endif // EAGINE_SSL_API_API_TRAITS_HPP
+#endif // EAGINE_SSLPLUS_API_API_TRAITS_HPP

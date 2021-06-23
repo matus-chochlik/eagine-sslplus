@@ -7,9 +7,9 @@
 ///
 #include <eagine/logging/logger.hpp>
 #include <eagine/main.hpp>
-#include <eagine/ssl/openssl.hpp>
+#include <eagine/sslplus/openssl.hpp>
 
-#include <eagine/ssl/api.hpp>
+#include <eagine/sslplus/api.hpp>
 
 #include <array>
 
@@ -18,7 +18,7 @@ namespace eagine {
 auto main(main_ctx& ctx) -> int {
 
     auto& log = ctx.log();
-    sslp::ssl_api ssl{};
+    sslplus::ssl_api ssl{};
 
     string_view engine_id("rdrand");
 

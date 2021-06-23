@@ -8,9 +8,9 @@
 #include <eagine/file_contents.hpp>
 #include <eagine/logging/logger.hpp>
 #include <eagine/main.hpp>
-#include <eagine/ssl/openssl.hpp>
+#include <eagine/sslplus/openssl.hpp>
 
-#include <eagine/ssl/api.hpp>
+#include <eagine/sslplus/api.hpp>
 
 #include <array>
 
@@ -20,7 +20,7 @@ auto main(main_ctx& ctx) -> int {
     file_contents data(ctx.exe_path());
     std::array<byte, 32> temp{};
 
-    sslp::ssl_api ssl{};
+    sslplus::ssl_api ssl{};
 
     memory::const_block hash = ssl.sha256_digest(data, cover(temp));
 

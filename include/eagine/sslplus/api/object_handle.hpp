@@ -5,14 +5,14 @@
 /// See accompanying file LICENSE_1_0.txt or copy at
 ///  http://www.boost.org/LICENSE_1_0.txt
 ///
-#ifndef EAGINE_SSL_API_OBJECT_HANDLE_HPP
-#define EAGINE_SSL_API_OBJECT_HANDLE_HPP
+#ifndef EAGINE_SSLPLUS_API_OBJECT_HANDLE_HPP
+#define EAGINE_SSLPLUS_API_OBJECT_HANDLE_HPP
 
 #include "config.hpp"
 #include <eagine/handle.hpp>
 #include <eagine/message_id.hpp>
 
-namespace eagine::sslp {
+namespace eagine::sslplus {
 //------------------------------------------------------------------------------
 using ui_method_tag = EAGINE_MSG_TYPE(ssl, UIMethod);
 using engine_tag = EAGINE_MSG_TYPE(ssl, Engine);
@@ -99,6 +99,6 @@ using owned_x509_crl =
 
 using owned_x509 = basic_owned_handle<x509_tag, ssl_types::x509_type*, nullptr>;
 //------------------------------------------------------------------------------
-} // namespace eagine::sslp
+} // namespace eagine::sslplus
 
-#endif // EAGINE_SSL_API_OBJECT_HANDLE_HPP
+#endif // EAGINE_SSLPLUS_API_OBJECT_HANDLE_HPP

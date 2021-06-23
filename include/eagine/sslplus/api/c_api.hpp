@@ -5,8 +5,8 @@
 /// See accompanying file LICENSE_1_0.txt or copy at
 ///  http://www.boost.org/LICENSE_1_0.txt
 ///
-#ifndef EAGINE_SSL_API_C_API_HPP
-#define EAGINE_SSL_API_C_API_HPP
+#ifndef EAGINE_SSLPLUS_API_C_API_HPP
+#define EAGINE_SSLPLUS_API_C_API_HPP
 
 #include "api_traits.hpp"
 #include "config.hpp"
@@ -21,7 +21,7 @@
 #endif
 #endif
 
-namespace eagine::sslp {
+namespace eagine::sslplus {
 //------------------------------------------------------------------------------
 template <typename ApiTraits>
 struct basic_ssl_c_api {
@@ -626,6 +626,6 @@ struct basic_ssl_c_api {
 //------------------------------------------------------------------------------
 using ssl_c_api = basic_ssl_c_api<ssl_api_traits>;
 //------------------------------------------------------------------------------
-} // namespace eagine::sslp
+} // namespace eagine::sslplus
 
 #endif

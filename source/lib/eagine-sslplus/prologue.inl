@@ -6,4 +6,4 @@
 ///  http://www.boost.org/LICENSE_1_0.txt
 ///
 
-#define EAGINE_SSL_LIBRARY 1
+#define EAGINE_SSLPLUS_LIBRARY 1

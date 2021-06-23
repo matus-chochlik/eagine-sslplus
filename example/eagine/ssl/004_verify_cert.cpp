@@ -9,9 +9,9 @@
 #include <eagine/file_contents.hpp>
 #include <eagine/logging/logger.hpp>
 #include <eagine/main.hpp>
-#include <eagine/ssl/openssl.hpp>
+#include <eagine/sslplus/openssl.hpp>
 
-#include <eagine/ssl/api.hpp>
+#include <eagine/sslplus/api.hpp>
 
 #include <array>
 
@@ -23,7 +23,7 @@ auto main(main_ctx& ctx) -> int {
     memory::const_block ca_cert_pem{
       eagine::embed(EAGINE_ID(caCert), "example-ca.crt")};
 
-    sslp::ssl_api ssl{};
+    sslplus::ssl_api ssl{};
 
     if(ok ca_cert{ssl.parse_x509(ca_cert_pem, {})}) {
         auto del_ca_cert{ssl.delete_x509.raii(ca_cert)};

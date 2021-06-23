@@ -5,7 +5,7 @@
 /// See accompanying file LICENSE_1_0.txt or copy at
 ///  http://www.boost.org/LICENSE_1_0.txt
 ///
-namespace eagine::sslp {
+namespace eagine::sslplus {
 //------------------------------------------------------------------------------
 template <typename ApiTraits>
 inline basic_ssl_c_api<ApiTraits>::basic_ssl_c_api(ApiTraits& traits)
@@ -129,4 +129,4 @@ inline basic_ssl_c_api<ApiTraits>::basic_ssl_c_api(ApiTraits& traits)
   , pem_read_bio_x509_crl("PEM_read_bio_X509_CRL", traits, *this)
   , pem_read_bio_x509("PEM_read_bio_X509", traits, *this) {}
 //------------------------------------------------------------------------------
-} // namespace eagine::sslp
+} // namespace eagine::sslplus

@@ -7,9 +7,9 @@
 ///
 #include <eagine/logging/logger.hpp>
 #include <eagine/main.hpp>
-#include <eagine/ssl/openssl.hpp>
+#include <eagine/sslplus/openssl.hpp>
 
-#include <eagine/ssl/api.hpp>
+#include <eagine/sslplus/api.hpp>
 
 #include <array>
 
@@ -17,11 +17,11 @@ namespace eagine {
 //------------------------------------------------------------------------------
 auto main(main_ctx& ctx) -> int {
 
-    sslp::ssl_api ssl{};
+    sslplus::ssl_api ssl{};
 
     ssl.load_builtin_engines();
 
-    auto func = [&ctx, &ssl](sslp::engine eng) {
+    auto func = [&ctx, &ssl](sslplus::engine eng) {
         const string_view na("N/A");
         ctx.log()
           .info("found engine")

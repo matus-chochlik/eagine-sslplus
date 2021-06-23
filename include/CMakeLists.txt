@@ -4,17 +4,17 @@
 #  http://www.boost.org/LICENSE_1_0.txt
 #
 configure_file(
-	eagine/ssl/resources.gen.in
-	eagine/ssl/resources.gen.inl 
+	eagine/sslplus/resources.gen.in
+	eagine/sslplus/resources.gen.inl 
 	@ONLY
 )
-set(GEN_INLS eagine/ssl/resources.gen.inl)
+set(GEN_INLS eagine/sslplus/resources.gen.inl)
 include(./Sources.cmake)
 # - regular headers ------------------------------------------------------------
-add_library(eagine-ssl-headers INTERFACE)
+add_library(eagine-sslplus-headers INTERFACE)
 
 target_include_directories(
-	eagine-ssl-headers
+	eagine-sslplus-headers
 	INTERFACE
 		$<INSTALL_INTERFACE:include>
 		$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
@@ -22,37 +22,37 @@ target_include_directories(
 
 foreach(FILENAME ${HEADERS} ${PUB_INLS})
 	set_property(
-		TARGET eagine-ssl-headers
+		TARGET eagine-sslplus-headers
 		APPEND PROPERTY PUBLIC_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/${FILENAME}
 	)
 endforeach()
 # - private headers or implementation files ------------------------------------
-add_library(eagine-ssl-private-headers INTERFACE)
+add_library(eagine-sslplus-private-headers INTERFACE)
 
 target_include_directories(
-	eagine-ssl-private-headers
+	eagine-sslplus-private-headers
 	INTERFACE
 	$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
 )
 
 foreach(FILENAME ${GEN_INLS})
 	set_property(
-		TARGET eagine-ssl-private-headers
+		TARGET eagine-sslplus-private-headers
 		APPEND PROPERTY PRIVATE_HEADER ${CMAKE_CURRENT_BINARY_DIR}/${FILENAME}
 	)
 endforeach()
 # - generated headers or implementation files ----------------------------------
-add_library(eagine-ssl-generated-headers INTERFACE)
+add_library(eagine-sslplus-generated-headers INTERFACE)
 
 target_include_directories(
-	eagine-ssl-generated-headers
+	eagine-sslplus-generated-headers
 	INTERFACE
 	$<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/include>
 )
 
 foreach(FILENAME ${GEN_INLS})
 	set_property(
-		TARGET eagine-ssl-generated-headers
+		TARGET eagine-sslplus-generated-headers
 		APPEND PROPERTY PRIVATE_HEADER ${CMAKE_CURRENT_BINARY_DIR}/${FILENAME}
 	)
 endforeach()

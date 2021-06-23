@@ -5,8 +5,8 @@
 /// See accompanying file LICENSE_1_0.txt or copy at
 ///  http://www.boost.org/LICENSE_1_0.txt
 ///
-#ifndef EAGINE_SSL_API_HPP
-#define EAGINE_SSL_API_HPP
+#ifndef EAGINE_SSLPLUS_API_HPP
+#define EAGINE_SSLPLUS_API_HPP
 
 #include "api/api.hpp"
 #include "api/api_traits.hpp"
@@ -14,7 +14,7 @@
 #include "api_fwd.hpp"
 #include <eagine/memory/block.hpp>
 
-namespace eagine::sslp {
+namespace eagine::sslplus {
 //------------------------------------------------------------------------------
 template <typename ApiTraits>
 class basic_ssl_api
@@ -139,27 +139,27 @@ auto get(const basic_ssl_api<ApiTraits>& x) noexcept -> const
     return x;
 }
 //------------------------------------------------------------------------------
-} // namespace eagine::sslp
+} // namespace eagine::sslplus
 
-#include <eagine/ssl/api.inl>
+#include <eagine/sslplus/api.inl>
 
 // NOLINTNEXTLINE(cert-dcl58-cpp)
 namespace std {
 //------------------------------------------------------------------------------
 template <typename ApiTraits>
-struct tuple_size<eagine::sslp::basic_ssl_api<ApiTraits>>
+struct tuple_size<eagine::sslplus::basic_ssl_api<ApiTraits>>
   : public std::integral_constant<std::size_t, 2> {};
 
 template <typename ApiTraits>
-struct tuple_element<0, eagine::sslp::basic_ssl_api<ApiTraits>> {
-    using type = eagine::sslp::basic_ssl_operations<ApiTraits>;
+struct tuple_element<0, eagine::sslplus::basic_ssl_api<ApiTraits>> {
+    using type = eagine::sslplus::basic_ssl_operations<ApiTraits>;
 };
 
 template <typename ApiTraits>
-struct tuple_element<1, eagine::sslp::basic_ssl_api<ApiTraits>> {
-    using type = eagine::sslp::basic_ssl_constants<ApiTraits>;
+struct tuple_element<1, eagine::sslplus::basic_ssl_api<ApiTraits>> {
+    using type = eagine::sslplus::basic_ssl_constants<ApiTraits>;
 };
 //------------------------------------------------------------------------------
 } // namespace std
 
-#endif // EAGINE_SSL_API_HPP
+#endif // EAGINE_SSLPLUS_API_HPP

@@ -27,7 +27,7 @@ function(eagine_example_common EXAMPLE_NAME)
 	add_dependencies(eagine-ssl-examples eagine-${EXAMPLE_NAME})
 	target_link_libraries(
 		eagine-${EXAMPLE_NAME}
-		PUBLIC EAGine::SSL
+		PUBLIC EAGine::SSLplus
 		PRIVATE ${ARGN}
 	)
 

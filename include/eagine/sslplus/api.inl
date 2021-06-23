@@ -6,11 +6,11 @@
 ///  http://www.boost.org/LICENSE_1_0.txt
 ///
 // clang-format off
-#include <eagine/ssl/api/c_api.inl>
-#include <eagine/ssl/api/api.inl>
+#include <eagine/sslplus/api/c_api.inl>
+#include <eagine/sslplus/api/api.inl>
 // clang-format on
 
-namespace eagine::sslp {
+namespace eagine::sslplus {
 //------------------------------------------------------------------------------
 template <typename ApiTraits>
 inline auto basic_ssl_api<ApiTraits>::data_digest(
@@ -159,4 +159,4 @@ auto basic_ssl_api<ApiTraits>::ca_verify_certificate(x509 ca_cert, x509 cert)
     return false;
 }
 //------------------------------------------------------------------------------
-} // namespace eagine::sslp
+} // namespace eagine::sslplus

@@ -4,32 +4,32 @@
 #  http://www.boost.org/LICENSE_1_0.txt
 
 add_library(
-	eagine-ssl
+	eagine-sslplus
 	resources.cpp
 )
 eagine_embed_target_resources(
-	TARGET eagine-ssl
-	SCAN_TARGETS eagine-ssl-generated-headers
+	TARGET eagine-sslplus
+	SCAN_TARGETS eagine-sslplus-generated-headers
 )
-eagine_add_lib_analysis(eagine-ssl)
+eagine_add_lib_analysis(eagine-sslplus)
 
 target_compile_definitions(
-	eagine-ssl PUBLIC EAGINE_SSL_LIBRARY=1
+	eagine-sslplus PUBLIC EAGINE_SSLPLUS_LIBRARY=1
 )
 
 target_include_directories(
-	eagine-ssl
+	eagine-sslplus
 	PRIVATE
 		"$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>"
 )
 
 target_link_libraries(
-	eagine-ssl
+	eagine-sslplus
 	PUBLIC
-		EAGine::SSL::Deps::OpenSSL
+		EAGine::SSLplus::Deps::OpenSSL
 		EAGine::Core
-		eagine-ssl-headers
+		eagine-sslplus-headers
 	PRIVATE
-		eagine-ssl-private-headers
-		eagine-ssl-generated-headers
+		eagine-sslplus-private-headers
+		eagine-sslplus-generated-headers
 )

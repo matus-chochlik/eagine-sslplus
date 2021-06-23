@@ -7,7 +7,7 @@
 ///
 #include <eagine/logging/logger.hpp>
 #include <eagine/main.hpp>
-#include <eagine/ssl/resources.hpp>
+#include <eagine/sslplus/resources.hpp>
 
 namespace eagine {
 //------------------------------------------------------------------------------

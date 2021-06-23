@@ -5,8 +5,8 @@
 /// See accompanying file LICENSE_1_0.txt or copy at
 ///  http://www.boost.org/LICENSE_1_0.txt
 ///
-#ifndef EAGINE_SSL_OPENSSL_HPP
-#define EAGINE_SSL_OPENSSL_HPP
+#ifndef EAGINE_SSLPLUS_OPENSSL_HPP
+#define EAGINE_SSLPLUS_OPENSSL_HPP
 
 #if __has_include(<openssl/conf.h>) && __has_include(<openssl/evp.h>)
 #include <openssl/bio.h>
@@ -19,4 +19,4 @@
 #include <openssl/safestack.h>
 #endif
 
-#endif // EAGINE_SSL_OPENSSL_HPP
+#endif // EAGINE_SSLPLUS_OPENSSL_HPP

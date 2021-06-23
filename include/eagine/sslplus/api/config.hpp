@@ -5,8 +5,8 @@
 /// See accompanying file LICENSE_1_0.txt or copy at
 ///  http://www.boost.org/LICENSE_1_0.txt
 ///
-#ifndef EAGINE_SSL_API_CONFIG_HPP
-#define EAGINE_SSL_API_CONFIG_HPP
+#ifndef EAGINE_SSLPLUS_API_CONFIG_HPP
+#define EAGINE_SSLPLUS_API_CONFIG_HPP
 
 #include <eagine/config/basic.hpp>
 #include <eagine/maybe_unused.hpp>
@@ -23,7 +23,7 @@
 #include <eagine/nothing.hpp>
 #endif
 
-namespace eagine::sslp {
+namespace eagine::sslplus {
 //------------------------------------------------------------------------------
 struct ssl_types {
 #if EAGINE_HAS_SSL
@@ -68,6 +68,6 @@ struct ssl_types {
 #endif
 };
 //------------------------------------------------------------------------------
-} // namespace eagine::sslp
+} // namespace eagine::sslplus
 
-#endif // EAGINE_SSL_API_CONFIG_HPP
+#endif // EAGINE_SSLPLUS_API_CONFIG_HPP

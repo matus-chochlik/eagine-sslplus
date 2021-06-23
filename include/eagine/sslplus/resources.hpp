@@ -5,8 +5,8 @@
 /// See accompanying file LICENSE_1_0.txt or copy at
 ///  http://www.boost.org/LICENSE_1_0.txt
 ///
-#ifndef EAGINE_SSL_RESOURCES_HPP
-#define EAGINE_SSL_RESOURCES_HPP
+#ifndef EAGINE_SSLPLUS_RESOURCES_HPP
+#define EAGINE_SSLPLUS_RESOURCES_HPP
 
 #include <eagine/main_ctx_fwd.hpp>
 #include <eagine/memory/block.hpp>
@@ -26,9 +26,9 @@ auto ca_certificate_pem(main_ctx&) -> memory::const_block;
 //------------------------------------------------------------------------------
 } // namespace eagine
 
-#if !EAGINE_SSL_LIBRARY || defined(EAGINE_IMPLEMENTING_LIBRARY)
-#include <eagine/ssl/resources.inl>
+#if !EAGINE_SSLPLUS_LIBRARY || defined(EAGINE_IMPLEMENTING_LIBRARY)
+#include <eagine/sslplus/resources.inl>
 #endif
 
-#endif // EAGINE_SSL_RESOURCES_HPP
+#endif // EAGINE_SSLPLUS_RESOURCES_HPP
 

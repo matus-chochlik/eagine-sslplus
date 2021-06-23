@@ -33,5 +33,5 @@ auto ca_certificate_pem(memory::const_block embedded_blk, main_ctx& ctx)
 }
 //------------------------------------------------------------------------------
 } // namespace eagine
-#include <eagine/ssl/resources.gen.inl>
+#include <eagine/sslplus/resources.gen.inl>
 
