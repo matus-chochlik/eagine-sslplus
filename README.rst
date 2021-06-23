@@ -8,7 +8,7 @@ Cloning the repo
 ================
 ::
 
- git clone https://github.com/matus-chochlik/eagine-ssl.git
+ git clone https://github.com/matus-chochlik/eagine-sslplus.git
 
 Building the code
 =================
