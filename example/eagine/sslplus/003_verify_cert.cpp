@@ -18,7 +18,15 @@ namespace eagine {
 //------------------------------------------------------------------------------
 auto main(main_ctx& ctx) -> int {
 
+    string_view ca_cert_path{"example-ca.crt"};
+    if(auto arg{ctx.args().find("--ca-cert").next()}) {
+        ca_cert_path = arg;
+    }
+
     string_view cert_path{"example.crt"};
+    if(auto arg{ctx.args().find("--cert").next()}) {
+        cert_path = arg;
+    }
     file_contents cert_pem{cert_path};
 
     sslplus::ssl_api ssl{};
@@ -26,7 +34,7 @@ auto main(main_ctx& ctx) -> int {
     if(ok cert{ssl.parse_x509(cert_pem, {})}) {
         auto del_cert{ssl.delete_x509.raii(cert)};
 
-        if(ssl.ca_verify_certificate("example-ca.crt", cert)) {
+        if(ssl.ca_verify_certificate(ca_cert_path, cert)) {
             ctx.log()
               .info("successfully verified certificate ${certPath}")
               .arg(EAGINE_ID(certPath), EAGINE_ID(FsPath), cert_path);

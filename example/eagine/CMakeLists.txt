@@ -38,4 +38,4 @@ function(eagine_example_common EXAMPLE_NAME)
 	eagine_install_example(eagine-${EXAMPLE_NAME})
 endfunction()
 
-add_subdirectory(ssl)
+add_subdirectory(sslplus)
