@@ -1,4 +1,4 @@
-/// @example eagine/ssh/004_verify_cert.cpp
+/// @example eagine/sslplus/004_verify_cert.cpp
 ///
 /// Copyright Matus Chochlik.
 /// Distributed under the Boost Software License, Version 1.0.

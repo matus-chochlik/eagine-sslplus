@@ -1,4 +1,4 @@
-/// @example eagine/ssh/005_random_engine.cpp
+/// @example eagine/sslplus/005_random_engine.cpp
 ///
 /// Copyright Matus Chochlik.
 /// Distributed under the Boost Software License, Version 1.0.
