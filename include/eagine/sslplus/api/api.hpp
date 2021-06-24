@@ -333,13 +333,43 @@ public:
     } load_engine_public_key;
 
     // ASN1
+    // string
+    struct : func<SSLPAFP(asn1_string_length)> {
+        using func<SSLPAFP(asn1_string_length)>::func;
+
+        constexpr auto operator()(asn1_string as) const noexcept {
+            return this->_cnvchkcall(as).cast_to(type_identity<span_size_t>{});
+        }
+    } get_string_length;
+
+    struct : func<SSLPAFP(asn1_string_get0_data)> {
+        using func<SSLPAFP(asn1_string_get0_data)>::func;
+
+        constexpr auto operator()(asn1_string as) const noexcept {
+            return this->_cnvchkcall(as);
+        }
+    } get_string_data;
+
+    auto get_string_block(asn1_string as) noexcept -> memory::const_block {
+        const auto data{get_string_data(as)};
+        const auto size{get_string_length(as)};
+        if(data && size) {
+            return {extract(data), extract(size)};
+        }
+        return {};
+    }
+
+    auto get_string_view(asn1_string as) noexcept {
+        return as_chars(get_string_block(as));
+    }
+
     // get_int64
     struct : func<SSLPAFP(asn1_integer_get_int64)> {
         using func<SSLPAFP(asn1_integer_get_int64)>::func;
 
         constexpr auto operator()(asn1_integer ai) const noexcept {
             std::int64_t result{};
-            return this->_chkcall(ai).replaced_with(result);
+            return this->_cnvchkcall(&result, ai).replaced_with(result);
         }
     } get_int64;
 
@@ -349,7 +379,7 @@ public:
 
         constexpr auto operator()(asn1_integer ai) const noexcept {
             std::uint64_t result{};
-            return this->_chkcall(ai).replaced_with(result);
+            return this->_cnvchkcall(&result, ai).replaced_with(result);
         }
     } get_uint64;
 
@@ -1206,6 +1236,34 @@ public:
         }
     } get_x509_pubkey;
 
+    // get_x509_serial_number
+    struct : func<SSLPAFP(x509_get0_serial_number)> {
+        using func<SSLPAFP(x509_get0_serial_number)>::func;
+
+        constexpr auto operator()(x509 crt) const noexcept {
+            return this->_cnvchkcall(crt).cast_to(
+              type_identity<asn1_integer>{});
+        }
+    } get_x509_serial_number;
+
+    // get_x509_issuer_name
+    struct : func<SSLPAFP(x509_get_issuer_name)> {
+        using func<SSLPAFP(x509_get_issuer_name)>::func;
+
+        constexpr auto operator()(x509 crt) const noexcept {
+            return this->_cnvchkcall(crt).cast_to(type_identity<x509_name>{});
+        }
+    } get_x509_issuer_name;
+
+    // get_x509_subject_name
+    struct : func<SSLPAFP(x509_get_subject_name)> {
+        using func<SSLPAFP(x509_get_subject_name)>::func;
+
+        constexpr auto operator()(x509 crt) const noexcept {
+            return this->_cnvchkcall(crt).cast_to(type_identity<x509_name>{});
+        }
+    } get_x509_subject_name;
+
     // delete_x509
     struct : func<SSLPAFP(x509_free)> {
         using func<SSLPAFP(x509_free)>::func;
@@ -1219,6 +1277,43 @@ public:
         }
 
     } delete_x509;
+
+    // get_name_entry_count
+    struct : func<SSLPAFP(x509_name_entry_count)> {
+        using func<SSLPAFP(x509_name_entry_count)>::func;
+
+        constexpr auto operator()(x509_name n) const noexcept {
+            return this->_cnvchkcall(n).cast_to(type_identity<span_size_t>{});
+        }
+    } get_name_entry_count;
+
+    // get_name_entry
+    struct : func<SSLPAFP(x509_name_get_entry)> {
+        using func<SSLPAFP(x509_name_get_entry)>::func;
+
+        constexpr auto operator()(x509_name n, span_size_t i) const noexcept {
+            return this->_cnvchkcall(n, limit_cast<int>(i))
+              .cast_to(type_identity<x509_name_entry>{});
+        }
+    } get_name_entry;
+
+    // get_name_entry_object
+    struct : func<SSLPAFP(x509_name_entry_get_object)> {
+        using func<SSLPAFP(x509_name_entry_get_object)>::func;
+
+        constexpr auto operator()(x509_name_entry ne) const noexcept {
+            return this->_cnvchkcall(ne).cast_to(type_identity<asn1_object>{});
+        }
+    } get_name_entry_object;
+
+    // get_name_entry_data
+    struct : func<SSLPAFP(x509_name_entry_get_data)> {
+        using func<SSLPAFP(x509_name_entry_get_data)>::func;
+
+        constexpr auto operator()(x509_name_entry ne) const noexcept {
+            return this->_cnvchkcall(ne).cast_to(type_identity<asn1_string>{});
+        }
+    } get_name_entry_data;
 
     // read_bio_private_key
     struct : func<SSLPAFP(pem_read_bio_private_key)> {

@@ -191,6 +191,16 @@ struct basic_ssl_c_api {
 
     // ASN1
     ssl_api_function<
+      int(const asn1_string_type*),
+      EAGINE_SSL_STATIC_FUNC(ASN1_STRING_length)>
+      asn1_string_length;
+
+    ssl_api_function<
+      const unsigned char*(const asn1_string_type*),
+      EAGINE_SSL_STATIC_FUNC(ASN1_STRING_get0_data)>
+      asn1_string_get0_data;
+
+    ssl_api_function<
       int(std::int64_t*, const asn1_integer_type*),
       EAGINE_SSL_STATIC_FUNC(ASN1_INTEGER_get_int64)>
       asn1_integer_get_int64;

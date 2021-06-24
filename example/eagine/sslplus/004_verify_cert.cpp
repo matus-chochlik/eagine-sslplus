@@ -20,6 +20,9 @@ namespace eagine {
 auto main(main_ctx& ctx) -> int {
 
     string_view cert_path{"example.crt"};
+    if(auto arg{ctx.args().find("--cert").next()}) {
+        cert_path = arg;
+    }
     memory::const_block ca_cert_pem{
       eagine::embed(EAGINE_ID(caCert), "example-ca.crt")};
 
@@ -33,9 +36,33 @@ auto main(main_ctx& ctx) -> int {
             auto del_cert{ssl.delete_x509.raii(cert)};
 
             if(ssl.ca_verify_certificate(ca_cert, cert)) {
-                ctx.log()
-                  .info("successfully verified certificate ${certPath}")
-                  .arg(EAGINE_ID(certPath), EAGINE_ID(FsPath), cert_path);
+                if(const auto subname{ssl.get_x509_subject_name(cert)}) {
+                    const auto count{
+                      extract(ssl.get_name_entry_count(extract(subname)))};
+                    ctx.log()
+                      .info("successfully verified certificate ${certPath}")
+                      .arg(EAGINE_ID(certPath), EAGINE_ID(FsPath), cert_path)
+                      .arg(EAGINE_ID(snEntCount), count);
+                    for(const auto index : integer_range(count)) {
+                        if(const auto entry{
+                             ssl.get_name_entry(extract(subname), index)}) {
+                            const auto value{
+                              ssl.get_name_entry_data(extract(entry))};
+
+                            ctx.log()
+                              .info("certificate common name entry ${index}:")
+                              .arg(EAGINE_ID(index), index)
+                              .arg(
+                                EAGINE_ID(value),
+                                ssl.get_string_view(extract(value)));
+                        }
+                    }
+                } else {
+                    ctx.log()
+                      .error(
+                        "failed to get certificate ${certPath} serial number")
+                      .arg(EAGINE_ID(certPath), EAGINE_ID(FsPath), cert_path);
+                }
             } else {
                 ctx.log()
                   .error("failed to verify certificate ${certPath}")

@@ -35,9 +35,18 @@ auto main(main_ctx& ctx) -> int {
         auto del_cert{ssl.delete_x509.raii(cert)};
 
         if(ssl.ca_verify_certificate(ca_cert_path, cert)) {
-            ctx.log()
-              .info("successfully verified certificate ${certPath}")
-              .arg(EAGINE_ID(certPath), EAGINE_ID(FsPath), cert_path);
+            if(const auto serial{ssl.get_x509_serial_number(cert)}) {
+                ctx.log()
+                  .info("successfully verified certificate ${certPath}")
+                  .arg(EAGINE_ID(certPath), EAGINE_ID(FsPath), cert_path)
+                  .arg(
+                    EAGINE_ID(serialNo),
+                    extract(ssl.get_int64(extract(serial))));
+            } else {
+                ctx.log()
+                  .error("failed to get certificate ${certPath} serial number")
+                  .arg(EAGINE_ID(certPath), EAGINE_ID(FsPath), cert_path);
+            }
         } else {
             ctx.log()
               .error("failed to verify certificate ${certPath}")

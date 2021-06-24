@@ -42,13 +42,13 @@ using ui_method =
 using engine = basic_handle<engine_tag, ssl_types::engine_type*, nullptr>;
 
 using asn1_object =
-  basic_handle<asn1_object_tag, ssl_types::asn1_object_type*, nullptr>;
+  basic_handle<asn1_object_tag, const ssl_types::asn1_object_type*, nullptr>;
 
 using asn1_string =
-  basic_handle<asn1_string_tag, ssl_types::asn1_string_type*, nullptr>;
+  basic_handle<asn1_string_tag, const ssl_types::asn1_string_type*, nullptr>;
 
 using asn1_integer =
-  basic_handle<asn1_integer_tag, ssl_types::asn1_integer_type*, nullptr>;
+  basic_handle<asn1_integer_tag, const ssl_types::asn1_integer_type*, nullptr>;
 
 using basic_io = basic_handle<basic_io_tag, ssl_types::bio_type*, nullptr>;
 
@@ -78,10 +78,12 @@ using x509_lookup_method = basic_handle<
   nullptr>;
 
 using x509_name =
-  basic_handle<x509_name_tag, ssl_types::x509_name_type*, nullptr>;
+  basic_handle<x509_name_tag, const ssl_types::x509_name_type*, nullptr>;
 
-using x509_name_entry =
-  basic_handle<x509_name_entry_tag, ssl_types::x509_name_entry_type*, nullptr>;
+using x509_name_entry = basic_handle<
+  x509_name_entry_tag,
+  const ssl_types::x509_name_entry_type*,
+  nullptr>;
 
 using x509_store_ctx =
   basic_handle<x509_store_ctx_tag, ssl_types::x509_store_ctx_type*, nullptr>;
