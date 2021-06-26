@@ -162,14 +162,15 @@ auto basic_ssl_api<ApiTraits>::ca_verify_certificate(x509 ca_cert, x509 cert)
 template <typename ApiTraits>
 auto basic_ssl_api<ApiTraits>::find_name_entry(
   x509_name name,
-  string_view ent_name) const noexcept -> string_view {
+  string_view ent_name,
+  bool no_name) const noexcept -> string_view {
     const auto count{extract(this->get_name_entry_count(name))};
     std::array<char, 256> namebuf{};
     for(const auto index : integer_range(count)) {
         if(const auto entry{this->get_name_entry(name, index)}) {
             if(const auto object{this->get_name_entry_object(extract(entry))}) {
-                const auto cur_name{
-                  this->object_to_text(cover(namebuf), extract(object))};
+                const auto cur_name{this->object_to_text(
+                  cover(namebuf), extract(object), no_name)};
                 if(are_equal(cur_name, ent_name)) {
                     if(const auto data{
                          this->get_name_entry_data(extract(entry))}) {
@@ -197,7 +198,7 @@ auto basic_ssl_api<ApiTraits>::find_certificate_subject_name_entry(
   x509 cert,
   string_view ent_name) const noexcept -> string_view {
     if(const auto subname{this->get_x509_subject_name(cert)}) {
-        return find_name_entry(extract(subname), ent_name);
+        return this->find_name_entry(extract(subname), ent_name);
     }
     return {};
 }
@@ -208,11 +209,11 @@ auto basic_ssl_api<ApiTraits>::find_certificate_subject_name_entry(
   string_view ent_name,
   string_view ent_oid) const noexcept -> string_view {
     if(const auto subname{this->get_x509_subject_name(cert)}) {
-        auto result = find_name_entry(extract(subname), ent_name, false);
-        if(!result) {
-            result = find_name_entry(extract(subname), ent_oid, true);
+        auto entry = this->find_name_entry(extract(subname), ent_name, false);
+        if(!entry) {
+            entry = this->find_name_entry(extract(subname), ent_oid, true);
         }
-        return result;
+        return entry;
     }
     return {};
 }
