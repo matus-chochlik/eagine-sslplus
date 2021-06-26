@@ -203,12 +203,38 @@ auto basic_ssl_api<ApiTraits>::find_certificate_subject_name_entry(
 }
 //------------------------------------------------------------------------------
 template <typename ApiTraits>
+auto basic_ssl_api<ApiTraits>::find_certificate_subject_name_entry(
+  x509 cert,
+  string_view ent_name,
+  string_view ent_oid) const noexcept -> string_view {
+    if(const auto subname{this->get_x509_subject_name(cert)}) {
+        auto result = find_name_entry(extract(subname), ent_name, false);
+        if(!result) {
+            result = find_name_entry(extract(subname), ent_oid, true);
+        }
+        return result;
+    }
+    return {};
+}
+//------------------------------------------------------------------------------
+template <typename ApiTraits>
 auto basic_ssl_api<ApiTraits>::certificate_subject_name_has_entry_value(
   x509 cert,
   string_view ent_name,
   string_view value) const noexcept -> bool {
     return are_equal(
       this->find_certificate_subject_name_entry(cert, ent_name), value);
+}
+//------------------------------------------------------------------------------
+template <typename ApiTraits>
+auto basic_ssl_api<ApiTraits>::certificate_subject_name_has_entry_value(
+  x509 cert,
+  string_view ent_name,
+  string_view ent_oid,
+  string_view value) const noexcept -> bool {
+    return are_equal(
+      this->find_certificate_subject_name_entry(cert, ent_name, ent_oid),
+      value);
 }
 //------------------------------------------------------------------------------
 } // namespace eagine::sslplus

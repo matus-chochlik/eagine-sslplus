@@ -135,9 +135,20 @@ public:
     auto find_certificate_subject_name_entry(x509 cert, string_view ent_name)
       const noexcept -> string_view;
 
+    auto find_certificate_subject_name_entry(
+      x509 cert,
+      string_view ent_name,
+      string_view ent_oid) const noexcept -> string_view;
+
     auto certificate_subject_name_has_entry_value(
       x509 cert,
       string_view ent_name,
+      string_view value) const noexcept -> bool;
+
+    auto certificate_subject_name_has_entry_value(
+      x509 cert,
+      string_view ent_name,
+      string_view ent_oid,
       string_view value) const noexcept -> bool;
 };
 //------------------------------------------------------------------------------
