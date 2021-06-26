@@ -35,16 +35,24 @@ auto main(main_ctx& ctx) -> int {
         auto del_cert{ssl.delete_x509.raii(cert)};
 
         if(ssl.ca_verify_certificate(ca_cert_path, cert)) {
-            if(const auto serial{ssl.get_x509_serial_number(cert)}) {
-                ctx.log()
-                  .info("successfully verified certificate ${certPath}")
-                  .arg(EAGINE_ID(certPath), EAGINE_ID(FsPath), cert_path)
-                  .arg(
-                    EAGINE_ID(serialNo),
-                    extract(ssl.get_int64(extract(serial))));
+            if(ssl.certificate_subject_name_has_entry_value(
+                 cert, "organizationName", "OGLplus.org")) {
+                if(const auto serial{ssl.get_x509_serial_number(cert)}) {
+                    ctx.log()
+                      .info("successfully verified certificate ${certPath}")
+                      .arg(EAGINE_ID(certPath), EAGINE_ID(FsPath), cert_path)
+                      .arg(
+                        EAGINE_ID(serialNo),
+                        extract(ssl.get_int64(extract(serial))));
+                } else {
+                    ctx.log()
+                      .error(
+                        "failed to get certificate ${certPath} serial number")
+                      .arg(EAGINE_ID(certPath), EAGINE_ID(FsPath), cert_path);
+                }
             } else {
                 ctx.log()
-                  .error("failed to get certificate ${certPath} serial number")
+                  .error("certificate does not have required value")
                   .arg(EAGINE_ID(certPath), EAGINE_ID(FsPath), cert_path);
             }
         } else {

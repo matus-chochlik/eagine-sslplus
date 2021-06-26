@@ -40,6 +40,7 @@ inline basic_ssl_c_api<ApiTraits>::basic_ssl_c_api(ApiTraits& traits)
   , asn1_string_get0_data{"ASN1_STRING_get0_data", traits, *this}
   , asn1_integer_get_int64{"ASN1_INTEGER_get_int64", traits, *this}
   , asn1_integer_get_uint64{"ASN1_INTEGER_get_uint64", traits, *this}
+  , obj_obj2txt{"OBJ_obj2txt", traits, *this}
   , bio_new{"BIO_new", traits, *this}
   , bio_new_mem_buf{"BIO_new_mem_buf", traits, *this}
   , bio_up_ref{"BIO_up_ref", traits, *this}

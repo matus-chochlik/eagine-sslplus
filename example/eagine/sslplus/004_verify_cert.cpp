@@ -46,12 +46,19 @@ auto main(main_ctx& ctx) -> int {
                     for(const auto index : integer_range(count)) {
                         if(const auto entry{
                              ssl.get_name_entry(extract(subname), index)}) {
+                            const auto object{
+                              ssl.get_name_entry_object(extract(entry))};
                             const auto value{
                               ssl.get_name_entry_data(extract(entry))};
+
+                            std::array<char, 96> namebuf{};
+                            const auto name{ssl.object_to_text(
+                              cover(namebuf), extract(object))};
 
                             ctx.log()
                               .info("certificate common name entry ${index}:")
                               .arg(EAGINE_ID(index), index)
+                              .arg(EAGINE_ID(attribute), name)
                               .arg(
                                 EAGINE_ID(value),
                                 ssl.get_string_view(extract(value)));

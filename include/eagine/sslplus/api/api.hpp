@@ -350,7 +350,8 @@ public:
         }
     } get_string_data;
 
-    auto get_string_block(asn1_string as) noexcept -> memory::const_block {
+    auto get_string_block(asn1_string as) const noexcept
+      -> memory::const_block {
         const auto data{get_string_data(as)};
         const auto size{get_string_length(as)};
         if(data && size) {
@@ -359,7 +360,7 @@ public:
         return {};
     }
 
-    auto get_string_view(asn1_string as) noexcept {
+    auto get_string_view(asn1_string as) const noexcept {
         return as_chars(get_string_block(as));
     }
 
@@ -382,6 +383,23 @@ public:
             return this->_cnvchkcall(&result, ai).replaced_with(result);
         }
     } get_uint64;
+
+    // object_to_text
+    struct : func<SSLPAFP(obj_obj2txt)> {
+        using func<SSLPAFP(obj_obj2txt)>::func;
+
+        constexpr auto operator()(
+          string_span dst,
+          asn1_object obj,
+          bool no_name = false) const noexcept {
+            return head(
+              dst,
+              extract_or(
+                this->_cnvchkcall(
+                  dst.data(), limit_cast<int>(dst.size()), obj, no_name ? 1 : 0),
+                0));
+        }
+    } object_to_text;
 
     // new_basic_io
     struct : func<SSLPAFP(bio_new)> {

@@ -159,4 +159,56 @@ auto basic_ssl_api<ApiTraits>::ca_verify_certificate(x509 ca_cert, x509 cert)
     return false;
 }
 //------------------------------------------------------------------------------
+template <typename ApiTraits>
+auto basic_ssl_api<ApiTraits>::find_name_entry(
+  x509_name name,
+  string_view ent_name) const noexcept -> string_view {
+    const auto count{extract(this->get_name_entry_count(name))};
+    std::array<char, 256> namebuf{};
+    for(const auto index : integer_range(count)) {
+        if(const auto entry{this->get_name_entry(name, index)}) {
+            if(const auto object{this->get_name_entry_object(extract(entry))}) {
+                const auto cur_name{
+                  this->object_to_text(cover(namebuf), extract(object))};
+                if(are_equal(cur_name, ent_name)) {
+                    if(const auto data{
+                         this->get_name_entry_data(extract(entry))}) {
+                        return this->get_string_view(extract(data));
+                    }
+                }
+            }
+        }
+    }
+    return {};
+}
+//------------------------------------------------------------------------------
+template <typename ApiTraits>
+auto basic_ssl_api<ApiTraits>::find_certificate_issuer_name_entry(
+  x509 cert,
+  string_view ent_name) const noexcept -> string_view {
+    if(const auto isuname{this->get_x509_issuer_name(cert)}) {
+        return find_name_entry(extract(isuname), ent_name);
+    }
+    return {};
+}
+//------------------------------------------------------------------------------
+template <typename ApiTraits>
+auto basic_ssl_api<ApiTraits>::find_certificate_subject_name_entry(
+  x509 cert,
+  string_view ent_name) const noexcept -> string_view {
+    if(const auto subname{this->get_x509_subject_name(cert)}) {
+        return find_name_entry(extract(subname), ent_name);
+    }
+    return {};
+}
+//------------------------------------------------------------------------------
+template <typename ApiTraits>
+auto basic_ssl_api<ApiTraits>::certificate_subject_name_has_entry_value(
+  x509 cert,
+  string_view ent_name,
+  string_view value) const noexcept -> bool {
+    return are_equal(
+      this->find_certificate_subject_name_entry(cert, ent_name), value);
+}
+//------------------------------------------------------------------------------
 } // namespace eagine::sslplus

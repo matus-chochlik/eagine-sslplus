@@ -189,7 +189,7 @@ struct basic_ssl_c_api {
       EAGINE_SSL_STATIC_FUNC(ENGINE_load_public_key)>
       engine_load_public_key;
 
-    // ASN1
+    // asn1
     ssl_api_function<
       int(const asn1_string_type*),
       EAGINE_SSL_STATIC_FUNC(ASN1_STRING_length)>
@@ -209,6 +209,12 @@ struct basic_ssl_c_api {
       int(std::uint64_t*, const asn1_integer_type*),
       EAGINE_SSL_STATIC_FUNC(ASN1_INTEGER_get_uint64)>
       asn1_integer_get_uint64;
+
+    // obj
+    ssl_api_function<
+      int(char*, int, const asn1_object_type*, int),
+      EAGINE_SSL_STATIC_FUNC(OBJ_obj2txt)>
+      obj_obj2txt;
 
     // bio
     ssl_api_function<

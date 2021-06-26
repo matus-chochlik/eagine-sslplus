@@ -125,6 +125,20 @@ public:
       -> bool;
 
     auto ca_verify_certificate(x509 ca_cert, x509) const noexcept -> bool;
+
+    auto find_name_entry(x509_name name, string_view ent_name) const noexcept
+      -> string_view;
+
+    auto find_certificate_issuer_name_entry(x509 cert, string_view ent_name)
+      const noexcept -> string_view;
+
+    auto find_certificate_subject_name_entry(x509 cert, string_view ent_name)
+      const noexcept -> string_view;
+
+    auto certificate_subject_name_has_entry_value(
+      x509 cert,
+      string_view ent_name,
+      string_view value) const noexcept -> bool;
 };
 //------------------------------------------------------------------------------
 template <std::size_t I, typename ApiTraits>
