@@ -123,8 +123,8 @@ signing requests:
 
 ::
 
-  mkdir ~/.eagine/
-  cat > ~/.eagine/ssl-msgbus.conf << EOD
+  mkdir ~/.config/eagine/
+  cat > ~/.config/eagine/ssl-msgbus.conf << EOD
   oid_section = OIDs
 
   [req]
@@ -135,7 +135,8 @@ signing requests:
   distinguished_name = req_dn
 
   [OIDs]
-  eagiMsgBusNode = 1.3.6.1.4.1.55765.3.1
+  eagiMsgBusIsNode = 1.3.6.1.4.1.55765.3.1
+  eagiMsgBusNodeKind = 1.3.6.1.4.1.55765.3.2
 
   [req_dn]
   countryName = Country Name (2 letter code)
@@ -146,8 +147,9 @@ signing requests:
   organizationName_default = OGLplus.org
   commonName = Common name
   commonName_default = Node name
-  eagiMsgBusNode = Is message bus node (TRUE|FALSE)
-  eagiMsgBusNode_default = TRUE
+  eagiMsgBusIsNode = Is message bus node (TRUE|FALSE)
+  eagiMsgBusIsNode_default = TRUE
+  eagiMsgBusNodeKind = Message bus node kind (router|bridge|endpoint)
   EOD
   --
 
@@ -159,7 +161,7 @@ the ``-config`` option specifying the path to the configuration file:
   openssl req \
     -new \
     -key ./my_router.key \
-    -config ~/.eagine/ssl-msgbus.conf \
+    -config ~/.config/eagine/ssl-msgbus.conf \
     -out my_router.csr
 
 Basic workflows with SoftHSM engine
