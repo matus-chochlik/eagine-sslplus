@@ -184,6 +184,40 @@ auto basic_ssl_api<ApiTraits>::find_name_entry(
 }
 //------------------------------------------------------------------------------
 template <typename ApiTraits>
+auto basic_ssl_api<ApiTraits>::find_name_oid_entry(
+  x509_name name,
+  string_view ent_name,
+  string_view ent_oid) const noexcept -> string_view {
+    const auto count{extract(this->get_name_entry_count(name))};
+    std::array<char, 256> namebuf{};
+    for(const auto index : integer_range(count)) {
+        if(const auto entry{this->get_name_entry(name, index)}) {
+            if(const auto object{this->get_name_entry_object(extract(entry))}) {
+                if(are_equal(
+                     this->object_to_text(
+                       cover(namebuf), extract(object), false),
+                     ent_name)) {
+                    if(const auto data{
+                         this->get_name_entry_data(extract(entry))}) {
+                        return this->get_string_view(extract(data));
+                    }
+                }
+                if(are_equal(
+                     this->object_to_text(
+                       cover(namebuf), extract(object), true),
+                     ent_oid)) {
+                    if(const auto data{
+                         this->get_name_entry_data(extract(entry))}) {
+                        return this->get_string_view(extract(data));
+                    }
+                }
+            }
+        }
+    }
+    return {};
+}
+//------------------------------------------------------------------------------
+template <typename ApiTraits>
 auto basic_ssl_api<ApiTraits>::find_certificate_issuer_name_entry(
   x509 cert,
   string_view ent_name) const noexcept -> string_view {
@@ -209,11 +243,7 @@ auto basic_ssl_api<ApiTraits>::find_certificate_subject_name_entry(
   string_view ent_name,
   string_view ent_oid) const noexcept -> string_view {
     if(const auto subname{this->get_x509_subject_name(cert)}) {
-        auto entry = this->find_name_entry(extract(subname), ent_name, false);
-        if(!entry) {
-            entry = this->find_name_entry(extract(subname), ent_oid, true);
-        }
-        return entry;
+        return this->find_name_oid_entry(extract(subname), ent_name, ent_oid);
     }
     return {};
 }

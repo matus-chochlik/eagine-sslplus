@@ -131,6 +131,11 @@ public:
       string_view ent_name,
       bool no_name = false) const noexcept -> string_view;
 
+    auto find_name_oid_entry(
+      x509_name name,
+      string_view ent_name,
+      string_view ent_oid) const noexcept -> string_view;
+
     auto find_certificate_issuer_name_entry(x509 cert, string_view ent_name)
       const noexcept -> string_view;
 
