@@ -4,24 +4,24 @@
 #  http://www.boost.org/LICENSE_1_0.txt
 add_subdirectory(lib)
 
-add_library(EAGine::SSL INTERFACE IMPORTED GLOBAL)
-target_link_libraries(EAGine::SSL INTERFACE eagine-ssl-headers)
+add_library(EAGine::SSLplus INTERFACE IMPORTED GLOBAL)
+target_link_libraries(EAGine::SSLplus INTERFACE eagine-sslplus-headers)
 
 target_link_libraries(
-	EAGine::SSL
+	EAGine::SSLplus
 	INTERFACE
-		eagine-ssl
+		eagine-sslplus
 )
 
 get_target_property(EAGINE_CORE_LIBS EAGine::Core INTERFACE_LINK_LIBRARIES)
 
 install(
 	TARGETS
-		eagine-ssl-generated-headers
-		eagine-ssl-private-headers
-		eagine-ssl-headers
-		eagine-ssl
-	EXPORT SSL
+		eagine-sslplus-generated-headers
+		eagine-sslplus-private-headers
+		eagine-sslplus-headers
+		eagine-sslplus
+	EXPORT SSLplus
 	LIBRARY DESTINATION lib
 	ARCHIVE DESTINATION lib
 	RUNTIME DESTINATION bin
@@ -30,8 +30,8 @@ install(
 )
 
 install(
-	EXPORT SSL
+	EXPORT SSLplus
 	NAMESPACE EAGine::
-	FILE SSL.cmake
+	FILE SSLplus.cmake
 	DESTINATION lib/cmake/EAGine
 )
