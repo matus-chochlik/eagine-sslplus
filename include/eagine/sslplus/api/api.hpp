@@ -25,7 +25,7 @@ public:
     constexpr password_callback() noexcept = default;
 
     constexpr password_callback(
-      callable_ref<bool(string_span, bool)> callback) noexcept
+      callable_ref<bool(const string_span, const bool)> callback) noexcept
       : _callback{std::move(callback)} {}
 
     constexpr auto native_func() noexcept -> auto* {
@@ -37,7 +37,8 @@ public:
     }
 
 private:
-    static auto _impl(char* dst, int len, int writing, void* ptr) -> int {
+    static auto _impl(char* dst, const int len, const int writing, void* ptr)
+      -> int {
         if(auto* self = static_cast<password_callback*>(ptr)) {
             return self->_callback(
                      string_span(dst, span_size_t(len)), writing != 0)
@@ -47,7 +48,7 @@ private:
         return 0;
     }
 
-    callable_ref<bool(string_span, bool)> _callback{};
+    callable_ref<bool(const string_span, const bool)> _callback{};
 };
 //------------------------------------------------------------------------------
 template <typename ApiTraits>

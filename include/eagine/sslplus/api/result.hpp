@@ -17,7 +17,7 @@ namespace eagine::sslplus {
 //------------------------------------------------------------------------------
 class ssl_no_result_info {
 public:
-    constexpr auto error_code(anything) noexcept -> auto& {
+    constexpr auto error_code(const anything) noexcept -> auto& {
         return *this;
     }
 
@@ -36,7 +36,7 @@ public:
         return _error_code == 0;
     }
 
-    constexpr auto error_code(unsigned long ec) noexcept -> auto& {
+    constexpr auto error_code(const unsigned long ec) noexcept -> auto& {
         _error_code = ec;
         return *this;
     }

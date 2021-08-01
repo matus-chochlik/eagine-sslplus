@@ -14,9 +14,9 @@ namespace eagine::sslplus {
 //------------------------------------------------------------------------------
 template <typename ApiTraits>
 inline auto basic_ssl_api<ApiTraits>::data_digest(
-  memory::const_block data,
+  const memory::const_block data,
   memory::block dst,
-  message_digest_type mdtype) const noexcept -> memory::block {
+  const message_digest_type mdtype) const noexcept -> memory::block {
     if(mdtype) {
         const auto req_size = extract_or(this->message_digest_size(mdtype), 0);
 
@@ -36,10 +36,10 @@ inline auto basic_ssl_api<ApiTraits>::data_digest(
 //------------------------------------------------------------------------------
 template <typename ApiTraits>
 inline auto basic_ssl_api<ApiTraits>::sign_data_digest(
-  memory::const_block data,
+  const memory::const_block data,
   memory::block dst,
-  message_digest_type mdtype,
-  pkey pky) const noexcept -> memory::block {
+  const message_digest_type mdtype,
+  const pkey pky) const noexcept -> memory::block {
     if(mdtype && pky) {
         if(ok mdctx{this->new_message_digest()}) {
             auto cleanup{this->delete_message_digest.raii(mdctx)};
@@ -58,10 +58,10 @@ inline auto basic_ssl_api<ApiTraits>::sign_data_digest(
 //------------------------------------------------------------------------------
 template <typename ApiTraits>
 inline auto basic_ssl_api<ApiTraits>::verify_data_digest(
-  memory::const_block data,
-  memory::const_block sig,
-  message_digest_type mdtype,
-  pkey pky) const noexcept -> bool {
+  const memory::const_block data,
+  const memory::const_block sig,
+  const message_digest_type mdtype,
+  const pkey pky) const noexcept -> bool {
     if(mdtype && pky) {
         if(ok mdctx{this->new_message_digest()}) {
             auto cleanup{this->delete_message_digest.raii(mdctx)};
@@ -79,7 +79,7 @@ inline auto basic_ssl_api<ApiTraits>::verify_data_digest(
 //------------------------------------------------------------------------------
 template <typename ApiTraits>
 auto basic_ssl_api<ApiTraits>::parse_private_key(
-  memory::const_block blk,
+  const memory::const_block blk,
   password_callback get_passwd) const noexcept -> combined_result<owned_pkey> {
     if(ok mbio{this->new_block_basic_io(blk)}) {
         auto del_bio{this->delete_basic_io.raii(mbio)};
@@ -92,7 +92,7 @@ auto basic_ssl_api<ApiTraits>::parse_private_key(
 //------------------------------------------------------------------------------
 template <typename ApiTraits>
 auto basic_ssl_api<ApiTraits>::parse_public_key(
-  memory::const_block blk,
+  const memory::const_block blk,
   password_callback get_passwd) const noexcept -> combined_result<owned_pkey> {
     if(ok mbio{this->new_block_basic_io(blk)}) {
         auto del_bio{this->delete_basic_io.raii(mbio)};
@@ -105,7 +105,7 @@ auto basic_ssl_api<ApiTraits>::parse_public_key(
 //------------------------------------------------------------------------------
 template <typename ApiTraits>
 auto basic_ssl_api<ApiTraits>::parse_x509(
-  memory::const_block blk,
+  const memory::const_block blk,
   password_callback get_passwd) const noexcept -> combined_result<owned_x509> {
     if(ok mbio{this->new_block_basic_io(blk)}) {
         auto del_bio{this->delete_basic_io.raii(mbio)};
@@ -118,8 +118,8 @@ auto basic_ssl_api<ApiTraits>::parse_x509(
 //------------------------------------------------------------------------------
 template <typename ApiTraits>
 auto basic_ssl_api<ApiTraits>::ca_verify_certificate(
-  string_view ca_file_path,
-  x509 cert) const noexcept -> bool {
+  const string_view ca_file_path,
+  const x509 cert) const noexcept -> bool {
     if(ok store{this->new_x509_store()}) {
         auto del_store{this->delete_x509_store.raii(store)};
 
@@ -139,8 +139,9 @@ auto basic_ssl_api<ApiTraits>::ca_verify_certificate(
 }
 //------------------------------------------------------------------------------
 template <typename ApiTraits>
-auto basic_ssl_api<ApiTraits>::ca_verify_certificate(x509 ca_cert, x509 cert)
-  const noexcept -> bool {
+auto basic_ssl_api<ApiTraits>::ca_verify_certificate(
+  const x509 ca_cert,
+  const x509 cert) const noexcept -> bool {
     if(ok store{this->new_x509_store()}) {
         auto del_store{this->delete_x509_store.raii(store)};
 
@@ -161,9 +162,9 @@ auto basic_ssl_api<ApiTraits>::ca_verify_certificate(x509 ca_cert, x509 cert)
 //------------------------------------------------------------------------------
 template <typename ApiTraits>
 auto basic_ssl_api<ApiTraits>::find_name_entry(
-  x509_name name,
-  string_view ent_name,
-  bool no_name) const noexcept -> string_view {
+  const x509_name name,
+  const string_view ent_name,
+  const bool no_name) const noexcept -> string_view {
     const auto count{extract(this->get_name_entry_count(name))};
     std::array<char, 256> namebuf{};
     for(const auto index : integer_range(count)) {
@@ -185,9 +186,9 @@ auto basic_ssl_api<ApiTraits>::find_name_entry(
 //------------------------------------------------------------------------------
 template <typename ApiTraits>
 auto basic_ssl_api<ApiTraits>::find_name_oid_entry(
-  x509_name name,
-  string_view ent_name,
-  string_view ent_oid) const noexcept -> string_view {
+  const x509_name name,
+  const string_view ent_name,
+  const string_view ent_oid) const noexcept -> string_view {
     const auto count{extract(this->get_name_entry_count(name))};
     std::array<char, 256> namebuf{};
     for(const auto index : integer_range(count)) {
@@ -219,8 +220,8 @@ auto basic_ssl_api<ApiTraits>::find_name_oid_entry(
 //------------------------------------------------------------------------------
 template <typename ApiTraits>
 auto basic_ssl_api<ApiTraits>::find_certificate_issuer_name_entry(
-  x509 cert,
-  string_view ent_name) const noexcept -> string_view {
+  const x509 cert,
+  const string_view ent_name) const noexcept -> string_view {
     if(const auto isuname{this->get_x509_issuer_name(cert)}) {
         return find_name_entry(extract(isuname), ent_name);
     }
@@ -229,8 +230,8 @@ auto basic_ssl_api<ApiTraits>::find_certificate_issuer_name_entry(
 //------------------------------------------------------------------------------
 template <typename ApiTraits>
 auto basic_ssl_api<ApiTraits>::find_certificate_subject_name_entry(
-  x509 cert,
-  string_view ent_name) const noexcept -> string_view {
+  const x509 cert,
+  const string_view ent_name) const noexcept -> string_view {
     if(const auto subname{this->get_x509_subject_name(cert)}) {
         return this->find_name_entry(extract(subname), ent_name);
     }
@@ -239,9 +240,9 @@ auto basic_ssl_api<ApiTraits>::find_certificate_subject_name_entry(
 //------------------------------------------------------------------------------
 template <typename ApiTraits>
 auto basic_ssl_api<ApiTraits>::find_certificate_subject_name_entry(
-  x509 cert,
-  string_view ent_name,
-  string_view ent_oid) const noexcept -> string_view {
+  const x509 cert,
+  const string_view ent_name,
+  const string_view ent_oid) const noexcept -> string_view {
     if(const auto subname{this->get_x509_subject_name(cert)}) {
         return this->find_name_oid_entry(extract(subname), ent_name, ent_oid);
     }
@@ -250,19 +251,19 @@ auto basic_ssl_api<ApiTraits>::find_certificate_subject_name_entry(
 //------------------------------------------------------------------------------
 template <typename ApiTraits>
 auto basic_ssl_api<ApiTraits>::certificate_subject_name_has_entry_value(
-  x509 cert,
-  string_view ent_name,
-  string_view value) const noexcept -> bool {
+  const x509 cert,
+  const string_view ent_name,
+  const string_view value) const noexcept -> bool {
     return are_equal(
       this->find_certificate_subject_name_entry(cert, ent_name), value);
 }
 //------------------------------------------------------------------------------
 template <typename ApiTraits>
 auto basic_ssl_api<ApiTraits>::certificate_subject_name_has_entry_value(
-  x509 cert,
-  string_view ent_name,
-  string_view ent_oid,
-  string_view value) const noexcept -> bool {
+  const x509 cert,
+  const string_view ent_name,
+  const string_view ent_oid,
+  const string_view value) const noexcept -> bool {
     return are_equal(
       this->find_certificate_subject_name_entry(cert, ent_name, ent_oid),
       value);
