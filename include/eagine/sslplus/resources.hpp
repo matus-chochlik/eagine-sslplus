@@ -31,4 +31,3 @@ auto ca_certificate_pem(main_ctx&) -> memory::const_block;
 #endif
 
 #endif // EAGINE_SSLPLUS_RESOURCES_HPP
-

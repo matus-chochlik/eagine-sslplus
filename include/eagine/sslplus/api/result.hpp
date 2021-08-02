@@ -67,8 +67,8 @@ template <typename Result>
 using ssl_opt_result = api_opt_result<Result, ssl_result_info>;
 //------------------------------------------------------------------------------
 template <typename Result, api_result_validity Validity>
-inline auto
-collapse_bool(api_result<Result, ssl_result_info, Validity>&& r) noexcept {
+inline auto collapse_bool(
+  api_result<Result, ssl_result_info, Validity>&& r) noexcept {
     return r.collapsed(
       [](int value) { return value == 1; },
       [](auto& info) { info.set_unknown_error(); });
