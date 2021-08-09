@@ -15,7 +15,7 @@ auto ca_certificate_pem(
   const memory::const_block embedded_blk,
   memory::buffer& buf,
   application_config& cfg,
-  logger& log) -> memory::const_block {
+  const logger& log) -> memory::const_block {
     return fetch_resource(
       string_view{"CA certificate"},
       string_view{"ca_cert_path"},
