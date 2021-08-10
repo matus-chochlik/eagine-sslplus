@@ -14,12 +14,12 @@
 namespace eagine {
 //------------------------------------------------------------------------------
 auto ca_certificate_pem(
-  memory::const_block embedded_blk,
+  const memory::const_block embedded_blk,
   memory::buffer&,
   application_config&,
-  logger&) -> memory::const_block;
+  const logger&) -> memory::const_block;
 //------------------------------------------------------------------------------
-auto ca_certificate_pem(memory::const_block embedded_blk, main_ctx& ctx)
+auto ca_certificate_pem(const memory::const_block embedded_blk, main_ctx& ctx)
   -> memory::const_block;
 //------------------------------------------------------------------------------
 auto ca_certificate_pem(main_ctx&) -> memory::const_block;
@@ -31,4 +31,3 @@ auto ca_certificate_pem(main_ctx&) -> memory::const_block;
 #endif
 
 #endif // EAGINE_SSLPLUS_RESOURCES_HPP
-

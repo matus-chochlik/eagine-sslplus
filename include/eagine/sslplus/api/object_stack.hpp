@@ -32,7 +32,7 @@ public:
         return *this;
     }
 
-    constexpr auto get(int) -> basic_handle<Tag, nothing_t*, nullptr> {
+    constexpr auto get(const int) -> basic_handle<Tag, nothing_t*, nullptr> {
         return {};
     }
 
@@ -84,11 +84,11 @@ struct stack_api<x509_tag> {
         return sk_X509_pop_free(h, &X509_free);
     }
 
-    static auto set(stack_type* h, int i, element_type* e) noexcept {
+    static auto set(stack_type* h, const int i, element_type* e) noexcept {
         return sk_X509_set(h, i, e);
     }
 
-    static auto value(stack_type* h, int i) noexcept -> auto* {
+    static auto value(stack_type* h, const int i) noexcept -> auto* {
         return sk_X509_value(h, i);
     }
 };
@@ -110,7 +110,7 @@ protected:
     object_stack_base(typename stack_api<Tag>::stack_type* top) noexcept
       : _top{top} {}
 
-    auto _idx_ok(int i) const noexcept -> bool {
+    auto _idx_ok(const int i) const noexcept -> bool {
         return (i >= 0) && (i < size());
     }
 
@@ -138,7 +138,7 @@ public:
         return _api().num(_top);
     }
 
-    auto get(int pos) {
+    auto get(const int pos) {
         EAGINE_ASSERT(_idx_ok(pos));
         return wrapper{_api().value(_top, pos)};
     }
