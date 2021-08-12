@@ -18,37 +18,37 @@
 namespace eagine {
 //------------------------------------------------------------------------------
 auto main(main_ctx& ctx) -> int {
-    auto& log = ctx.log();
+    const auto& log = ctx.log();
     file_contents data(ctx.exe_path());
     std::array<byte, 1024> temp{};
 
     string_view engine_id("pkcs11");
-    if(auto arg{ctx.args().find("--engine").next()}) {
+    if(const auto arg{ctx.args().find("--engine").next()}) {
         engine_id = arg;
     }
 
     string_view key_id("pkcs11:token=user;object=user;");
-    if(auto arg{ctx.args().find("--key").next()}) {
+    if(const auto arg{ctx.args().find("--key").next()}) {
         key_id = arg;
     }
 
-    sslplus::ssl_api ssl{};
+    const sslplus::ssl_api ssl;
 
     ssl.load_builtin_engines();
 
     if(ok engine{ssl.open_engine(engine_id)}) {
-        auto del_eng{ssl.delete_engine.raii(engine)};
+        const auto del_eng{ssl.delete_engine.raii(engine)};
 
         if(auto init_result{ssl.init_engine(engine)}) {
-            auto fin_eng{ssl.finish_engine.raii(engine)};
+            const auto fin_eng{ssl.finish_engine.raii(engine)};
 
             if(ok pkey{ssl.load_engine_private_key(
                  engine, key_id, ok{ssl.openssl_ui()})}) {
-                auto del_pkey{ssl.delete_pkey.raii(pkey)};
+                const auto del_pkey{ssl.delete_pkey.raii(pkey)};
 
                 if(ok md{ssl.message_digest_sha256()}) {
 
-                    if(auto sig{
+                    if(const auto sig{
                          ssl.sign_data_digest(data, cover(temp), md, pkey)}) {
 
                         ctx.log()

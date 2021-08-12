@@ -17,11 +17,11 @@ namespace eagine {
 //------------------------------------------------------------------------------
 auto main(main_ctx& ctx) -> int {
 
-    sslplus::ssl_api ssl{};
+    const sslplus::ssl_api ssl;
 
     ssl.load_builtin_engines();
 
-    auto func = [&ctx, &ssl](sslplus::engine eng) {
+    const auto func = [&ctx, &ssl](sslplus::engine eng) {
         const string_view na("N/A");
         ctx.log()
           .info("found engine")
