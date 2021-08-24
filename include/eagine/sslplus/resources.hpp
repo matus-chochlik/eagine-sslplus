@@ -26,7 +26,7 @@ auto ca_certificate_pem(main_ctx&) -> memory::const_block;
 //------------------------------------------------------------------------------
 } // namespace eagine
 
-#if !EAGINE_SSLPLUS_LIBRARY || defined(EAGINE_IMPLEMENTING_LIBRARY)
+#if !EAGINE_SSLPLUS_LIBRARY || defined(EAGINE_IMPLEMENTING_SSLPLUS_LIBRARY)
 #include <eagine/sslplus/resources.inl>
 #endif
 

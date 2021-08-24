@@ -20,7 +20,7 @@ auto main(main_ctx& ctx) -> int {
     file_contents data(ctx.exe_path());
     std::array<byte, 32> temp{};
 
-    sslplus::ssl_api ssl{};
+    const sslplus::ssl_api ssl;
 
     memory::const_block hash = ssl.sha256_digest(data, cover(temp));
 

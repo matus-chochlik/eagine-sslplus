@@ -1,0 +1,2 @@
+eagine_sslplus_name="$<TARGET_FILE_NAME:eagine-sslplus>"
+eagine_sslplus_path="$<TARGET_FILE:eagine-sslplus>"

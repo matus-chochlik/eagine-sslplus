@@ -19,20 +19,20 @@ namespace eagine {
 auto main(main_ctx& ctx) -> int {
 
     string_view ca_cert_path{"example-ca.crt"};
-    if(auto arg{ctx.args().find("--ca-cert").next()}) {
+    if(const auto arg{ctx.args().find("--ca-cert").next()}) {
         ca_cert_path = arg;
     }
 
     string_view cert_path{"example.crt"};
-    if(auto arg{ctx.args().find("--cert").next()}) {
+    if(const auto arg{ctx.args().find("--cert").next()}) {
         cert_path = arg;
     }
     file_contents cert_pem{cert_path};
 
-    sslplus::ssl_api ssl{};
+    const sslplus::ssl_api ssl;
 
     if(ok cert{ssl.parse_x509(cert_pem, {})}) {
-        auto del_cert{ssl.delete_x509.raii(cert)};
+        const auto del_cert{ssl.delete_x509.raii(cert)};
 
         if(ssl.ca_verify_certificate(ca_cert_path, cert)) {
             if(ssl.certificate_subject_name_has_entry_value(

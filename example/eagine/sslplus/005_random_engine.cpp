@@ -17,22 +17,22 @@ namespace eagine {
 //------------------------------------------------------------------------------
 auto main(main_ctx& ctx) -> int {
 
-    auto& log = ctx.log();
-    sslplus::ssl_api ssl{};
+    const auto& log = ctx.log();
+    const sslplus::ssl_api ssl;
 
     string_view engine_id("rdrand");
 
     ssl.load_builtin_engines();
 
-    if(ok engine = ssl.open_engine(engine_id)) {
-        auto del_eng = ssl.delete_engine.raii(engine);
+    if(ok engine{ssl.open_engine(engine_id)}) {
+        const auto del_eng = ssl.delete_engine.raii(engine);
 
-        if(auto init_result = ssl.init_engine(engine)) {
-            auto fin_eng = ssl.finish_engine.raii(engine);
+        if(const auto init_result{ssl.init_engine(engine)}) {
+            const auto fin_eng = ssl.finish_engine.raii(engine);
 
-            if(auto set_result = ssl.set_default_rand(engine)) {
+            if(const auto set_result{ssl.set_default_rand(engine)}) {
                 std::array<byte, 256> temp{};
-                if(auto rand_result = ssl.random_bytes(cover(temp))) {
+                if(const auto rand_result{ssl.random_bytes(cover(temp))}) {
                     log.info("got ${size} random bytes from ${id}")
                       .arg(EAGINE_ID(size), temp.size())
                       .arg(EAGINE_ID(id), engine_id)
