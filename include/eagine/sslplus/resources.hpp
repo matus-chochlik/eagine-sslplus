@@ -17,12 +17,13 @@ auto ca_certificate_pem(
   const memory::const_block embedded_blk,
   memory::buffer&,
   application_config&,
-  const logger&) -> memory::const_block;
+  const logger&) noexcept -> memory::const_block;
 //------------------------------------------------------------------------------
-auto ca_certificate_pem(const memory::const_block embedded_blk, main_ctx& ctx)
-  -> memory::const_block;
+auto ca_certificate_pem(
+  const memory::const_block embedded_blk,
+  main_ctx& ctx) noexcept -> memory::const_block;
 //------------------------------------------------------------------------------
-auto ca_certificate_pem(main_ctx&) -> memory::const_block;
+auto ca_certificate_pem(main_ctx&) noexcept -> memory::const_block;
 //------------------------------------------------------------------------------
 } // namespace eagine
 
