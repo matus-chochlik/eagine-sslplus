@@ -15,7 +15,7 @@ auto ca_certificate_pem(
   const memory::const_block embedded_blk,
   memory::buffer& buf,
   application_config& cfg,
-  const logger& log) -> memory::const_block {
+  const logger& log) noexcept -> memory::const_block {
     return fetch_resource(
       string_view{"CA certificate"},
       string_view{"ca_cert_path"},
@@ -26,8 +26,9 @@ auto ca_certificate_pem(
 }
 //------------------------------------------------------------------------------
 EAGINE_LIB_FUNC
-auto ca_certificate_pem(const memory::const_block embedded_blk, main_ctx& ctx)
-  -> memory::const_block {
+auto ca_certificate_pem(
+  const memory::const_block embedded_blk,
+  main_ctx& ctx) noexcept -> memory::const_block {
     return ca_certificate_pem(
       embedded_blk, ctx.scratch_space(), ctx.config(), ctx.log());
 }
