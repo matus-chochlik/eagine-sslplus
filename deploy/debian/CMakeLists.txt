@@ -4,12 +4,12 @@
 #  http://www.boost.org/LICENSE_1_0.txt
 #
 execute_process(
-	COMMAND dpkg-architecture --query DEB_BUILD_ARCH
+	COMMAND ${DPKG_ARCHITECTURE_COMMAND} --query DEB_BUILD_ARCH
 	OUTPUT_VARIABLE PKG_ARCH
 	OUTPUT_STRIP_TRAILING_WHITESPACE
 )
 execute_process(
-	COMMAND dpkg-architecture --query DEB_BUILD_MULTIARCH
+	COMMAND ${DPKG_ARCHITECTURE_COMMAND} --query DEB_BUILD_MULTIARCH
 	OUTPUT_VARIABLE PKG_MULTIARCH
 	OUTPUT_STRIP_TRAILING_WHITESPACE
 )
@@ -21,7 +21,7 @@ set(BIN_DIR "${CMAKE_CURRENT_BINARY_DIR}/../..")
 set(PKG_PREFIX "${PKG_DIR}/usr")
 
 get_target_property(PKG_HEADERS eagine-sslplus-headers PUBLIC_HEADER)
-get_target_property(PKG_GEN_HEADERS eagine-sslplus-generated-headers PUBLIC_HEADER)
+get_target_property(PKG_GEN_HEADERS eagine-sslplus-generated-headers PRIVATE_HEADER)
 
 file(GENERATE OUTPUT build-pkg-cfg INPUT build-pkg-cfg.in)
 configure_file(pkg-headers.txt.in pkg-headers.txt @ONLY)
