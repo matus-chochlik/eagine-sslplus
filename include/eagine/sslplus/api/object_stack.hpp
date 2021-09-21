@@ -24,15 +24,17 @@ public:
         return 0;
     }
 
-    constexpr auto push(basic_handle<Tag, nothing_t*, nullptr>) -> auto& {
+    constexpr auto push(basic_handle<Tag, nothing_t*, nullptr>) noexcept
+      -> auto& {
         return *this;
     }
 
-    constexpr auto pop() -> auto& {
+    constexpr auto pop() noexcept -> auto& {
         return *this;
     }
 
-    constexpr auto get(const int) -> basic_handle<Tag, nothing_t*, nullptr> {
+    constexpr auto get(const int) noexcept
+      -> basic_handle<Tag, nothing_t*, nullptr> {
         return {};
     }
 
@@ -138,7 +140,7 @@ public:
         return _api().num(_top);
     }
 
-    auto get(const int pos) {
+    auto get(const int pos) noexcept {
         EAGINE_ASSERT(_idx_ok(pos));
         return wrapper{_api().value(_top, pos)};
     }
@@ -173,12 +175,12 @@ public:
         _api.free()(this->_top);
     }
 
-    auto push(wrapper obj) -> auto& {
+    auto push(wrapper obj) noexcept -> auto& {
         _api().push(this->_top, _api().unpack(obj));
         return *this;
     }
 
-    auto pop() {
+    auto pop() noexcept {
         return wrapper{_api().pop(this->_top)};
     }
 };
@@ -208,12 +210,12 @@ public:
         _api.pop_free()(this->_top);
     }
 
-    auto push(wrapper&& obj) -> auto& {
+    auto push(wrapper&& obj) noexcept -> auto& {
         _api().push_up_ref(this->_top, _api().unpack(obj.release()));
         return *this;
     }
 
-    auto pop() {
+    auto pop() noexcept {
         return wrapper{_api().pop(this->_top)};
     }
 };
