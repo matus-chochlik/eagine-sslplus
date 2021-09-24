@@ -101,6 +101,10 @@ target_link_libraries(
 )
 EOD
 # ------------------------------------------------------------------------------
+cat << EOD > "${cmk_prefix}/EAGineSSLplusDeps.cmake"
+set(EAGineSSLplusDeps Core)
+EOD
+# ------------------------------------------------------------------------------
 mkdir -p "${pkg_dir}/DEBIAN"
 cat << EOD > "${pkg_dir}/DEBIAN/control"
 Package: eagine-sslplus-dev
