@@ -102,7 +102,7 @@ Package: eagine-sslplus-dev
 Version: @PKG_VERSION@
 Architecture: @PKG_ARCH@
 Installed-Size: $(du -k -s ${pkg_dir} | cut -f1)
-Depends: libssl-dev,eagine-core-dev
+Depends: libssl-dev,eagine-core-dev (>= @PKG_VERSION@)
 Maintainer: Matus Chochlik <chochlik@gmail.com>
 Description: C++ wrapper for the OpenSSL C API.
 EOD
