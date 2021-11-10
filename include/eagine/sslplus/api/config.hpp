@@ -8,7 +8,7 @@
 #ifndef EAGINE_SSLPLUS_API_CONFIG_HPP
 #define EAGINE_SSLPLUS_API_CONFIG_HPP
 
-#include <eagine/config/basic.hpp>
+#include "../config/basic.hpp"
 #include <eagine/maybe_unused.hpp>
 
 #ifndef EAGINE_HAS_SSL
