@@ -58,17 +58,17 @@ private:
 };
 //------------------------------------------------------------------------------
 template <typename Result>
-using ssl_no_result = api_no_result<Result, ssl_no_result_info>;
+using ssl_no_result = c_api::no_result<Result, ssl_no_result_info>;
 //------------------------------------------------------------------------------
 template <typename Result>
-using ssl_result = api_result<Result, ssl_result_info>;
+using ssl_result = c_api::result<Result, ssl_result_info>;
 //------------------------------------------------------------------------------
 template <typename Result>
-using ssl_opt_result = api_opt_result<Result, ssl_result_info>;
+using ssl_opt_result = c_api::opt_result<Result, ssl_result_info>;
 //------------------------------------------------------------------------------
-template <typename Result, api_result_validity Validity>
+template <typename Result, c_api::result_validity Validity>
 inline auto collapse_bool(
-  api_result<Result, ssl_result_info, Validity>&& r) noexcept {
+  c_api::result<Result, ssl_result_info, Validity>&& r) noexcept {
     return r.collapsed(
       [](int value) { return value == 1; },
       [](auto& info) { info.set_unknown_error(); });

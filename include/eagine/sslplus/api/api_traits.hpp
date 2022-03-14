@@ -12,7 +12,7 @@
 
 namespace eagine::sslplus {
 //------------------------------------------------------------------------------
-class ssl_api_traits : public default_c_api_traits {
+class ssl_api_traits : public c_api::default_traits {
 public:
     template <typename R>
     using no_result = ssl_no_result<R>;
@@ -22,7 +22,7 @@ public:
     using opt_result = ssl_opt_result<R>;
 
     template <typename Result>
-    using combined_result = api_combined_result<Result, ssl_result_info>;
+    using combined_result = c_api::combined_result<Result, ssl_result_info>;
 
 private:
 };
