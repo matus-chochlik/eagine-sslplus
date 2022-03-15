@@ -1048,7 +1048,8 @@ public:
         constexpr auto operator()(message_digest mdc, memory::const_block blk)
           const noexcept {
             return this->_cnvchkcall(mdc, blk.data(), std_size(blk.size()))
-              .transformed([](int result) { return result == 1; });
+              .transformed(
+                [](int result, bool valid) { return valid && result == 1; });
         }
     } message_digest_verify_final;
 
