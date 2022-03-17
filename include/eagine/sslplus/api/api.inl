@@ -11,31 +11,14 @@ template <typename ApiTraits>
 inline basic_ssl_operations<ApiTraits>::basic_ssl_operations(ApiTraits& traits)
   : ssl_api{traits}
   , copy_engine{"copy_engine", traits, *this}
-  , delete_engine{"delete_engine", traits, *this}
   , init_engine{"init_engine", traits, *this}
   , finish_engine{"finish_engine", traits, *this}
   , load_engine_private_key{"load_engine_private_key", traits, *this}
-  , load_engine_public_key{"load_engine_public_key", traits, *this}
-  , get_string_length{"get_string_length", traits, *this}
-  , get_string_data{"get_string_data", traits, *this}
   , get_int64{"get_int64", traits, *this}
   , get_uint64{"get_uint64", traits, *this}
   , object_to_text{"object_to_text", traits, *this}
-  , new_basic_io{"new_basic_io", traits, *this}
-  , new_block_basic_io{"new_block_basic_io", traits, *this}
-  , delete_basic_io{"delete_basic_io", traits, *this}
-  , delete_all_basic_ios{"delete_all_basic_ios", traits, *this}
   , random_bytes{"random_bytes", traits, *this}
-  , copy_pkey{"copy_pkey", traits, *this}
-  , delete_pkey{"delete_pkey", traits, *this}
-  , cipher_aes_128_ctr{"cipher_aes_128_ctr", traits, *this}
-  , cipher_aes_128_ccm{"cipher_aes_128_ccm", traits, *this}
-  , cipher_aes_128_gcm{"cipher_aes_128_gcm", traits, *this}
-  , cipher_aes_128_xts{"cipher_aes_128_xts", traits, *this}
-  , cipher_aes_192_ecb{"cipher_aes_192_ecb", traits, *this}
-  , cipher_aes_192_cbc{"cipher_aes_192_cbc", traits, *this}
   , new_cipher{"new_cipher", traits, *this}
-  , delete_cipher{"delete_cipher", traits, *this}
   , cipher_reset{"cipher_reset", traits, *this}
   , cipher_init{"cipher_init", traits, *this}
   , cipher_init_ex{"cipher_init_ex", traits, *this}
@@ -52,16 +35,7 @@ inline basic_ssl_operations<ApiTraits>::basic_ssl_operations(ApiTraits& traits)
   , decrypt_update{"decrypt_update", traits, *this}
   , decrypt_final{"decrypt_final", traits, *this}
   , decrypt_final_ex{"decrypt_final", traits, *this}
-  , message_digest_noop{"message_digest_noop", traits, *this}
-  , message_digest_md5{"message_digest_md5", traits, *this}
-  , message_digest_sha1{"message_digest_sha1", traits, *this}
-  , message_digest_sha224{"message_digest_sha224", traits, *this}
-  , message_digest_sha256{"message_digest_sha256", traits, *this}
-  , message_digest_sha384{"message_digest_sha384", traits, *this}
-  , message_digest_sha512{"message_digest_sha512", traits, *this}
-  , message_digest_size{"message_digest_size", traits, *this}
   , new_message_digest{"new_message_digest", traits, *this}
-  , delete_message_digest{"delete_message_digest", traits, *this}
   , message_digest_reset{"message_digest_reset", traits, *this}
   , message_digest_init{"message_digest_init", traits, *this}
   , message_digest_init_ex{"message_digest_init_ex", traits, *this}
@@ -79,23 +53,18 @@ inline basic_ssl_operations<ApiTraits>::basic_ssl_operations(ApiTraits& traits)
   , set_x509_store_trusted_stack{"set_x509_store_trusted_stack", traits, *this}
   , set_x509_store_verified_chain{"set_x509_store_verified_chain", traits, *this}
   , set_x509_store_untrusted{"set_x509_store_untrusted", traits, *this}
-  , cleanup_x509_store_ctx{"cleanup_x509_store_ctx", traits, *this}
-  , delete_x509_store_ctx{"delete_x509_store_ctx", traits, *this}
   , x509_verify_certificate{"x509_verify_certificate", traits, *this}
   , new_x509_store{"new_x509_store", traits, *this}
   , copy_x509_store{"copy_x509_store", traits, *this}
-  , delete_x509_store{"delete_x509_store", traits, *this}
   , add_cert_into_x509_store{"add_cert_into_x509_store", traits, *this}
   , add_crl_into_x509_store{"add_crl_into_x509_store", traits, *this}
   , load_into_x509_store{"load_into_x509_store", traits, *this}
   , new_x509_crl{"new_x509_crl", traits, *this}
-  , delete_x509_crl{"delete_x509_crl", traits, *this}
   , new_x509{"new_x509", traits, *this}
   , get_x509_pubkey{"get_x509_pubkey", traits, *this}
   , get_x509_serial_number{"get_x509_serial_number", traits, *this}
   , get_x509_issuer_name{"get_x509_issuer_name", traits, *this}
   , get_x509_subject_name{"get_x509_subject_name", traits, *this}
-  , delete_x509{"delete_x509", traits, *this}
   , get_name_entry_count{"get_name_entry_count", traits, *this}
   , get_name_entry{"get_name_entry", traits, *this}
   , get_name_entry_object{"get_name_entry_object", traits, *this}
