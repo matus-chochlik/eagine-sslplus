@@ -9,6 +9,7 @@
 #define EAGINE_SSLPLUS_API_API_TRAITS_HPP
 
 #include "result.hpp"
+#include <eagine/c_api/api_traits.hpp>
 
 namespace eagine::sslplus {
 //------------------------------------------------------------------------------
@@ -23,6 +24,12 @@ public:
 
     template <typename Result>
     using combined_result = c_api::combined_result<Result, ssl_result_info>;
+
+    template <typename Api, typename Result>
+    static constexpr auto check_result(Api& api, Result res) noexcept {
+        res.error_code(api.err_get_error());
+        return res;
+    }
 
 private:
 };

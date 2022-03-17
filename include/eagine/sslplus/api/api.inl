@@ -9,28 +9,11 @@ namespace eagine::sslplus {
 //------------------------------------------------------------------------------
 template <typename ApiTraits>
 inline basic_ssl_operations<ApiTraits>::basic_ssl_operations(ApiTraits& traits)
-  : c_api{traits}
-  , null_ui{"null_ui", traits, *this}
-  , openssl_ui{"openssl_ui", traits, *this}
-  , load_builtin_engines{"load_builtin_engines", traits, *this}
-  , get_first_engine{"get_first_engine", traits, *this}
-  , get_last_engine{"get_last_engine", traits, *this}
-  , get_next_engine{"get_next_engine", traits, *this}
-  , get_prev_engine{"get_prev_engine", traits, *this}
-  , new_engine{"new_engine", traits, *this}
-  , open_engine{"open_engine", traits, *this}
+  : ssl_api{traits}
   , copy_engine{"copy_engine", traits, *this}
   , delete_engine{"delete_engine", traits, *this}
   , init_engine{"init_engine", traits, *this}
   , finish_engine{"finish_engine", traits, *this}
-  , get_engine_id{"get_engine_id", traits, *this}
-  , get_engine_name{"get_engine_name", traits, *this}
-  , set_default_rsa{"set_default_rsa", traits, *this}
-  , set_default_dsa{"set_default_dsa", traits, *this}
-  , set_default_dh{"set_default_dh", traits, *this}
-  , set_default_rand{"set_default_rand", traits, *this}
-  , set_default_ciphers{"set_default_ciphers", traits, *this}
-  , set_default_digests{"set_default_digests", traits, *this}
   , load_engine_private_key{"load_engine_private_key", traits, *this}
   , load_engine_public_key{"load_engine_public_key", traits, *this}
   , get_string_length{"get_string_length", traits, *this}

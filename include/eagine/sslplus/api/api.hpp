@@ -11,6 +11,8 @@
 #include "c_api.hpp"
 #include "object_handle.hpp"
 #include "object_stack.hpp"
+#include <eagine/c_api/adapted_function.hpp>
+#include <eagine/c_api_wrap.hpp>
 #include <eagine/callable_ref.hpp>
 #include <eagine/memory/split_block.hpp>
 #include <eagine/scope_exit.hpp>
@@ -18,7 +20,7 @@
 
 namespace eagine::sslplus {
 //------------------------------------------------------------------------------
-#define SSLPAFP(FUNC) decltype(c_api::FUNC), &c_api::FUNC
+#define SSLPAFP(FUNC) decltype(ssl_api::FUNC), &ssl_api::FUNC
 //------------------------------------------------------------------------------
 class password_callback {
 public:
@@ -60,15 +62,16 @@ class basic_ssl_operations : public basic_ssl_c_api<ApiTraits> {
 
 public:
     using api_traits = ApiTraits;
-    using c_api = basic_ssl_c_api<ApiTraits>;
+    using ssl_api = basic_ssl_c_api<ApiTraits>;
 
-    template <typename W, W c_api::*F, typename Signature = typename W::signature>
+    template <typename W, W ssl_api::*F, typename Signature = typename W::signature>
     class func;
 
-    template <typename W, W c_api::*F, typename RVC, typename... Params>
+    template <typename W, W ssl_api::*F, typename RVC, typename... Params>
     class func<W, F, RVC(Params...)>
-      : public wrapped_c_api_function<c_api, api_traits, nothing_t, W, F> {
-        using base = wrapped_c_api_function<c_api, api_traits, nothing_t, W, F>;
+      : public wrapped_c_api_function<ssl_api, api_traits, nothing_t, W, F> {
+        using base =
+          wrapped_c_api_function<ssl_api, api_traits, nothing_t, W, F>;
 
     private:
         template <typename Res>
@@ -115,88 +118,31 @@ public:
         }
     };
 
-    // null_ui
-    struct : func<SSLPAFP(ui_null)> {
-        using func<SSLPAFP(ui_null)>::func;
+    c_api::adapted_function<&ssl_api::ui_null, ui_method()> null_ui{*this};
+    c_api::adapted_function<&ssl_api::ui_openssl, ui_method()> openssl_ui{
+      *this};
+    c_api::adapted_function<&ssl_api::engine_load_builtin_engines>
+      load_builtin_engines{*this};
 
-        constexpr auto operator()() const noexcept {
-            return this->_chkcall().cast_to(type_identity<ui_method>{});
-        }
-    } null_ui;
+    c_api::adapted_function<&ssl_api::engine_get_first, owned_engine()>
+      get_first_engine{*this};
 
-    // openssl_ui
-    struct : func<SSLPAFP(ui_openssl)> {
-        using func<SSLPAFP(ui_openssl)>::func;
+    c_api::adapted_function<&ssl_api::engine_get_last, owned_engine()>
+      get_last_engine{*this};
 
-        constexpr auto operator()() const noexcept {
-            return this->_chkcall().cast_to(type_identity<ui_method>{});
-        }
-    } openssl_ui;
+    c_api::
+      adapted_function<&ssl_api::engine_get_next, owned_engine(owned_engine&)>
+        get_next_engine{*this};
 
-    // load_builtin_engines
-    struct : func<SSLPAFP(engine_load_builtin_engines)> {
-        using func<SSLPAFP(engine_load_builtin_engines)>::func;
+    c_api::
+      adapted_function<&ssl_api::engine_get_prev, owned_engine(owned_engine&)>
+        get_prev_engine{*this};
 
-        constexpr auto operator()() const noexcept {
-            return this->_chkcall();
-        }
-    } load_builtin_engines;
+    c_api::adapted_function<&ssl_api::engine_new, owned_engine()> new_engine{
+      *this};
 
-    // get_first_engine
-    struct : func<SSLPAFP(engine_get_first)> {
-        using func<SSLPAFP(engine_get_first)>::func;
-
-        constexpr auto operator()() const noexcept {
-            return this->_chkcall().cast_to(type_identity<owned_engine>{});
-        }
-    } get_first_engine;
-
-    // get_last_engine
-    struct : func<SSLPAFP(engine_get_last)> {
-        using func<SSLPAFP(engine_get_last)>::func;
-
-        constexpr auto operator()() const noexcept {
-            return this->_chkcall().cast_to(type_identity<owned_engine>{});
-        }
-    } get_last_engine;
-
-    // get_next_engine
-    struct : func<SSLPAFP(engine_get_next)> {
-        using func<SSLPAFP(engine_get_next)>::func;
-
-        constexpr auto operator()(owned_engine& eng) const noexcept {
-            return this->_cnvchkcall(eng.release())
-              .cast_to(type_identity<owned_engine>{});
-        }
-    } get_next_engine;
-
-    // get_prev_engine
-    struct : func<SSLPAFP(engine_get_prev)> {
-        using func<SSLPAFP(engine_get_prev)>::func;
-
-        constexpr auto operator()(owned_engine& eng) const noexcept {
-            return this->_cnvchkcall(eng.release())
-              .cast_to(type_identity<owned_engine>{});
-        }
-    } get_prev_engine;
-
-    // new_engine
-    struct : func<SSLPAFP(engine_new)> {
-        using func<SSLPAFP(engine_new)>::func;
-
-        constexpr auto operator()() const noexcept {
-            return this->_chkcall().cast_to(type_identity<owned_engine>{});
-        }
-    } new_engine;
-
-    // open_engine
-    struct : func<SSLPAFP(engine_by_id)> {
-        using func<SSLPAFP(engine_by_id)>::func;
-
-        constexpr auto operator()(string_view id) const noexcept {
-            return this->_cnvchkcall(id).cast_to(type_identity<owned_engine>{});
-        }
-    } open_engine;
+    c_api::adapted_function<&ssl_api::engine_by_id, owned_engine(string_view)>
+      open_engine{*this};
 
     // copy_engine
     struct : func<SSLPAFP(engine_up_ref)> {
@@ -243,77 +189,29 @@ public:
         }
     } finish_engine;
 
-    // get_engine_id
-    struct : func<SSLPAFP(engine_get_id)> {
-        using func<SSLPAFP(engine_get_id)>::func;
+    c_api::adapted_function<&ssl_api::engine_get_id, string_view(engine)>
+      get_engine_id{*this};
 
-        constexpr auto operator()(engine eng) const noexcept {
-            return this->_cnvchkcall(eng).cast_to(type_identity<string_view>{});
-        }
-    } get_engine_id;
+    c_api::adapted_function<&ssl_api::engine_get_name, string_view(engine)>
+      get_engine_name{*this};
 
-    // get_engine_name
-    struct : func<SSLPAFP(engine_get_name)> {
-        using func<SSLPAFP(engine_get_name)>::func;
+    c_api::adapted_function<&ssl_api::engine_set_default_rsa, int(engine)>
+      set_default_rsa{*this};
 
-        constexpr auto operator()(engine eng) const noexcept {
-            return this->_cnvchkcall(eng).cast_to(type_identity<string_view>{});
-        }
-    } get_engine_name;
+    c_api::adapted_function<&ssl_api::engine_set_default_dsa, int(engine)>
+      set_default_dsa{*this};
 
-    // set_default_rsa
-    struct : func<SSLPAFP(engine_set_default_rsa)> {
-        using func<SSLPAFP(engine_set_default_rsa)>::func;
+    c_api::adapted_function<&ssl_api::engine_set_default_dh, int(engine)>
+      set_default_dh{*this};
 
-        constexpr auto operator()(engine eng) const noexcept {
-            return this->_cnvchkcall(eng);
-        }
-    } set_default_rsa;
+    c_api::adapted_function<&ssl_api::engine_set_default_rand, int(engine)>
+      set_default_rand{*this};
 
-    // set_default_dsa
-    struct : func<SSLPAFP(engine_set_default_dsa)> {
-        using func<SSLPAFP(engine_set_default_dsa)>::func;
+    c_api::adapted_function<&ssl_api::engine_set_default_ciphers, int(engine)>
+      set_default_ciphers{*this};
 
-        constexpr auto operator()(engine eng) const noexcept {
-            return this->_cnvchkcall(eng);
-        }
-    } set_default_dsa;
-
-    // set_default_dh
-    struct : func<SSLPAFP(engine_set_default_dh)> {
-        using func<SSLPAFP(engine_set_default_dh)>::func;
-
-        constexpr auto operator()(engine eng) const noexcept {
-            return this->_cnvchkcall(eng);
-        }
-    } set_default_dh;
-
-    // set_default_rand
-    struct : func<SSLPAFP(engine_set_default_rand)> {
-        using func<SSLPAFP(engine_set_default_rand)>::func;
-
-        constexpr auto operator()(engine eng) const noexcept {
-            return this->_cnvchkcall(eng);
-        }
-    } set_default_rand;
-
-    // set_default_ciphers
-    struct : func<SSLPAFP(engine_set_default_ciphers)> {
-        using func<SSLPAFP(engine_set_default_ciphers)>::func;
-
-        constexpr auto operator()(engine eng) const noexcept {
-            return this->_cnvchkcall(eng);
-        }
-    } set_default_ciphers;
-
-    // set_default_digests
-    struct : func<SSLPAFP(engine_set_default_digests)> {
-        using func<SSLPAFP(engine_set_default_digests)>::func;
-
-        constexpr auto operator()(engine eng) const noexcept {
-            return this->_cnvchkcall(eng);
-        }
-    } set_default_digests;
+    c_api::adapted_function<&ssl_api::engine_set_default_digests, int(engine)>
+      set_default_digests{*this};
 
     // load_engine_private_key
     struct : func<SSLPAFP(engine_load_private_key)> {
