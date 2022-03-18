@@ -64,6 +64,14 @@ public:
     using api_traits = ApiTraits;
     using ssl_api = basic_ssl_c_api<ApiTraits>;
 
+    struct collapse_bool_map {
+        template <typename... P>
+        constexpr auto operator()(size_constant<0> i, P&&... p) const noexcept {
+            return collapse_bool(
+              c_api::trivial_map{}(i, std::forward<P>(p)...));
+        }
+    };
+
     template <typename W, W ssl_api::*F, typename Signature = typename W::signature>
     class func;
 
@@ -146,20 +154,18 @@ public:
       c_api::replaced_with_map<1>>
       copy_engine{*this};
 
-    c_api::adapted_function<&ssl_api::engine_free, int(owned_engine&)>
+    c_api::adapted_function<
+      &ssl_api::engine_free,
+      int(owned_engine&),
+      collapse_bool_map>
       delete_engine{*this};
 
-    // init_engine
-    struct : func<SSLPAFP(engine_init)> {
-        using func<SSLPAFP(engine_init)>::func;
+    c_api::adapted_function<&ssl_api::engine_init, int(engine), collapse_bool_map>
+      init_engine{*this};
 
-        constexpr auto operator()(engine eng) const noexcept {
-            return collapse_bool(this->_cnvchkcall(eng));
-        }
-    } init_engine;
-
-    c_api::adapted_function<&ssl_api::engine_finish, int(engine)> finish_engine{
-      *this};
+    c_api::
+      adapted_function<&ssl_api::engine_finish, int(engine), collapse_bool_map>
+        finish_engine{*this};
 
     c_api::adapted_function<&ssl_api::engine_get_id, string_view(engine)>
       get_engine_id{*this};
@@ -167,34 +173,46 @@ public:
     c_api::adapted_function<&ssl_api::engine_get_name, string_view(engine)>
       get_engine_name{*this};
 
-    c_api::adapted_function<&ssl_api::engine_set_default_rsa, int(engine)>
+    c_api::adapted_function<
+      &ssl_api::engine_set_default_rsa,
+      int(engine),
+      collapse_bool_map>
       set_default_rsa{*this};
 
-    c_api::adapted_function<&ssl_api::engine_set_default_dsa, int(engine)>
+    c_api::adapted_function<
+      &ssl_api::engine_set_default_dsa,
+      int(engine),
+      collapse_bool_map>
       set_default_dsa{*this};
 
-    c_api::adapted_function<&ssl_api::engine_set_default_dh, int(engine)>
+    c_api::adapted_function<
+      &ssl_api::engine_set_default_dh,
+      int(engine),
+      collapse_bool_map>
       set_default_dh{*this};
 
-    c_api::adapted_function<&ssl_api::engine_set_default_rand, int(engine)>
+    c_api::adapted_function<
+      &ssl_api::engine_set_default_rand,
+      int(engine),
+      collapse_bool_map>
       set_default_rand{*this};
 
-    c_api::adapted_function<&ssl_api::engine_set_default_ciphers, int(engine)>
+    c_api::adapted_function<
+      &ssl_api::engine_set_default_ciphers,
+      int(engine),
+      collapse_bool_map>
       set_default_ciphers{*this};
 
-    c_api::adapted_function<&ssl_api::engine_set_default_digests, int(engine)>
+    c_api::adapted_function<
+      &ssl_api::engine_set_default_digests,
+      int(engine),
+      collapse_bool_map>
       set_default_digests{*this};
 
-    // load_engine_private_key
-    struct : func<SSLPAFP(engine_load_private_key)> {
-        using func<SSLPAFP(engine_load_private_key)>::func;
-
-        constexpr auto operator()(engine eng, string_view key_id, ui_method uim)
-          const noexcept {
-            return this->_cnvchkcall(eng, key_id, uim, nullptr)
-              .cast_to(type_identity<owned_pkey>{});
-        }
-    } load_engine_private_key;
+    c_api::adapted_function<
+      &ssl_api::engine_load_private_key,
+      owned_pkey(engine, string_view, ui_method)>
+      load_engine_private_key{*this};
 
     c_api::adapted_function<
       &ssl_api::engine_load_public_key,
@@ -271,26 +289,31 @@ public:
       owned_basic_io(memory::const_block)>
       new_block_basic_io{*this};
 
-    c_api::adapted_function<&ssl_api::bio_free, int(owned_basic_io&)>
+    c_api::adapted_function<
+      &ssl_api::bio_free,
+      int(owned_basic_io&),
+      collapse_bool_map>
       delete_basic_io{*this};
 
-    c_api::adapted_function<&ssl_api::bio_free_all, int(owned_basic_io&)>
+    c_api::adapted_function<
+      &ssl_api::bio_free_all,
+      int(owned_basic_io&),
+      collapse_bool_map>
       delete_all_basic_ios{*this};
 
-    // random_bytes
-    struct : func<SSLPAFP(rand_bytes)> {
-        using func<SSLPAFP(rand_bytes)>::func;
-
-        constexpr auto operator()(memory::block blk) const noexcept {
-            return this->_cnvchkcall(blk.data(), limit_cast<int>(blk.size()));
-        }
-
-    } random_bytes;
+    c_api::adapted_function<
+      &ssl_api::rand_bytes,
+      int(memory::block),
+      collapse_bool_map>
+      random_bytes{*this};
 
     c_api::adapted_function<&ssl_api::evp_pkey_up_ref, owned_pkey(pkey)>
       copy_pkey{*this};
 
-    c_api::adapted_function<&ssl_api::evp_pkey_free, int(owned_pkey&)>
+    c_api::adapted_function<
+      &ssl_api::evp_pkey_free,
+      int(owned_pkey&),
+      collapse_bool_map>
       delete_pkey{*this};
 
     c_api::adapted_function<&ssl_api::evp_aes_128_ctr, cipher_type()>
@@ -311,27 +334,20 @@ public:
     c_api::adapted_function<&ssl_api::evp_aes_192_cbc, cipher_type()>
       cipher_aes_192_cbc{*this};
 
-    // new_cipher
-    struct : func<SSLPAFP(evp_cipher_ctx_new)> {
-        using func<SSLPAFP(evp_cipher_ctx_new)>::func;
+    c_api::adapted_function<&ssl_api::evp_cipher_ctx_new, owned_cipher()>
+      new_cipher{*this};
 
-        constexpr auto operator()() const noexcept {
-            return this->_chkcall().cast_to(type_identity<owned_cipher>{});
-        }
-    } new_cipher;
-
-    c_api::adapted_function<&ssl_api::evp_cipher_ctx_free, int(owned_cipher&)>
+    c_api::adapted_function<
+      &ssl_api::evp_cipher_ctx_free,
+      int(owned_cipher&),
+      collapse_bool_map>
       delete_cipher{*this};
 
-    // cipher_reset
-    struct : func<SSLPAFP(evp_cipher_ctx_reset)> {
-        using func<SSLPAFP(evp_cipher_ctx_reset)>::func;
-
-        constexpr auto operator()(cipher cyc) const noexcept {
-            return this->_cnvchkcall(cyc);
-        }
-
-    } cipher_reset;
+    c_api::adapted_function<
+      &ssl_api::evp_cipher_ctx_reset,
+      int(cipher),
+      collapse_bool_map>
+      cipher_reset{*this};
 
     // cipher_init
     struct : func<SSLPAFP(evp_cipher_init)> {
@@ -590,25 +606,34 @@ public:
     c_api::adapted_function<&ssl_api::evp_md_ctx_new, owned_message_digest()>
       new_message_digest{*this};
 
-    c_api::adapted_function<&ssl_api::evp_md_ctx_free, int(owned_message_digest&)>
+    c_api::adapted_function<
+      &ssl_api::evp_md_ctx_free,
+      int(owned_message_digest&),
+      collapse_bool_map>
       delete_message_digest{*this};
 
-    c_api::adapted_function<&ssl_api::evp_md_ctx_reset, int(message_digest)>
+    c_api::adapted_function<
+      &ssl_api::evp_md_ctx_reset,
+      int(message_digest),
+      collapse_bool_map>
       message_digest_reset{*this};
 
     c_api::adapted_function<
       &ssl_api::evp_digest_init,
-      int(message_digest, message_digest_type)>
+      int(message_digest, message_digest_type),
+      collapse_bool_map>
       message_digest_init{*this};
 
     c_api::adapted_function<
       &ssl_api::evp_digest_init_ex,
-      int(message_digest, message_digest_type, engine)>
+      int(message_digest, message_digest_type, engine),
+      collapse_bool_map>
       message_digest_init_ex{*this};
 
     c_api::adapted_function<
       &ssl_api::evp_digest_update,
-      int(message_digest, memory::const_block)>
+      int(message_digest, memory::const_block),
+      collapse_bool_map>
       message_digest_update{*this};
 
     // message_digest_final
@@ -657,7 +682,8 @@ public:
 
     c_api::adapted_function<
       &ssl_api::evp_digest_sign_update,
-      int(message_digest, memory::const_block)>
+      int(message_digest, memory::const_block),
+      collapse_bool_map>
       message_digest_sign_update{*this};
 
     // message_digest_sign_final
@@ -700,7 +726,8 @@ public:
 
     c_api::adapted_function<
       &ssl_api::evp_digest_verify_update,
-      int(message_digest, memory::const_block)>
+      int(message_digest, memory::const_block),
+      collapse_bool_map>
       message_digest_verify_update{*this};
 
     // message_digest_verify_final
@@ -720,7 +747,8 @@ public:
 
     using _init_x509_store_ctx_t = c_api::adapted_function<
       &ssl_api::x509_store_ctx_init,
-      int(x509_store_ctx, x509_store, x509, const object_stack<x509>&)>;
+      int(x509_store_ctx, x509_store, x509, const object_stack<x509>&),
+      collapse_bool_map>;
 
     struct : _init_x509_store_ctx_t {
         using base = _init_x509_store_ctx_t;
@@ -736,35 +764,39 @@ public:
 
     c_api::adapted_function<
       &ssl_api::x509_store_ctx_set0_trusted_stack,
-      int(x509_store_ctx, const object_stack<x509>&)>
+      int(x509_store_ctx, const object_stack<x509>&),
+      collapse_bool_map>
       set_x509_store_trusted_stack{*this};
 
     c_api::adapted_function<
       &ssl_api::x509_store_ctx_set0_verified_chain,
-      int(x509_store_ctx, const object_stack<x509>&)>
+      int(x509_store_ctx, const object_stack<x509>&),
+      collapse_bool_map>
       set_x509_store_verified_chain{*this};
 
     c_api::adapted_function<
       &ssl_api::x509_store_ctx_set0_untrusted,
-      int(x509_store_ctx, const object_stack<x509>&)>
+      int(x509_store_ctx, const object_stack<x509>&),
+      collapse_bool_map>
       set_x509_store_untrusted{*this};
 
-    c_api::adapted_function<&ssl_api::x509_store_ctx_cleanup, int(x509_store_ctx)>
+    c_api::adapted_function<
+      &ssl_api::x509_store_ctx_cleanup,
+      int(x509_store_ctx),
+      collapse_bool_map>
       cleanup_x509_store_ctx{*this};
 
-    c_api::
-      adapted_function<&ssl_api::x509_store_ctx_free, int(owned_x509_store_ctx&)>
-        delete_x509_store_ctx{*this};
+    c_api::adapted_function<
+      &ssl_api::x509_store_ctx_free,
+      int(owned_x509_store_ctx&),
+      collapse_bool_map>
+      delete_x509_store_ctx{*this};
 
-    // x509_verify_certificate
-    struct : func<SSLPAFP(x509_verify_cert)> {
-        using func<SSLPAFP(x509_verify_cert)>::func;
-
-        constexpr auto operator()(x509_store_ctx xsc) const noexcept {
-            return collapse_bool(this->_cnvchkcall(xsc));
-        }
-
-    } x509_verify_certificate;
+    c_api::adapted_function<
+      &ssl_api::x509_verify_cert,
+      int(x509_store_ctx),
+      collapse_bool_map>
+      x509_verify_certificate{*this};
 
     c_api::adapted_function<&ssl_api::x509_store_new, owned_x509_store()>
       new_x509_store{*this};
@@ -775,31 +807,37 @@ public:
       c_api::replaced_with_map<1>>
       copy_x509_store{*this};
 
-    c_api::adapted_function<&ssl_api::x509_store_free, int(owned_x509_store&)>
+    c_api::adapted_function<
+      &ssl_api::x509_store_free,
+      int(owned_x509_store&),
+      collapse_bool_map>
       delete_x509_store{*this};
 
-    c_api::adapted_function<&ssl_api::x509_store_add_cert, int(x509_store, x509)>
+    c_api::adapted_function<
+      &ssl_api::x509_store_add_cert,
+      int(x509_store, x509),
+      collapse_bool_map>
       add_cert_into_x509_store{*this};
 
-    c_api::
-      adapted_function<&ssl_api::x509_store_add_crl, int(x509_store, x509_crl)>
-        add_crl_into_x509_store{*this};
+    c_api::adapted_function<
+      &ssl_api::x509_store_add_crl,
+      int(x509_store, x509_crl),
+      collapse_bool_map>
+      add_crl_into_x509_store{*this};
 
-    // load_into_x509_store
-    struct : func<SSLPAFP(x509_store_load_locations)> {
-        using func<SSLPAFP(x509_store_load_locations)>::func;
-
-        constexpr auto operator()(x509_store xst, string_view file_path)
-          const noexcept {
-            return this->_cnvchkcall(xst, file_path, nullptr);
-        }
-
-    } load_into_x509_store;
+    c_api::adapted_function<
+      &ssl_api::x509_store_load_locations,
+      int(x509_store, string_view),
+      collapse_bool_map>
+      load_into_x509_store{*this};
 
     c_api::adapted_function<&ssl_api::x509_crl_new, owned_x509_crl()>
       new_x509_crl{*this};
 
-    c_api::adapted_function<&ssl_api::x509_crl_free, int(owned_x509_crl&)>
+    c_api::adapted_function<
+      &ssl_api::x509_crl_free,
+      int(owned_x509_crl&),
+      collapse_bool_map>
       delete_x509_crl{*this};
 
     c_api::adapted_function<&ssl_api::x509_new, owned_x509()> new_x509{*this};
@@ -816,45 +854,28 @@ public:
     c_api::adapted_function<&ssl_api::x509_get_subject_name, x509_name(x509)>
       get_x509_subject_name{*this};
 
-    c_api::adapted_function<&ssl_api::x509_free, int(owned_x509&)> delete_x509{
-      *this};
+    c_api::
+      adapted_function<&ssl_api::x509_free, int(owned_x509&), collapse_bool_map>
+        delete_x509{*this};
 
-    // get_name_entry_count
-    struct : func<SSLPAFP(x509_name_entry_count)> {
-        using func<SSLPAFP(x509_name_entry_count)>::func;
+    c_api::
+      adapted_function<&ssl_api::x509_name_entry_count, span_size_t(x509_name)>
+        get_name_entry_count{*this};
 
-        constexpr auto operator()(x509_name n) const noexcept {
-            return this->_cnvchkcall(n).cast_to(type_identity<span_size_t>{});
-        }
-    } get_name_entry_count;
+    c_api::adapted_function<
+      &ssl_api::x509_name_get_entry,
+      x509_name_entry(x509_name, span_size_t)>
+      get_name_entry{*this};
 
-    // get_name_entry
-    struct : func<SSLPAFP(x509_name_get_entry)> {
-        using func<SSLPAFP(x509_name_get_entry)>::func;
+    c_api::adapted_function<
+      &ssl_api::x509_name_entry_get_object,
+      asn1_object(x509_name_entry)>
+      get_name_entry_object{*this};
 
-        constexpr auto operator()(x509_name n, span_size_t i) const noexcept {
-            return this->_cnvchkcall(n, limit_cast<int>(i))
-              .cast_to(type_identity<x509_name_entry>{});
-        }
-    } get_name_entry;
-
-    // get_name_entry_object
-    struct : func<SSLPAFP(x509_name_entry_get_object)> {
-        using func<SSLPAFP(x509_name_entry_get_object)>::func;
-
-        constexpr auto operator()(x509_name_entry ne) const noexcept {
-            return this->_cnvchkcall(ne).cast_to(type_identity<asn1_object>{});
-        }
-    } get_name_entry_object;
-
-    // get_name_entry_data
-    struct : func<SSLPAFP(x509_name_entry_get_data)> {
-        using func<SSLPAFP(x509_name_entry_get_data)>::func;
-
-        constexpr auto operator()(x509_name_entry ne) const noexcept {
-            return this->_cnvchkcall(ne).cast_to(type_identity<asn1_string>{});
-        }
-    } get_name_entry_data;
+    c_api::adapted_function<
+      &ssl_api::x509_name_entry_get_data,
+      asn1_string(x509_name_entry)>
+      get_name_entry_data{*this};
 
     // read_bio_private_key
     struct : func<SSLPAFP(pem_read_bio_private_key)> {
