@@ -93,11 +93,6 @@ public:
             return static_cast<Handle>(obj);
         }
 
-        template <typename Object>
-        static constexpr auto _conv(const object_stack<Object>& stk) noexcept {
-            return stk.native();
-        }
-
         template <typename... Args>
         constexpr auto _cnvchkcall(Args&&... args) const noexcept {
             return this->_chkcall(_conv(args)...).cast_to(type_identity<RVC>{});
@@ -145,14 +140,11 @@ public:
     c_api::adapted_function<&ssl_api::engine_by_id, owned_engine(string_view)>
       open_engine{*this};
 
-    // copy_engine
-    struct : func<SSLPAFP(engine_up_ref)> {
-        using func<SSLPAFP(engine_up_ref)>::func;
-
-        constexpr auto operator()(engine eng) const noexcept {
-            return this->_cnvchkcall(eng).replaced_with(owned_engine(eng));
-        }
-    } copy_engine;
+    c_api::adapted_function<
+      &ssl_api::engine_up_ref,
+      owned_engine(engine),
+      c_api::replaced_with_map<1>>
+      copy_engine{*this};
 
     c_api::adapted_function<&ssl_api::engine_free, int(owned_engine&)>
       delete_engine{*this};
@@ -726,60 +718,36 @@ public:
     c_api::adapted_function<&ssl_api::x509_store_ctx_new, owned_x509_store_ctx()>
       new_x509_store_ctx{*this};
 
-    // init_x509_store_ctx
-    struct : func<SSLPAFP(x509_store_ctx_init)> {
-        using func<SSLPAFP(x509_store_ctx_init)>::func;
+    using _init_x509_store_ctx_t = c_api::adapted_function<
+      &ssl_api::x509_store_ctx_init,
+      int(x509_store_ctx, x509_store, x509, const object_stack<x509>&)>;
 
-        constexpr auto operator()(x509_store_ctx xsc, x509_store xst, x509 crt)
+    struct : _init_x509_store_ctx_t {
+        using base = _init_x509_store_ctx_t;
+        using base::base;
+        using base::operator();
+
+        constexpr auto operator()(x509_store_ctx ctx, x509_store xst, x509 crt)
           const noexcept {
-            return this->_cnvchkcall(xsc, xst, crt, nullptr);
+            return (*this)(ctx, xst, crt, object_stack<x509>{});
         }
 
-        constexpr auto operator()(
-          x509_store_ctx xsc,
-          x509_store xst,
-          x509 crt,
-          const object_stack<x509>& chain) const noexcept {
-            return this->_cnvchkcall(xsc, xst, crt, chain);
-        }
+    } init_x509_store_ctx{*this};
 
-    } init_x509_store_ctx;
+    c_api::adapted_function<
+      &ssl_api::x509_store_ctx_set0_trusted_stack,
+      int(x509_store_ctx, const object_stack<x509>&)>
+      set_x509_store_trusted_stack{*this};
 
-    // set_x509_store_trusted_stack
-    struct : func<SSLPAFP(x509_store_ctx_set0_trusted_stack)> {
-        using func<SSLPAFP(x509_store_ctx_set0_trusted_stack)>::func;
+    c_api::adapted_function<
+      &ssl_api::x509_store_ctx_set0_verified_chain,
+      int(x509_store_ctx, const object_stack<x509>&)>
+      set_x509_store_verified_chain{*this};
 
-        constexpr auto operator()(
-          x509_store_ctx xsc,
-          const object_stack<x509>& stk) const noexcept {
-            return this->_cnvchkcall(xsc, stk);
-        }
-
-    } set_x509_store_trusted_stack;
-
-    // set_x509_store_verified_chain
-    struct : func<SSLPAFP(x509_store_ctx_set0_verified_chain)> {
-        using func<SSLPAFP(x509_store_ctx_set0_verified_chain)>::func;
-
-        constexpr auto operator()(
-          x509_store_ctx xsc,
-          const object_stack<x509>& stk) const noexcept {
-            return this->_cnvchkcall(xsc, stk);
-        }
-
-    } set_x509_store_verified_chain;
-
-    // set_x509_store_untrusted
-    struct : func<SSLPAFP(x509_store_ctx_set0_untrusted)> {
-        using func<SSLPAFP(x509_store_ctx_set0_untrusted)>::func;
-
-        constexpr auto operator()(
-          x509_store_ctx xsc,
-          const object_stack<x509>& stk) const noexcept {
-            return this->_cnvchkcall(xsc, stk);
-        }
-
-    } set_x509_store_untrusted;
+    c_api::adapted_function<
+      &ssl_api::x509_store_ctx_set0_untrusted,
+      int(x509_store_ctx, const object_stack<x509>&)>
+      set_x509_store_untrusted{*this};
 
     c_api::adapted_function<&ssl_api::x509_store_ctx_cleanup, int(x509_store_ctx)>
       cleanup_x509_store_ctx{*this};
@@ -801,14 +769,11 @@ public:
     c_api::adapted_function<&ssl_api::x509_store_new, owned_x509_store()>
       new_x509_store{*this};
 
-    // copy_x509_store
-    struct : func<SSLPAFP(x509_store_up_ref)> {
-        using func<SSLPAFP(x509_store_up_ref)>::func;
-
-        constexpr auto operator()(x509_store xst) const noexcept {
-            return this->_chkcall().replaced_with(owned_x509_store{xst});
-        }
-    } copy_x509_store;
+    c_api::adapted_function<
+      &ssl_api::x509_store_up_ref,
+      owned_x509_store(x509_store),
+      c_api::replaced_with_map<1>>
+      copy_x509_store{*this};
 
     c_api::adapted_function<&ssl_api::x509_store_free, int(owned_x509_store&)>
       delete_x509_store{*this};

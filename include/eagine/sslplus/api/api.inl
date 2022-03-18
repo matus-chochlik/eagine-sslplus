@@ -10,7 +10,6 @@ namespace eagine::sslplus {
 template <typename ApiTraits>
 inline basic_ssl_operations<ApiTraits>::basic_ssl_operations(ApiTraits& traits)
   : ssl_api{traits}
-  , copy_engine{"copy_engine", traits, *this}
   , init_engine{"init_engine", traits, *this}
   , load_engine_private_key{"load_engine_private_key", traits, *this}
   , get_int64{"get_int64", traits, *this}
@@ -40,12 +39,7 @@ inline basic_ssl_operations<ApiTraits>::basic_ssl_operations(ApiTraits& traits)
   , message_digest_sign_final{"message_digest_sign_final", traits, *this}
   , message_digest_verify_init{"message_digest_verify_init", traits, *this}
   , message_digest_verify_final{"message_digest_verify_final", traits, *this}
-  , init_x509_store_ctx{"init_x509_store_ctx", traits, *this}
-  , set_x509_store_trusted_stack{"set_x509_store_trusted_stack", traits, *this}
-  , set_x509_store_verified_chain{"set_x509_store_verified_chain", traits, *this}
-  , set_x509_store_untrusted{"set_x509_store_untrusted", traits, *this}
   , x509_verify_certificate{"x509_verify_certificate", traits, *this}
-  , copy_x509_store{"copy_x509_store", traits, *this}
   , load_into_x509_store{"load_into_x509_store", traits, *this}
   , get_name_entry_count{"get_name_entry_count", traits, *this}
   , get_name_entry{"get_name_entry", traits, *this}
