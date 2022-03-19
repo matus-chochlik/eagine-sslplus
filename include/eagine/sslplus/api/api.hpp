@@ -96,11 +96,6 @@ public:
 
         using base::_conv;
 
-        template <typename Tag, typename Handle>
-        static constexpr auto _conv(basic_handle<Tag, Handle> obj) noexcept {
-            return static_cast<Handle>(obj);
-        }
-
         template <typename... Args>
         constexpr auto _cnvchkcall(Args&&... args) const noexcept {
             return this->_chkcall(_conv(args)...).cast_to(type_identity<RVC>{});
@@ -244,25 +239,15 @@ public:
         return as_chars(get_string_block(as));
     }
 
-    // get_int64
-    struct : func<SSLPAFP(asn1_integer_get_int64)> {
-        using func<SSLPAFP(asn1_integer_get_int64)>::func;
+    c_api::adapted_function<
+      &ssl_api::asn1_integer_get_int64,
+      std::int64_t(asn1_integer)>
+      get_int64{*this};
 
-        constexpr auto operator()(asn1_integer ai) const noexcept {
-            std::int64_t result{};
-            return this->_cnvchkcall(&result, ai).replaced_with(result);
-        }
-    } get_int64;
-
-    // get_uint64
-    struct : func<SSLPAFP(asn1_integer_get_uint64)> {
-        using func<SSLPAFP(asn1_integer_get_uint64)>::func;
-
-        constexpr auto operator()(asn1_integer ai) const noexcept {
-            std::uint64_t result{};
-            return this->_cnvchkcall(&result, ai).replaced_with(result);
-        }
-    } get_uint64;
+    c_api::adapted_function<
+      &ssl_api::asn1_integer_get_uint64,
+      std::uint64_t(asn1_integer)>
+      get_uint64{*this};
 
     // object_to_text
     struct : func<SSLPAFP(obj_obj2txt)> {

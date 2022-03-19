@@ -10,8 +10,6 @@ namespace eagine::sslplus {
 template <typename ApiTraits>
 inline basic_ssl_operations<ApiTraits>::basic_ssl_operations(ApiTraits& traits)
   : ssl_api{traits}
-  , get_int64{"get_int64", traits, *this}
-  , get_uint64{"get_uint64", traits, *this}
   , object_to_text{"object_to_text", traits, *this}
   , cipher_init{"cipher_init", traits, *this}
   , cipher_init_ex{"cipher_init_ex", traits, *this}
