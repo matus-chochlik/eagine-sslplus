@@ -11,18 +11,12 @@ template <typename ApiTraits>
 inline basic_ssl_operations<ApiTraits>::basic_ssl_operations(ApiTraits& traits)
   : ssl_api{traits}
   , object_to_text{"object_to_text", traits, *this}
-  , cipher_init{"cipher_init", traits, *this}
-  , cipher_init_ex{"cipher_init_ex", traits, *this}
   , cipher_update{"cipher_update", traits, *this}
   , cipher_final{"cipher_final", traits, *this}
   , cipher_final_ex{"cipher_final", traits, *this}
-  , encrypt_init{"encrypt_init", traits, *this}
-  , encrypt_init_ex{"encrypt_init_ex", traits, *this}
   , encrypt_update{"encrypt_update", traits, *this}
   , encrypt_final{"encrypt_final", traits, *this}
   , encrypt_final_ex{"encrypt_final", traits, *this}
-  , decrypt_init{"decrypt_init", traits, *this}
-  , decrypt_init_ex{"decrypt_init_ex", traits, *this}
   , decrypt_update{"decrypt_update", traits, *this}
   , decrypt_final{"decrypt_final", traits, *this}
   , decrypt_final_ex{"decrypt_final", traits, *this}
@@ -31,7 +25,6 @@ inline basic_ssl_operations<ApiTraits>::basic_ssl_operations(ApiTraits& traits)
   , message_digest_sign_init{"message_digest_sign_init", traits, *this}
   , message_digest_sign_final{"message_digest_sign_final", traits, *this}
   , message_digest_verify_init{"message_digest_verify_init", traits, *this}
-  , message_digest_verify_final{"message_digest_verify_final", traits, *this}
   , read_bio_private_key{"read_bio_private_key", traits, *this}
   , read_bio_public_key{"read_bio_public_key", traits, *this}
   , read_bio_x509_crl{"read_bio_x509_crl", traits, *this}

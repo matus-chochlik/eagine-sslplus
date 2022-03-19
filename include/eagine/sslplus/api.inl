@@ -68,8 +68,7 @@ inline auto basic_ssl_api<ApiTraits>::verify_data_digest(
 
             if(this->message_digest_verify_init(mdctx, mdtype, pky)) {
                 if(this->message_digest_verify_update(mdctx, data)) {
-                    return extract_or(
-                      this->message_digest_verify_final(mdctx, sig), false);
+                    return bool(this->message_digest_verify_final(mdctx, sig));
                 }
             }
         }

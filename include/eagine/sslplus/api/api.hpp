@@ -334,36 +334,23 @@ public:
       collapse_bool_map>
       cipher_reset{*this};
 
-    // cipher_init
-    struct : func<SSLPAFP(evp_cipher_init)> {
-        using func<SSLPAFP(evp_cipher_init)>::func;
+    c_api::adapted_function<
+      &ssl_api::evp_cipher_init,
+      int(cipher, cipher_type, memory::const_block, memory::const_block, bool),
+      collapse_bool_map>
+      cipher_init{*this};
 
-        constexpr auto operator()(
-          cipher cyc,
-          cipher_type cyt,
-          memory::const_block key,
-          memory::const_block iv,
-          bool enc) const noexcept {
-            return this->_cnvchkcall(
-              cyc, cyt, key.data(), iv.data(), enc ? 1 : 0);
-        }
-    } cipher_init;
-
-    // cipher_init_ex
-    struct : func<SSLPAFP(evp_cipher_init_ex)> {
-        using func<SSLPAFP(evp_cipher_init_ex)>::func;
-
-        constexpr auto operator()(
-          cipher cyc,
-          cipher_type cyt,
-          engine eng,
-          memory::const_block key,
-          memory::const_block iv,
-          bool enc) const noexcept {
-            return this->_cnvchkcall(
-              cyc, cyt, eng, key.data(), iv.data(), enc ? 1 : 0);
-        }
-    } cipher_init_ex;
+    c_api::adapted_function<
+      &ssl_api::evp_cipher_init_ex,
+      int(
+        cipher,
+        cipher_type,
+        engine,
+        memory::const_block,
+        memory::const_block,
+        bool),
+      collapse_bool_map>
+      cipher_init_ex{*this};
 
     // cipher_update
     struct : func<SSLPAFP(evp_cipher_update)> {
@@ -410,36 +397,23 @@ public:
         }
     } cipher_final_ex;
 
-    // encrypt_init
-    struct : func<SSLPAFP(evp_encrypt_init)> {
-        using func<SSLPAFP(evp_encrypt_init)>::func;
+    c_api::adapted_function<
+      &ssl_api::evp_encrypt_init,
+      int(cipher, cipher_type, memory::const_block, memory::const_block, bool),
+      collapse_bool_map>
+      encrypt_init{*this};
 
-        constexpr auto operator()(
-          cipher cyc,
-          cipher_type cyt,
-          memory::const_block key,
-          memory::const_block iv,
-          bool enc) const noexcept {
-            return this->_cnvchkcall(
-              cyc, cyt, key.data(), iv.data(), enc ? 1 : 0);
-        }
-    } encrypt_init;
-
-    // encrypt_init_ex
-    struct : func<SSLPAFP(evp_encrypt_init_ex)> {
-        using func<SSLPAFP(evp_encrypt_init_ex)>::func;
-
-        constexpr auto operator()(
-          cipher cyc,
-          cipher_type cyt,
-          engine eng,
-          memory::const_block key,
-          memory::const_block iv,
-          bool enc) const noexcept {
-            return this->_cnvchkcall(
-              cyc, cyt, eng, key.data(), iv.data(), enc ? 1 : 0);
-        }
-    } encrypt_init_ex;
+    c_api::adapted_function<
+      &ssl_api::evp_encrypt_init_ex,
+      int(
+        cipher,
+        cipher_type,
+        engine,
+        memory::const_block,
+        memory::const_block,
+        bool),
+      collapse_bool_map>
+      encrypt_init_ex{*this};
 
     // encrypt_update
     struct : func<SSLPAFP(evp_encrypt_update)> {
@@ -486,36 +460,23 @@ public:
         }
     } encrypt_final_ex;
 
-    // decrypt_init
-    struct : func<SSLPAFP(evp_decrypt_init)> {
-        using func<SSLPAFP(evp_decrypt_init)>::func;
+    c_api::adapted_function<
+      &ssl_api::evp_decrypt_init,
+      int(cipher, cipher_type, memory::const_block, memory::const_block, bool),
+      collapse_bool_map>
+      decrypt_init{*this};
 
-        constexpr auto operator()(
-          cipher cyc,
-          cipher_type cyt,
-          memory::const_block key,
-          memory::const_block iv,
-          bool enc) const noexcept {
-            return this->_cnvchkcall(
-              cyc, cyt, key.data(), iv.data(), enc ? 1 : 0);
-        }
-    } decrypt_init;
-
-    // decrypt_init_ex
-    struct : func<SSLPAFP(evp_decrypt_init_ex)> {
-        using func<SSLPAFP(evp_decrypt_init_ex)>::func;
-
-        constexpr auto operator()(
-          cipher cyc,
-          cipher_type cyt,
-          engine eng,
-          memory::const_block key,
-          memory::const_block iv,
-          bool enc) const noexcept {
-            return this->_cnvchkcall(
-              cyc, cyt, eng, key.data(), iv.data(), enc ? 1 : 0);
-        }
-    } decrypt_init_ex;
+    c_api::adapted_function<
+      &ssl_api::evp_decrypt_init_ex,
+      int(
+        cipher,
+        cipher_type,
+        engine,
+        memory::const_block,
+        memory::const_block,
+        bool),
+      collapse_bool_map>
+      decrypt_init_ex{*this};
 
     // decrypt_update
     struct : func<SSLPAFP(evp_decrypt_update)> {
@@ -715,17 +676,11 @@ public:
       collapse_bool_map>
       message_digest_verify_update{*this};
 
-    // message_digest_verify_final
-    struct : func<SSLPAFP(evp_digest_verify_final)> {
-        using func<SSLPAFP(evp_digest_verify_final)>::func;
-
-        constexpr auto operator()(message_digest mdc, memory::const_block blk)
-          const noexcept {
-            return this->_cnvchkcall(mdc, blk.data(), std_size(blk.size()))
-              .transformed(
-                [](int result, bool valid) { return valid && result == 1; });
-        }
-    } message_digest_verify_final;
+    c_api::adapted_function<
+      &ssl_api::evp_digest_verify_final,
+      int(message_digest, memory::const_block),
+      collapse_bool_map>
+      message_digest_verify_final{*this};
 
     c_api::adapted_function<&ssl_api::x509_store_ctx_new, owned_x509_store_ctx()>
       new_x509_store_ctx{*this};
