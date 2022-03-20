@@ -10,9 +10,6 @@ namespace eagine::sslplus {
 template <typename ApiTraits>
 inline basic_ssl_operations<ApiTraits>::basic_ssl_operations(ApiTraits& traits)
   : ssl_api{traits}
-  , message_digest_final{"message_digest_final", traits, *this}
-  , message_digest_final_ex{"message_digest_final", traits, *this}
-  , message_digest_sign_init{"message_digest_sign_init", traits, *this}
   , message_digest_sign_final{"message_digest_sign_final", traits, *this}
   , message_digest_verify_init{"message_digest_verify_init", traits, *this}
   , read_bio_private_key{"read_bio_private_key", traits, *this}

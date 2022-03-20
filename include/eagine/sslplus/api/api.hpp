@@ -354,7 +354,7 @@ public:
 
     using _cipher_update_t = c_api::adapted_function<
       &ssl_api::evp_cipher_update,
-      int(cipher, memory::const_block, int&, memory::const_block)>;
+      memory::split_block(cipher, memory::const_block, int&, memory::const_block)>;
 
     struct : _cipher_update_t {
         using base = _cipher_update_t;
@@ -371,7 +371,7 @@ public:
 
     using _cipher_final_t = c_api::adapted_function<
       &ssl_api::evp_cipher_final,
-      int(cipher, memory::const_block, int&)>;
+      memory::split_block(cipher, memory::const_block, int&)>;
 
     struct : _cipher_final_t {
         using base = _cipher_final_t;
@@ -386,7 +386,7 @@ public:
 
     using _cipher_final_ex_t = c_api::adapted_function<
       &ssl_api::evp_cipher_final_ex,
-      int(cipher, memory::const_block, int&)>;
+      memory::split_block(cipher, memory::const_block, int&)>;
 
     struct : _cipher_final_ex_t {
         using base = _cipher_final_ex_t;
@@ -419,7 +419,7 @@ public:
 
     using _encrypt_update_t = c_api::adapted_function<
       &ssl_api::evp_encrypt_update,
-      int(cipher, memory::const_block, int&, memory::const_block)>;
+      memory::split_block(cipher, memory::const_block, int&, memory::const_block)>;
 
     struct : _encrypt_update_t {
         using base = _encrypt_update_t;
@@ -436,7 +436,7 @@ public:
 
     using _encrypt_final_t = c_api::adapted_function<
       &ssl_api::evp_encrypt_final,
-      int(cipher, memory::const_block, int&)>;
+      memory::split_block(cipher, memory::const_block, int&)>;
 
     struct : _encrypt_final_t {
         using base = _encrypt_final_t;
@@ -451,7 +451,7 @@ public:
 
     using _encrypt_final_ex_t = c_api::adapted_function<
       &ssl_api::evp_encrypt_final_ex,
-      int(cipher, memory::const_block, int&)>;
+      memory::split_block(cipher, memory::const_block, int&)>;
 
     struct : _encrypt_final_ex_t {
         using base = _encrypt_final_ex_t;
@@ -484,7 +484,7 @@ public:
 
     using _decrypt_update_t = c_api::adapted_function<
       &ssl_api::evp_decrypt_update,
-      int(cipher, memory::const_block, int&, memory::const_block)>;
+      memory::split_block(cipher, memory::const_block, int&, memory::const_block)>;
 
     struct : _decrypt_update_t {
         using base = _decrypt_update_t;
@@ -501,7 +501,7 @@ public:
 
     using _decrypt_final_t = c_api::adapted_function<
       &ssl_api::evp_decrypt_final,
-      int(cipher, memory::const_block, int&)>;
+      memory::split_block(cipher, memory::const_block, int&)>;
 
     struct : _decrypt_final_t {
         using base = _decrypt_final_t;
@@ -516,7 +516,7 @@ public:
 
     using _decrypt_final_ex_t = c_api::adapted_function<
       &ssl_api::evp_decrypt_final_ex,
-      int(cipher, memory::const_block, int&)>;
+      memory::split_block(cipher, memory::const_block, int&)>;
 
     struct : _decrypt_final_ex_t {
         using base = _decrypt_final_ex_t;
@@ -588,49 +588,62 @@ public:
       collapse_bool_map>
       message_digest_update{*this};
 
-    // message_digest_final
-    struct : func<SSLPAFP(evp_digest_final)> {
-        using func<SSLPAFP(evp_digest_final)>::func;
+    using _message_digest_final_t = c_api::adapted_function<
+      &ssl_api::evp_digest_final,
+      memory::block(message_digest, memory::block, unsigned int&)>;
 
+    struct : _message_digest_final_t {
+        using base = _message_digest_final_t;
+        using base::base;
         constexpr auto operator()(message_digest mdc, memory::block blk)
           const noexcept {
             unsigned int size{0U};
-            return this->_cnvchkcall(mdc, blk.data(), &size)
+            return base::operator()(mdc, blk, size)
               .replaced_with(head(blk, span_size(size)));
         }
-    } message_digest_final;
+    } message_digest_final{*this};
 
-    // message_digest_final_ex
-    struct : func<SSLPAFP(evp_digest_final_ex)> {
-        using func<SSLPAFP(evp_digest_final_ex)>::func;
+    using _message_digest_final_ex_t = c_api::adapted_function<
+      &ssl_api::evp_digest_final_ex,
+      memory::block(message_digest, memory::block, unsigned int&)>;
 
+    struct : _message_digest_final_ex_t {
+        using base = _message_digest_final_ex_t;
+        using base::base;
         constexpr auto operator()(message_digest mdc, memory::block blk)
           const noexcept {
             unsigned int size{0U};
-            return this->_cnvchkcall(mdc, blk.data(), &size)
+            return base::operator()(mdc, blk, size)
               .replaced_with(head(blk, span_size(size)));
         }
-    } message_digest_final_ex;
+    } message_digest_final_ex{*this};
 
-    // message_digest_sign_init
-    struct : func<SSLPAFP(evp_digest_sign_init)> {
-        using func<SSLPAFP(evp_digest_sign_init)>::func;
+    using _message_digest_sign_init_t = c_api::adapted_function<
+      &ssl_api::evp_digest_sign_init,
+      pkey_ctx(message_digest, pkey_ctx&, message_digest_type, engine, pkey)>;
 
-        constexpr auto operator()(
-          message_digest mdc,
-          message_digest_type mdt,
-          pkey pky) const noexcept {
-            return this->_cnvchkcall(mdc, nullptr, mdt, nullptr, pky);
-        }
+    struct : _message_digest_sign_init_t {
+        using base = _message_digest_sign_init_t;
+        using base::base;
 
         constexpr auto operator()(
           message_digest mdc,
           message_digest_type mdt,
           engine eng,
           pkey pky) const noexcept {
-            return this->_cnvchkcall(mdc, nullptr, mdt, eng, pky);
+            pkey_ctx pkcx{};
+            return base::operator()(mdc, pkcx, mdt, eng, pky)
+              .replaced_with(pkcx);
         }
-    } message_digest_sign_init;
+
+        constexpr auto operator()(
+          message_digest mdc,
+          message_digest_type mdt,
+          pkey pky) const noexcept {
+            pkey_ctx pkcx{};
+            return base::operator()(mdc, pkcx, mdt, {}, pky).replaced_with(pkcx);
+        }
+    } message_digest_sign_init{*this};
 
     c_api::adapted_function<
       &ssl_api::evp_digest_sign_update,
