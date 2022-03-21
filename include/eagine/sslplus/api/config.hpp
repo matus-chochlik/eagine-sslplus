@@ -9,7 +9,6 @@
 #define EAGINE_SSLPLUS_API_CONFIG_HPP
 
 #include "../config/basic.hpp"
-#include <eagine/maybe_unused.hpp>
 
 #ifndef EAGINE_HAS_SSL
 #if defined(OPENSSL_VERSION_NUMBER)
