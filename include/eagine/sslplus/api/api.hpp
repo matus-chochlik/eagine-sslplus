@@ -56,7 +56,34 @@ private:
 
     callable_ref<bool(const string_span, const bool) noexcept> _callback{};
 };
+} // namespace eagine::sslplus
+namespace eagine::c_api {
+
+template <std::size_t CI, std::size_t CppI, typename... CT, typename... CppT>
+struct make_args_map<
+  CI,
+  CppI,
+  mp_list<int (*)(char*, int, int, void*), void*, CT...>,
+  mp_list<sslplus::password_callback, CppT...>>
+  : make_args_map<CI + 2, CppI + 1, mp_list<CT...>, mp_list<CppT...>> {
+    using make_args_map<CI + 2, CppI + 1, mp_list<CT...>, mp_list<CppT...>>::
+    operator();
+
+    template <typename... P>
+    constexpr auto operator()(size_constant<CI> i, P&&... p) const noexcept {
+        return reorder_arg_map<CI, CppI>{}(i, std::forward<P>(p)...)
+          .native_func();
+    }
+
+    template <typename... P>
+    constexpr auto operator()(size_constant<CI + 1> i, P&&... p) const noexcept {
+        return reorder_arg_map<CI + 1, CppI>{}(i, std::forward<P>(p)...)
+          .native_data();
+    }
+};
+} // namespace eagine::c_api
 //------------------------------------------------------------------------------
+namespace eagine::sslplus {
 template <typename ApiTraits>
 class basic_ssl_operations : public basic_ssl_c_api<ApiTraits> {
 
@@ -836,81 +863,89 @@ public:
       asn1_string(x509_name_entry)>
       get_name_entry_data{*this};
 
-    // read_bio_private_key
-    struct : func<SSLPAFP(pem_read_bio_private_key)> {
-        using func<SSLPAFP(pem_read_bio_private_key)>::func;
+    using _read_bio_private_key_t = c_api::adapted_function<
+      &ssl_api::pem_read_bio_private_key,
+      owned_pkey(basic_io, pkey&, password_callback)>;
+
+    struct : _read_bio_private_key_t {
+        using base = _read_bio_private_key_t;
+        using base::base;
+        using base::operator();
 
         constexpr auto operator()(basic_io bio) const noexcept {
-            return this->_cnvchkcall(bio, nullptr, nullptr, nullptr)
-              .cast_to(type_identity<owned_pkey>{});
+            pkey pky{};
+            return base::operator()(bio, pky, password_callback{});
         }
 
         constexpr auto operator()(basic_io bio, password_callback get_passwd)
           const noexcept {
-            return this
-              ->_cnvchkcall(
-                bio, nullptr, get_passwd.native_func(), get_passwd.native_data())
-              .cast_to(type_identity<owned_pkey>{});
+            pkey pky{};
+            return base::operator()(bio, pky, get_passwd);
         }
+    } read_bio_private_key{*this};
 
-    } read_bio_private_key;
+    using _read_bio_public_key_t = c_api::adapted_function<
+      &ssl_api::pem_read_bio_pubkey,
+      owned_pkey(basic_io, pkey&, password_callback)>;
 
-    // read_bio_public_key
-    struct : func<SSLPAFP(pem_read_bio_pubkey)> {
-        using func<SSLPAFP(pem_read_bio_pubkey)>::func;
+    struct : _read_bio_public_key_t {
+        using base = _read_bio_public_key_t;
+        using base::base;
+        using base::operator();
 
         constexpr auto operator()(basic_io bio) const noexcept {
-            return this->_cnvchkcall(bio, nullptr, nullptr, nullptr)
-              .cast_to(type_identity<owned_pkey>{});
+            pkey pky{};
+            return base::operator()(bio, pky, password_callback{});
         }
 
         constexpr auto operator()(basic_io bio, password_callback get_passwd)
           const noexcept {
-            return this
-              ->_cnvchkcall(
-                bio, nullptr, get_passwd.native_func(), get_passwd.native_data())
-              .cast_to(type_identity<owned_pkey>{});
+            pkey pky{};
+            return base::operator()(bio, pky, get_passwd);
         }
+    } read_bio_public_key{*this};
 
-    } read_bio_public_key;
+    using _read_bio_x509_crl_t = c_api::adapted_function<
+      &ssl_api::pem_read_bio_x509_crl,
+      owned_x509_crl(basic_io, x509_crl&, password_callback)>;
 
-    // read_bio_x509_crl
-    struct : func<SSLPAFP(pem_read_bio_x509_crl)> {
-        using func<SSLPAFP(pem_read_bio_x509_crl)>::func;
+    struct : _read_bio_x509_crl_t {
+        using base = _read_bio_x509_crl_t;
+        using base::base;
+        using base::operator();
 
         constexpr auto operator()(basic_io bio) const noexcept {
-            return this->_cnvchkcall(bio, nullptr, nullptr, nullptr)
-              .cast_to(type_identity<owned_x509_crl>{});
+            x509_crl crl{};
+            return base::operator()(bio, crl, password_callback{});
         }
 
         constexpr auto operator()(basic_io bio, password_callback get_passwd)
           const noexcept {
-            return this
-              ->_cnvchkcall(
-                bio, nullptr, get_passwd.native_func(), get_passwd.native_data())
-              .cast_to(type_identity<owned_x509_crl>{});
+            x509_crl crl{};
+            return base::operator()(bio, crl, get_passwd);
         }
+    } read_bio_x509_crl{*this};
 
-    } read_bio_x509_crl;
+    using _read_bio_x509_t = c_api::adapted_function<
+      &ssl_api::pem_read_bio_x509,
+      owned_x509(basic_io, x509&, password_callback)>;
 
-    // read_bio_x509
-    struct : func<SSLPAFP(pem_read_bio_x509)> {
-        using func<SSLPAFP(pem_read_bio_x509)>::func;
+    struct : _read_bio_x509_t {
+        using base = _read_bio_x509_t;
+        using base::base;
+        using base::operator();
 
         constexpr auto operator()(basic_io bio) const noexcept {
-            return this->_cnvchkcall(bio, nullptr, nullptr, nullptr)
-              .cast_to(type_identity<owned_x509>{});
+            x509 x{};
+            return base::operator()(bio, x, password_callback{});
         }
 
         constexpr auto operator()(basic_io bio, password_callback get_passwd)
           const noexcept {
-            return this
-              ->_cnvchkcall(
-                bio, nullptr, get_passwd.native_func(), get_passwd.native_data())
-              .cast_to(type_identity<owned_x509>{});
+            x509 x{};
+            return base::operator()(bio, x, get_passwd);
         }
-
-    } read_bio_x509;
+    } read_bio_x509{*this};
 
     basic_ssl_operations(api_traits& traits);
 };
