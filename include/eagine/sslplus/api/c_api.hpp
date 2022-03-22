@@ -58,6 +58,12 @@ struct basic_ssl_c_api {
 
     using x509_store_ctx_verify_callback_type = int(int, x509_store_ctx_type*);
 
+    template <typename Result>
+    constexpr auto check_result(Result res) const noexcept {
+        res.error_code(this->err_get_error());
+        return res;
+    }
+
 #ifdef __GNUC__
     EAGINE_DIAG_PUSH()
     EAGINE_DIAG_OFF(address)

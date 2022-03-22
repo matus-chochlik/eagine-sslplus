@@ -25,12 +25,6 @@ public:
     template <typename Result>
     using combined_result = c_api::combined_result<Result, ssl_result_info>;
 
-    template <typename Api, typename Result>
-    static constexpr auto check_result(Api& api, Result res) noexcept {
-        res.error_code(api.err_get_error());
-        return res;
-    }
-
 private:
 };
 //------------------------------------------------------------------------------
