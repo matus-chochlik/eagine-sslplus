@@ -678,33 +678,46 @@ public:
       collapse_bool_map>
       message_digest_sign_update{*this};
 
-    // message_digest_sign_final
-    struct : func<SSLPAFP(evp_digest_sign_final)> {
-        using func<SSLPAFP(evp_digest_sign_final)>::func;
+    using _message_digest_sign_final_t = c_api::adapted_function<
+      &ssl_api::evp_digest_sign_final,
+      int(message_digest, memory::block, size_t&),
+      collapse_bool_map>;
+
+    struct : _message_digest_sign_final_t {
+        using base = _message_digest_sign_final_t;
+        using base::base;
 
         constexpr auto required_size(message_digest mdc) const noexcept {
-            size_t size{0U};
-            return this->_cnvchkcall(mdc, nullptr, &size)
+            size_t size{0};
+            return base::operator()(mdc, {}, size)
               .replaced_with(span_size(size));
         }
 
         constexpr auto operator()(message_digest mdc, memory::block blk)
           const noexcept {
             auto size = limit_cast<size_t>(blk.size());
-            return this->_cnvchkcall(mdc, blk.data(), &size)
+            return base::operator()(mdc, blk, size)
               .replaced_with(head(blk, span_size(size)));
         }
-    } message_digest_sign_final;
 
-    // message_digest_verify_init
-    struct : func<SSLPAFP(evp_digest_verify_init)> {
-        using func<SSLPAFP(evp_digest_verify_init)>::func;
+    } message_digest_sign_final{*this};
+
+    using _message_digest_verify_init_t = c_api::adapted_function<
+      &ssl_api::evp_digest_verify_init,
+      int(message_digest, pkey_ctx&, message_digest_type, engine, pkey),
+      collapse_bool_map>;
+
+    struct : _message_digest_verify_init_t {
+        using base = _message_digest_verify_init_t;
+        using base::base;
+        using base::operator();
 
         constexpr auto operator()(
           message_digest mdc,
           message_digest_type mdt,
           pkey pky) const noexcept {
-            return this->_cnvchkcall(mdc, nullptr, mdt, nullptr, pky);
+            pkey_ctx pkc{};
+            return base::operator()(mdc, pkc, mdt, {}, pky);
         }
 
         constexpr auto operator()(
@@ -712,9 +725,10 @@ public:
           message_digest_type mdt,
           engine eng,
           pkey pky) const noexcept {
-            return this->_cnvchkcall(mdc, nullptr, mdt, eng, pky);
+            pkey_ctx pkc{};
+            return base::operator()(mdc, pkc, mdt, eng, pky);
         }
-    } message_digest_verify_init;
+    } message_digest_verify_init{*this};
 
     c_api::adapted_function<
       &ssl_api::evp_digest_verify_update,

@@ -9,8 +9,6 @@ namespace eagine::sslplus {
 //------------------------------------------------------------------------------
 template <typename ApiTraits>
 inline basic_ssl_operations<ApiTraits>::basic_ssl_operations(ApiTraits& traits)
-  : ssl_api{traits}
-  , message_digest_sign_final{"message_digest_sign_final", traits, *this}
-  , message_digest_verify_init{"message_digest_verify_init", traits, *this} {}
+  : ssl_api{traits} {}
 //------------------------------------------------------------------------------
 } // namespace eagine::sslplus
