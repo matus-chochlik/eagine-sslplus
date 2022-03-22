@@ -24,10 +24,7 @@ auto main(main_ctx& ctx) -> int {
 
     memory::const_block hash = ssl.sha256_digest(data, cover(temp));
 
-    ctx.log()
-      .info("hash of self")
-      .arg(EAGINE_ID(data), data)
-      .arg(EAGINE_ID(hash), hash);
+    ctx.log().info("hash of self").arg(EAGINE_ID(hash), hash);
 
     return 0;
 }

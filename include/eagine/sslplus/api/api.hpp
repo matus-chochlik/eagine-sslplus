@@ -12,7 +12,6 @@
 #include "object_handle.hpp"
 #include "object_stack.hpp"
 #include <eagine/c_api/adapted_function.hpp>
-#include <eagine/c_api_wrap.hpp>
 #include <eagine/callable_ref.hpp>
 #include <eagine/memory/split_block.hpp>
 #include <eagine/scope_exit.hpp>
