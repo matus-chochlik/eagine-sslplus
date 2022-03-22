@@ -84,6 +84,8 @@ struct make_args_map<
 } // namespace eagine::c_api
 //------------------------------------------------------------------------------
 namespace eagine::sslplus {
+using c_api::adapted_function;
+
 template <typename ApiTraits>
 class basic_ssl_operations : public basic_ssl_c_api<ApiTraits> {
 
@@ -99,155 +101,102 @@ public:
         }
     };
 
-    template <typename W, W ssl_api::*F, typename Signature = typename W::signature>
-    class func;
+    adapted_function<&ssl_api::ui_null, ui_method()> null_ui{*this};
+    adapted_function<&ssl_api::ui_openssl, ui_method()> openssl_ui{*this};
 
-    template <typename W, W ssl_api::*F, typename RVC, typename... Params>
-    class func<W, F, RVC(Params...)>
-      : public wrapped_c_api_function<ssl_api, api_traits, nothing_t, W, F> {
-        using base =
-          wrapped_c_api_function<ssl_api, api_traits, nothing_t, W, F>;
-
-    private:
-        template <typename Res>
-        constexpr auto _check(Res&& res) const noexcept {
-            res.error_code(this->api().err_get_error());
-            return std::forward<Res>(res);
-        }
-
-    protected:
-        template <typename... Args>
-        constexpr auto _chkcall(Args&&... args) const noexcept {
-            return this->_check(this->_call(std::forward<Args>(args)...));
-        }
-
-        using base::_conv;
-
-        template <typename... Args>
-        constexpr auto _cnvchkcall(Args&&... args) const noexcept {
-            return this->_chkcall(_conv(args)...).cast_to(type_identity<RVC>{});
-        }
-
-    public:
-        using base::base;
-
-        constexpr auto operator()(Params... params) const noexcept {
-            return this->_chkcall(_conv(params)...)
-              .cast_to(type_identity<RVC>{});
-        }
-
-        constexpr auto fake() const noexcept {
-            auto result{this->_fake(0)};
-            result.set_unknown_error();
-            return result;
-        }
-    };
-
-    c_api::adapted_function<&ssl_api::ui_null, ui_method()> null_ui{*this};
-    c_api::adapted_function<&ssl_api::ui_openssl, ui_method()> openssl_ui{
+    adapted_function<&ssl_api::engine_load_builtin_engines> load_builtin_engines{
       *this};
 
-    c_api::adapted_function<&ssl_api::engine_load_builtin_engines>
-      load_builtin_engines{*this};
-
-    c_api::adapted_function<&ssl_api::engine_get_first, owned_engine()>
+    adapted_function<&ssl_api::engine_get_first, owned_engine()>
       get_first_engine{*this};
 
-    c_api::adapted_function<&ssl_api::engine_get_last, owned_engine()>
-      get_last_engine{*this};
-
-    c_api::
-      adapted_function<&ssl_api::engine_get_next, owned_engine(owned_engine&)>
-        get_next_engine{*this};
-
-    c_api::
-      adapted_function<&ssl_api::engine_get_prev, owned_engine(owned_engine&)>
-        get_prev_engine{*this};
-
-    c_api::adapted_function<&ssl_api::engine_new, owned_engine()> new_engine{
+    adapted_function<&ssl_api::engine_get_last, owned_engine()> get_last_engine{
       *this};
 
-    c_api::adapted_function<&ssl_api::engine_by_id, owned_engine(string_view)>
+    adapted_function<&ssl_api::engine_get_next, owned_engine(owned_engine&)>
+      get_next_engine{*this};
+
+    adapted_function<&ssl_api::engine_get_prev, owned_engine(owned_engine&)>
+      get_prev_engine{*this};
+
+    adapted_function<&ssl_api::engine_new, owned_engine()> new_engine{*this};
+
+    adapted_function<&ssl_api::engine_by_id, owned_engine(string_view)>
       open_engine{*this};
 
-    c_api::adapted_function<
+    adapted_function<
       &ssl_api::engine_up_ref,
       owned_engine(engine),
       c_api::replaced_with_map<1>>
       copy_engine{*this};
 
-    c_api::adapted_function<
-      &ssl_api::engine_free,
-      int(owned_engine&),
-      collapse_bool_map>
+    adapted_function<&ssl_api::engine_free, int(owned_engine&), collapse_bool_map>
       delete_engine{*this};
 
-    c_api::adapted_function<&ssl_api::engine_init, int(engine), collapse_bool_map>
+    adapted_function<&ssl_api::engine_init, int(engine), collapse_bool_map>
       init_engine{*this};
 
-    c_api::
-      adapted_function<&ssl_api::engine_finish, int(engine), collapse_bool_map>
-        finish_engine{*this};
+    adapted_function<&ssl_api::engine_finish, int(engine), collapse_bool_map>
+      finish_engine{*this};
 
-    c_api::adapted_function<&ssl_api::engine_get_id, string_view(engine)>
-      get_engine_id{*this};
+    adapted_function<&ssl_api::engine_get_id, string_view(engine)> get_engine_id{
+      *this};
 
-    c_api::adapted_function<&ssl_api::engine_get_name, string_view(engine)>
+    adapted_function<&ssl_api::engine_get_name, string_view(engine)>
       get_engine_name{*this};
 
-    c_api::adapted_function<
+    adapted_function<
       &ssl_api::engine_set_default_rsa,
       int(engine),
       collapse_bool_map>
       set_default_rsa{*this};
 
-    c_api::adapted_function<
+    adapted_function<
       &ssl_api::engine_set_default_dsa,
       int(engine),
       collapse_bool_map>
       set_default_dsa{*this};
 
-    c_api::adapted_function<
+    adapted_function<
       &ssl_api::engine_set_default_dh,
       int(engine),
       collapse_bool_map>
       set_default_dh{*this};
 
-    c_api::adapted_function<
+    adapted_function<
       &ssl_api::engine_set_default_rand,
       int(engine),
       collapse_bool_map>
       set_default_rand{*this};
 
-    c_api::adapted_function<
+    adapted_function<
       &ssl_api::engine_set_default_ciphers,
       int(engine),
       collapse_bool_map>
       set_default_ciphers{*this};
 
-    c_api::adapted_function<
+    adapted_function<
       &ssl_api::engine_set_default_digests,
       int(engine),
       collapse_bool_map>
       set_default_digests{*this};
 
-    c_api::adapted_function<
+    adapted_function<
       &ssl_api::engine_load_private_key,
       owned_pkey(engine, string_view, ui_method)>
       load_engine_private_key{*this};
 
-    c_api::adapted_function<
+    adapted_function<
       &ssl_api::engine_load_public_key,
       owned_pkey(engine, string_view)>
       load_engine_public_key{*this};
 
     // ASN1
     // string
-    c_api::
-      adapted_function<&ssl_api::asn1_string_length, span_size_t(asn1_string)>
-        get_string_length{*this};
+    adapted_function<&ssl_api::asn1_string_length, span_size_t(asn1_string)>
+      get_string_length{*this};
 
-    c_api::adapted_function<
+    adapted_function<
       &ssl_api::asn1_string_get0_data,
       const unsigned char*(asn1_string)>
       get_string_data{*this};
@@ -266,17 +215,15 @@ public:
         return as_chars(get_string_block(as));
     }
 
-    c_api::adapted_function<
-      &ssl_api::asn1_integer_get_int64,
-      std::int64_t(asn1_integer)>
+    adapted_function<&ssl_api::asn1_integer_get_int64, std::int64_t(asn1_integer)>
       get_int64{*this};
 
-    c_api::adapted_function<
+    adapted_function<
       &ssl_api::asn1_integer_get_uint64,
       std::uint64_t(asn1_integer)>
       get_uint64{*this};
 
-    using _object_to_text_t = c_api::adapted_function<
+    using _object_to_text_t = adapted_function<
       &ssl_api::obj_obj2txt,
       int(string_span, asn1_object, bool)>;
 
@@ -293,81 +240,69 @@ public:
         }
     } object_to_text{*this};
 
-    c_api::adapted_function<&ssl_api::bio_new, owned_basic_io(basic_io_method)>
+    adapted_function<&ssl_api::bio_new, owned_basic_io(basic_io_method)>
       new_basic_io{*this};
 
-    c_api::adapted_function<
+    adapted_function<
       &ssl_api::bio_new_mem_buf,
       owned_basic_io(memory::const_block)>
       new_block_basic_io{*this};
 
-    c_api::adapted_function<
-      &ssl_api::bio_free,
-      int(owned_basic_io&),
-      collapse_bool_map>
+    adapted_function<&ssl_api::bio_free, int(owned_basic_io&), collapse_bool_map>
       delete_basic_io{*this};
 
-    c_api::adapted_function<
+    adapted_function<
       &ssl_api::bio_free_all,
       int(owned_basic_io&),
       collapse_bool_map>
       delete_all_basic_ios{*this};
 
-    c_api::adapted_function<
-      &ssl_api::rand_bytes,
-      int(memory::block),
-      collapse_bool_map>
+    adapted_function<&ssl_api::rand_bytes, int(memory::block), collapse_bool_map>
       random_bytes{*this};
 
-    c_api::adapted_function<&ssl_api::evp_pkey_up_ref, owned_pkey(pkey)>
-      copy_pkey{*this};
+    adapted_function<&ssl_api::evp_pkey_up_ref, owned_pkey(pkey)> copy_pkey{
+      *this};
 
-    c_api::adapted_function<
-      &ssl_api::evp_pkey_free,
-      int(owned_pkey&),
-      collapse_bool_map>
+    adapted_function<&ssl_api::evp_pkey_free, int(owned_pkey&), collapse_bool_map>
       delete_pkey{*this};
 
-    c_api::adapted_function<&ssl_api::evp_aes_128_ctr, cipher_type()>
+    adapted_function<&ssl_api::evp_aes_128_ctr, cipher_type()>
       cipher_aes_128_ctr{*this};
 
-    c_api::adapted_function<&ssl_api::evp_aes_128_ccm, cipher_type()>
+    adapted_function<&ssl_api::evp_aes_128_ccm, cipher_type()>
       cipher_aes_128_ccm{*this};
 
-    c_api::adapted_function<&ssl_api::evp_aes_128_gcm, cipher_type()>
+    adapted_function<&ssl_api::evp_aes_128_gcm, cipher_type()>
       cipher_aes_128_gcm{*this};
 
-    c_api::adapted_function<&ssl_api::evp_aes_128_xts, cipher_type()>
+    adapted_function<&ssl_api::evp_aes_128_xts, cipher_type()>
       cipher_aes_128_xts{*this};
 
-    c_api::adapted_function<&ssl_api::evp_aes_192_ecb, cipher_type()>
+    adapted_function<&ssl_api::evp_aes_192_ecb, cipher_type()>
       cipher_aes_192_ecb{*this};
 
-    c_api::adapted_function<&ssl_api::evp_aes_192_cbc, cipher_type()>
+    adapted_function<&ssl_api::evp_aes_192_cbc, cipher_type()>
       cipher_aes_192_cbc{*this};
 
-    c_api::adapted_function<&ssl_api::evp_cipher_ctx_new, owned_cipher()>
-      new_cipher{*this};
+    adapted_function<&ssl_api::evp_cipher_ctx_new, owned_cipher()> new_cipher{
+      *this};
 
-    c_api::adapted_function<
+    adapted_function<
       &ssl_api::evp_cipher_ctx_free,
       int(owned_cipher&),
       collapse_bool_map>
       delete_cipher{*this};
 
-    c_api::adapted_function<
-      &ssl_api::evp_cipher_ctx_reset,
-      int(cipher),
-      collapse_bool_map>
+    adapted_function<&ssl_api::evp_cipher_ctx_reset, int(cipher), collapse_bool_map>
       cipher_reset{*this};
 
-    c_api::adapted_function<
+    adapted_function<
       &ssl_api::evp_cipher_init,
       int(cipher, cipher_type, memory::const_block, memory::const_block, bool),
       collapse_bool_map>
       cipher_init{*this};
 
-    c_api::adapted_function<
+    adapted_function<
       &ssl_api::evp_cipher_init_ex,
       int(
         cipher,
@@ -379,7 +314,7 @@ public:
       collapse_bool_map>
       cipher_init_ex{*this};
 
-    using _cipher_update_t = c_api::adapted_function<
+    using _cipher_update_t = adapted_function<
       &ssl_api::evp_cipher_update,
       memory::split_block(cipher, memory::const_block, int&, memory::const_block)>;
 
@@ -396,7 +331,7 @@ public:
         }
     } cipher_update{*this};
 
-    using _cipher_final_t = c_api::adapted_function<
+    using _cipher_final_t = adapted_function<
       &ssl_api::evp_cipher_final,
       memory::split_block(cipher, memory::const_block, int&)>;
 
@@ -411,7 +346,7 @@ public:
         }
     } cipher_final{*this};
 
-    using _cipher_final_ex_t = c_api::adapted_function<
+    using _cipher_final_ex_t = adapted_function<
       &ssl_api::evp_cipher_final_ex,
       memory::split_block(cipher, memory::const_block, int&)>;
 
@@ -426,13 +361,13 @@ public:
         }
     } cipher_final_ex{*this};
 
-    c_api::adapted_function<
+    adapted_function<
       &ssl_api::evp_encrypt_init,
       int(cipher, cipher_type, memory::const_block, memory::const_block, bool),
       collapse_bool_map>
       encrypt_init{*this};
 
-    c_api::adapted_function<
+    adapted_function<
       &ssl_api::evp_encrypt_init_ex,
       int(
         cipher,
@@ -444,7 +379,7 @@ public:
       collapse_bool_map>
       encrypt_init_ex{*this};
 
-    using _encrypt_update_t = c_api::adapted_function<
+    using _encrypt_update_t = adapted_function<
       &ssl_api::evp_encrypt_update,
       memory::split_block(cipher, memory::const_block, int&, memory::const_block)>;
 
@@ -461,7 +396,7 @@ public:
         }
     } encrypt_update{*this};
 
-    using _encrypt_final_t = c_api::adapted_function<
+    using _encrypt_final_t = adapted_function<
       &ssl_api::evp_encrypt_final,
       memory::split_block(cipher, memory::const_block, int&)>;
 
@@ -476,7 +411,7 @@ public:
         }
     } encrypt_final{*this};
 
-    using _encrypt_final_ex_t = c_api::adapted_function<
+    using _encrypt_final_ex_t = adapted_function<
       &ssl_api::evp_encrypt_final_ex,
       memory::split_block(cipher, memory::const_block, int&)>;
 
@@ -491,13 +426,13 @@ public:
         }
     } encrypt_final_ex{*this};
 
-    c_api::adapted_function<
+    adapted_function<
       &ssl_api::evp_decrypt_init,
       int(cipher, cipher_type, memory::const_block, memory::const_block, bool),
       collapse_bool_map>
       decrypt_init{*this};
 
-    c_api::adapted_function<
+    adapted_function<
       &ssl_api::evp_decrypt_init_ex,
       int(
         cipher,
@@ -509,7 +444,7 @@ public:
       collapse_bool_map>
       decrypt_init_ex{*this};
 
-    using _decrypt_update_t = c_api::adapted_function<
+    using _decrypt_update_t = adapted_function<
       &ssl_api::evp_decrypt_update,
       memory::split_block(cipher, memory::const_block, int&, memory::const_block)>;
 
@@ -526,7 +461,7 @@ public:
         }
     } decrypt_update{*this};
 
-    using _decrypt_final_t = c_api::adapted_function<
+    using _decrypt_final_t = adapted_function<
       &ssl_api::evp_decrypt_final,
       memory::split_block(cipher, memory::const_block, int&)>;
 
@@ -541,7 +476,7 @@ public:
         }
     } decrypt_final{*this};
 
-    using _decrypt_final_ex_t = c_api::adapted_function<
+    using _decrypt_final_ex_t = adapted_function<
       &ssl_api::evp_decrypt_final_ex,
       memory::split_block(cipher, memory::const_block, int&)>;
 
@@ -557,65 +492,64 @@ public:
     } decrypt_final_ex{*this};
 
     // message_digest
-    c_api::adapted_function<&ssl_api::evp_md_null, message_digest_type()>
+    adapted_function<&ssl_api::evp_md_null, message_digest_type()>
       message_digest_noop{*this};
 
-    c_api::adapted_function<&ssl_api::evp_md5, message_digest_type()>
+    adapted_function<&ssl_api::evp_md5, message_digest_type()>
       message_digest_md5{*this};
 
-    c_api::adapted_function<&ssl_api::evp_sha1, message_digest_type()>
+    adapted_function<&ssl_api::evp_sha1, message_digest_type()>
       message_digest_sha1{*this};
 
-    c_api::adapted_function<&ssl_api::evp_sha224, message_digest_type()>
+    adapted_function<&ssl_api::evp_sha224, message_digest_type()>
       message_digest_sha224{*this};
 
-    c_api::adapted_function<&ssl_api::evp_sha256, message_digest_type()>
+    adapted_function<&ssl_api::evp_sha256, message_digest_type()>
       message_digest_sha256{*this};
 
-    c_api::adapted_function<&ssl_api::evp_sha384, message_digest_type()>
+    adapted_function<&ssl_api::evp_sha384, message_digest_type()>
       message_digest_sha384{*this};
 
-    c_api::adapted_function<&ssl_api::evp_sha512, message_digest_type()>
+    adapted_function<&ssl_api::evp_sha512, message_digest_type()>
       message_digest_sha512{*this};
 
-    c_api::
-      adapted_function<&ssl_api::evp_md_size, span_size_t(message_digest_type)>
-        message_digest_size{*this};
+    adapted_function<&ssl_api::evp_md_size, span_size_t(message_digest_type)>
+      message_digest_size{*this};
 
-    c_api::adapted_function<&ssl_api::evp_md_ctx_new, owned_message_digest()>
+    adapted_function<&ssl_api::evp_md_ctx_new, owned_message_digest()>
       new_message_digest{*this};
 
-    c_api::adapted_function<
+    adapted_function<
       &ssl_api::evp_md_ctx_free,
       int(owned_message_digest&),
       collapse_bool_map>
       delete_message_digest{*this};
 
-    c_api::adapted_function<
+    adapted_function<
       &ssl_api::evp_md_ctx_reset,
       int(message_digest),
       collapse_bool_map>
       message_digest_reset{*this};
 
-    c_api::adapted_function<
+    adapted_function<
       &ssl_api::evp_digest_init,
       int(message_digest, message_digest_type),
       collapse_bool_map>
       message_digest_init{*this};
 
-    c_api::adapted_function<
+    adapted_function<
       &ssl_api::evp_digest_init_ex,
       int(message_digest, message_digest_type, engine),
       collapse_bool_map>
       message_digest_init_ex{*this};
 
-    c_api::adapted_function<
+    adapted_function<
       &ssl_api::evp_digest_update,
       int(message_digest, memory::const_block),
       collapse_bool_map>
       message_digest_update{*this};
 
-    using _message_digest_final_t = c_api::adapted_function<
+    using _message_digest_final_t = adapted_function<
       &ssl_api::evp_digest_final,
       memory::block(message_digest, memory::block, unsigned int&)>;
 
@@ -630,7 +564,7 @@ public:
         }
     } message_digest_final{*this};
 
-    using _message_digest_final_ex_t = c_api::adapted_function<
+    using _message_digest_final_ex_t = adapted_function<
       &ssl_api::evp_digest_final_ex,
       memory::block(message_digest, memory::block, unsigned int&)>;
 
@@ -645,7 +579,7 @@ public:
         }
     } message_digest_final_ex{*this};
 
-    using _message_digest_sign_init_t = c_api::adapted_function<
+    using _message_digest_sign_init_t = adapted_function<
       &ssl_api::evp_digest_sign_init,
       pkey_ctx(message_digest, pkey_ctx&, message_digest_type, engine, pkey)>;
 
@@ -672,13 +606,13 @@ public:
         }
     } message_digest_sign_init{*this};
 
-    c_api::adapted_function<
+    adapted_function<
       &ssl_api::evp_digest_sign_update,
       int(message_digest, memory::const_block),
       collapse_bool_map>
       message_digest_sign_update{*this};
 
-    using _message_digest_sign_final_t = c_api::adapted_function<
+    using _message_digest_sign_final_t = adapted_function<
       &ssl_api::evp_digest_sign_final,
       int(message_digest, memory::block, size_t&),
       collapse_bool_map>;
@@ -702,7 +636,7 @@ public:
 
     } message_digest_sign_final{*this};
 
-    using _message_digest_verify_init_t = c_api::adapted_function<
+    using _message_digest_verify_init_t = adapted_function<
       &ssl_api::evp_digest_verify_init,
       int(message_digest, pkey_ctx&, message_digest_type, engine, pkey),
       collapse_bool_map>;
@@ -730,22 +664,22 @@ public:
         }
     } message_digest_verify_init{*this};
 
-    c_api::adapted_function<
+    adapted_function<
       &ssl_api::evp_digest_verify_update,
       int(message_digest, memory::const_block),
       collapse_bool_map>
       message_digest_verify_update{*this};
 
-    c_api::adapted_function<
+    adapted_function<
       &ssl_api::evp_digest_verify_final,
       int(message_digest, memory::const_block),
       collapse_bool_map>
       message_digest_verify_final{*this};
 
-    c_api::adapted_function<&ssl_api::x509_store_ctx_new, owned_x509_store_ctx()>
+    adapted_function<&ssl_api::x509_store_ctx_new, owned_x509_store_ctx()>
       new_x509_store_ctx{*this};
 
-    using _init_x509_store_ctx_t = c_api::adapted_function<
+    using _init_x509_store_ctx_t = adapted_function<
       &ssl_api::x509_store_ctx_init,
       int(x509_store_ctx, x509_store, x509, const object_stack<x509>&),
       collapse_bool_map>;
@@ -762,122 +696,120 @@ public:
 
     } init_x509_store_ctx{*this};
 
-    c_api::adapted_function<
+    adapted_function<
       &ssl_api::x509_store_ctx_set0_trusted_stack,
       int(x509_store_ctx, const object_stack<x509>&),
       collapse_bool_map>
       set_x509_store_trusted_stack{*this};
 
-    c_api::adapted_function<
+    adapted_function<
       &ssl_api::x509_store_ctx_set0_verified_chain,
       int(x509_store_ctx, const object_stack<x509>&),
       collapse_bool_map>
       set_x509_store_verified_chain{*this};
 
-    c_api::adapted_function<
+    adapted_function<
       &ssl_api::x509_store_ctx_set0_untrusted,
       int(x509_store_ctx, const object_stack<x509>&),
       collapse_bool_map>
       set_x509_store_untrusted{*this};
 
-    c_api::adapted_function<
+    adapted_function<
       &ssl_api::x509_store_ctx_cleanup,
       int(x509_store_ctx),
       collapse_bool_map>
       cleanup_x509_store_ctx{*this};
 
-    c_api::adapted_function<
+    adapted_function<
       &ssl_api::x509_store_ctx_free,
       int(owned_x509_store_ctx&),
       collapse_bool_map>
       delete_x509_store_ctx{*this};
 
-    c_api::adapted_function<
+    adapted_function<
       &ssl_api::x509_verify_cert,
       int(x509_store_ctx),
       collapse_bool_map>
       x509_verify_certificate{*this};
 
-    c_api::adapted_function<&ssl_api::x509_store_new, owned_x509_store()>
+    adapted_function<&ssl_api::x509_store_new, owned_x509_store()>
       new_x509_store{*this};
 
-    c_api::adapted_function<
+    adapted_function<
       &ssl_api::x509_store_up_ref,
       owned_x509_store(x509_store),
       c_api::replaced_with_map<1>>
       copy_x509_store{*this};
 
-    c_api::adapted_function<
+    adapted_function<
       &ssl_api::x509_store_free,
       int(owned_x509_store&),
       collapse_bool_map>
       delete_x509_store{*this};
 
-    c_api::adapted_function<
+    adapted_function<
       &ssl_api::x509_store_add_cert,
       int(x509_store, x509),
       collapse_bool_map>
       add_cert_into_x509_store{*this};
 
-    c_api::adapted_function<
+    adapted_function<
       &ssl_api::x509_store_add_crl,
       int(x509_store, x509_crl),
       collapse_bool_map>
       add_crl_into_x509_store{*this};
 
-    c_api::adapted_function<
+    adapted_function<
       &ssl_api::x509_store_load_locations,
       int(x509_store, string_view),
       collapse_bool_map>
       load_into_x509_store{*this};
 
-    c_api::adapted_function<&ssl_api::x509_crl_new, owned_x509_crl()>
-      new_x509_crl{*this};
+    adapted_function<&ssl_api::x509_crl_new, owned_x509_crl()> new_x509_crl{
+      *this};
 
-    c_api::adapted_function<
+    adapted_function<
       &ssl_api::x509_crl_free,
       int(owned_x509_crl&),
       collapse_bool_map>
       delete_x509_crl{*this};
 
-    c_api::adapted_function<&ssl_api::x509_new, owned_x509()> new_x509{*this};
+    adapted_function<&ssl_api::x509_new, owned_x509()> new_x509{*this};
 
-    c_api::adapted_function<&ssl_api::x509_get_pubkey, owned_pkey(x509)>
+    adapted_function<&ssl_api::x509_get_pubkey, owned_pkey(x509)>
       get_x509_pubkey{*this};
 
-    c_api::adapted_function<&ssl_api::x509_get0_serial_number, asn1_integer(x509)>
+    adapted_function<&ssl_api::x509_get0_serial_number, asn1_integer(x509)>
       get_x509_serial_number{*this};
 
-    c_api::adapted_function<&ssl_api::x509_get_issuer_name, x509_name(x509)>
+    adapted_function<&ssl_api::x509_get_issuer_name, x509_name(x509)>
       get_x509_issuer_name{*this};
 
-    c_api::adapted_function<&ssl_api::x509_get_subject_name, x509_name(x509)>
+    adapted_function<&ssl_api::x509_get_subject_name, x509_name(x509)>
       get_x509_subject_name{*this};
 
-    c_api::
-      adapted_function<&ssl_api::x509_free, int(owned_x509&), collapse_bool_map>
-        delete_x509{*this};
+    adapted_function<&ssl_api::x509_free, int(owned_x509&), collapse_bool_map>
+      delete_x509{*this};
 
-    c_api::
-      adapted_function<&ssl_api::x509_name_entry_count, span_size_t(x509_name)>
-        get_name_entry_count{*this};
+    adapted_function<&ssl_api::x509_name_entry_count, span_size_t(x509_name)>
+      get_name_entry_count{*this};
 
-    c_api::adapted_function<
+    adapted_function<
       &ssl_api::x509_name_get_entry,
       x509_name_entry(x509_name, span_size_t)>
       get_name_entry{*this};
 
-    c_api::adapted_function<
+    adapted_function<
       &ssl_api::x509_name_entry_get_object,
       asn1_object(x509_name_entry)>
       get_name_entry_object{*this};
 
-    c_api::adapted_function<
+    adapted_function<
       &ssl_api::x509_name_entry_get_data,
       asn1_string(x509_name_entry)>
       get_name_entry_data{*this};
 
-    using _read_bio_private_key_t = c_api::adapted_function<
+    using _read_bio_private_key_t = adapted_function<
       &ssl_api::pem_read_bio_private_key,
       owned_pkey(basic_io, pkey&, password_callback)>;
 
@@ -898,7 +830,7 @@ public:
         }
     } read_bio_private_key{*this};
 
-    using _read_bio_public_key_t = c_api::adapted_function<
+    using _read_bio_public_key_t = adapted_function<
       &ssl_api::pem_read_bio_pubkey,
       owned_pkey(basic_io, pkey&, password_callback)>;
 
@@ -919,7 +851,7 @@ public:
         }
     } read_bio_public_key{*this};
 
-    using _read_bio_x509_crl_t = c_api::adapted_function<
+    using _read_bio_x509_crl_t = adapted_function<
       &ssl_api::pem_read_bio_x509_crl,
       owned_x509_crl(basic_io, x509_crl&, password_callback)>;
 
@@ -940,7 +872,7 @@ public:
         }
     } read_bio_x509_crl{*this};
 
-    using _read_bio_x509_t = c_api::adapted_function<
+    using _read_bio_x509_t = adapted_function<
       &ssl_api::pem_read_bio_x509,
       owned_x509(basic_io, x509&, password_callback)>;
 
@@ -961,7 +893,8 @@ public:
         }
     } read_bio_x509{*this};
 
-    basic_ssl_operations(api_traits& traits);
+    basic_ssl_operations(api_traits& traits)
+      : ssl_api{traits} {}
 };
 //------------------------------------------------------------------------------
 #undef SSLPAFP

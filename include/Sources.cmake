@@ -21,7 +21,6 @@ set(HEADERS
 
 set(PUB_INLS
     eagine/sslplus/api/c_api.inl
-    eagine/sslplus/api/api.inl
     eagine/sslplus/api.inl
 )
 
