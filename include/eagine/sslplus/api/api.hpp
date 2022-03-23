@@ -19,8 +19,6 @@
 
 namespace eagine::sslplus {
 //------------------------------------------------------------------------------
-#define SSLPAFP(FUNC) decltype(ssl_api::FUNC), &ssl_api::FUNC
-//------------------------------------------------------------------------------
 class password_callback {
 public:
     constexpr password_callback() noexcept = default;
@@ -895,8 +893,6 @@ public:
     basic_ssl_operations(api_traits& traits)
       : ssl_api{traits} {}
 };
-//------------------------------------------------------------------------------
-#undef SSLPAFP
 //------------------------------------------------------------------------------
 } // namespace eagine::sslplus
 
