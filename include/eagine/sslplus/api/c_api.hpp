@@ -26,7 +26,10 @@ namespace eagine::sslplus {
 //------------------------------------------------------------------------------
 template <typename ApiTraits>
 struct basic_ssl_c_api {
+private:
+    ApiTraits& _traits;
 
+public:
     using this_api = basic_ssl_c_api;
     using api_traits = ApiTraits;
 
@@ -696,6 +699,10 @@ struct basic_ssl_c_api {
       pem_read_bio_x509;
 
     basic_ssl_c_api(api_traits& traits);
+
+    auto traits() noexcept -> api_traits& {
+        return _traits;
+    }
 };
 //------------------------------------------------------------------------------
 using ssl_c_api = basic_ssl_c_api<ssl_api_traits>;
