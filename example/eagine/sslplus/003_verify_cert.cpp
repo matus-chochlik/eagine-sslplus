@@ -5,6 +5,7 @@
 /// See accompanying file LICENSE_1_0.txt or copy at
 ///  http://www.boost.org/LICENSE_1_0.txt
 ///
+#include <eagine/console/console.hpp>
 #include <eagine/file_contents.hpp>
 #include <eagine/logging/logger.hpp>
 #include <eagine/main.hpp>
@@ -38,8 +39,10 @@ auto main(main_ctx& ctx) -> int {
             if(ssl.certificate_subject_name_has_entry_value(
                  cert, "organizationName", "OGLplus.org")) {
                 if(const auto serial{ssl.get_x509_serial_number(cert)}) {
-                    ctx.log()
-                      .info("successfully verified certificate ${certPath}")
+                    ctx.cio()
+                      .print(
+                        EAGINE_ID(ssl),
+                        "successfully verified certificate ${certPath}")
                       .arg(EAGINE_ID(certPath), EAGINE_ID(FsPath), cert_path)
                       .arg(
                         EAGINE_ID(serialNo),

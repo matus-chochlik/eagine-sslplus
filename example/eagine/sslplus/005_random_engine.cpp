@@ -5,6 +5,7 @@
 /// See accompanying file LICENSE_1_0.txt or copy at
 ///  http://www.boost.org/LICENSE_1_0.txt
 ///
+#include <eagine/console/console.hpp>
 #include <eagine/logging/logger.hpp>
 #include <eagine/main.hpp>
 #include <eagine/sslplus/openssl.hpp>
@@ -33,7 +34,10 @@ auto main(main_ctx& ctx) -> int {
             if(const auto set_result{ssl.set_default_rand(engine)}) {
                 std::array<byte, 256> temp{};
                 if(const auto rand_result{ssl.random_bytes(cover(temp))}) {
-                    log.info("got ${size} random bytes from ${id}")
+                    ctx.cio()
+                      .print(
+                        EAGINE_ID(ssl),
+                        "got ${size} random bytes from engine ${id}")
                       .arg(EAGINE_ID(size), temp.size())
                       .arg(EAGINE_ID(id), engine_id)
                       .arg(EAGINE_ID(bytes), view(temp));

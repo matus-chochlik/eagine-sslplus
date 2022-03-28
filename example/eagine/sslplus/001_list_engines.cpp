@@ -5,8 +5,9 @@
 /// See accompanying file LICENSE_1_0.txt or copy at
 ///  http://www.boost.org/LICENSE_1_0.txt
 ///
-#include <eagine/logging/logger.hpp>
+#include <eagine/console/console.hpp>
 #include <eagine/main.hpp>
+#include <eagine/main_ctx_object.hpp>
 #include <eagine/sslplus/openssl.hpp>
 
 #include <eagine/sslplus/api.hpp>
@@ -18,13 +19,13 @@ namespace eagine {
 auto main(main_ctx& ctx) -> int {
 
     const sslplus::ssl_api ssl;
+    main_ctx_object out{EAGINE_ID(ssl), ctx};
 
     ssl.load_builtin_engines();
 
-    const auto func = [&ctx, &ssl](sslplus::engine eng) {
+    const auto func = [&out, &ssl](sslplus::engine eng) {
         const string_view na("N/A");
-        ctx.log()
-          .info("found engine")
+        out.cio_print("engine ${id}: '${name}'")
           .arg(EAGINE_ID(id), extract_or(ssl.get_engine_id(eng), na))
           .arg(EAGINE_ID(name), extract_or(ssl.get_engine_name(eng), na));
     };

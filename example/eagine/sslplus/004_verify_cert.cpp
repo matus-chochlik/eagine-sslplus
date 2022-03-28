@@ -5,6 +5,7 @@
 /// See accompanying file LICENSE_1_0.txt or copy at
 ///  http://www.boost.org/LICENSE_1_0.txt
 ///
+#include <eagine/console/console.hpp>
 #include <eagine/embed.hpp>
 #include <eagine/file_contents.hpp>
 #include <eagine/logging/logger.hpp>
@@ -39,8 +40,10 @@ auto main(main_ctx& ctx) -> int {
                 if(const auto subname{ssl.get_x509_subject_name(cert)}) {
                     const auto count{
                       extract(ssl.get_name_entry_count(extract(subname)))};
-                    ctx.log()
-                      .info("successfully verified certificate ${certPath}")
+                    ctx.cio()
+                      .print(
+                        EAGINE_ID(ssl),
+                        "successfully verified certificate ${certPath}")
                       .arg(EAGINE_ID(certPath), EAGINE_ID(FsPath), cert_path)
                       .arg(EAGINE_ID(snEntCount), count);
                     for(const auto index : integer_range(count)) {
@@ -55,8 +58,10 @@ auto main(main_ctx& ctx) -> int {
                             const auto name{ssl.object_to_text(
                               cover(namebuf), extract(object))};
 
-                            ctx.log()
-                              .info("certificate common name entry ${index}:")
+                            ctx.cio()
+                              .print(
+                                EAGINE_ID(ssl),
+                                "certificate common name entry ${index}:")
                               .arg(EAGINE_ID(index), index)
                               .arg(EAGINE_ID(attribute), name)
                               .arg(
