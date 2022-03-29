@@ -8,6 +8,7 @@
 #ifndef EAGINE_SSLPLUS_RESOURCES_HPP
 #define EAGINE_SSLPLUS_RESOURCES_HPP
 
+#include "config/basic.hpp"
 #include <eagine/main_ctx_fwd.hpp>
 #include <eagine/memory/block.hpp>
 

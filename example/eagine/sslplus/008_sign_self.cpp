@@ -5,6 +5,7 @@
 /// See accompanying file LICENSE_1_0.txt or copy at
 ///  http://www.boost.org/LICENSE_1_0.txt
 ///
+#include <eagine/console/console.hpp>
 #include <eagine/embed.hpp>
 #include <eagine/file_contents.hpp>
 #include <eagine/logging/logger.hpp>
@@ -51,13 +52,14 @@ auto main(main_ctx& ctx) -> int {
                     if(const auto sig{
                          ssl.sign_data_digest(data, cover(temp), md, pkey)}) {
 
-                        ctx.log()
-                          .info("signature of self")
-                          .arg(EAGINE_ID(size), sig.size())
-                          .arg(EAGINE_ID(sig), memory::const_block{sig});
+                        ctx.cio()
+                          .print(EAGINE_ID(ssl), "signature of self (${size})")
+                          .arg(EAGINE_ID(size), EAGINE_ID(ByseSize), sig.size())
+                          .arg(EAGINE_ID(signature), memory::const_block{sig});
 
                         if(ssl.verify_data_digest(data, sig, md, pkey)) {
-                            ctx.log().info("signature verified");
+                            ctx.cio().print(
+                              EAGINE_ID(ssl), "signature verified");
                         } else {
                             log.error("failed to verify data signature")
                               .arg(EAGINE_ID(keyId), key_id)

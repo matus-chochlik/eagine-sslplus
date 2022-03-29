@@ -10,6 +10,7 @@
 
 #include "api_traits.hpp"
 #include "config.hpp"
+#include <eagine/c_api/function.hpp>
 #include <eagine/nothing.hpp>
 #include <eagine/preprocessor.hpp>
 
@@ -25,7 +26,10 @@ namespace eagine::sslplus {
 //------------------------------------------------------------------------------
 template <typename ApiTraits>
 struct basic_ssl_c_api {
+private:
+    ApiTraits& _traits;
 
+public:
     using this_api = basic_ssl_c_api;
     using api_traits = ApiTraits;
 
@@ -57,14 +61,20 @@ struct basic_ssl_c_api {
 
     using x509_store_ctx_verify_callback_type = int(int, x509_store_ctx_type*);
 
+    template <typename Result>
+    constexpr auto check_result(Result res) const noexcept {
+        res.error_code(this->err_get_error());
+        return res;
+    }
+
 #ifdef __GNUC__
     EAGINE_DIAG_PUSH()
     EAGINE_DIAG_OFF(address)
 #endif
     template <
       typename Signature,
-      c_api_function_ptr<api_traits, nothing_t, Signature> Function>
-    using ssl_api_function = eagine::opt_c_api_function<
+      c_api::function_ptr<api_traits, nothing_t, Signature> Function>
+    using ssl_api_function = c_api::opt_function<
       api_traits,
       nothing_t,
       Signature,
@@ -689,6 +699,10 @@ struct basic_ssl_c_api {
       pem_read_bio_x509;
 
     basic_ssl_c_api(api_traits& traits);
+
+    auto traits() noexcept -> api_traits& {
+        return _traits;
+    }
 };
 //------------------------------------------------------------------------------
 using ssl_c_api = basic_ssl_c_api<ssl_api_traits>;

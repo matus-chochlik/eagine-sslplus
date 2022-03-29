@@ -10,6 +10,7 @@
 
 #include "object_handle.hpp"
 #include <eagine/assert.hpp>
+#include <eagine/c_api/parameter_map.hpp>
 #include <utility>
 
 namespace eagine::sslplus {
@@ -154,7 +155,7 @@ public:
 //------------------------------------------------------------------------------
 template <typename Tag, typename T>
 class object_stack<basic_handle<Tag, T*, nullptr>>
-  : object_stack_base<basic_handle<Tag, T*, nullptr>> {
+  : public object_stack_base<basic_handle<Tag, T*, nullptr>> {
 
     using base = object_stack_base<basic_handle<Tag, T*, nullptr>>;
     using base::_api;
@@ -172,7 +173,7 @@ public:
     auto operator=(const object_stack&) = delete;
 
     ~object_stack() noexcept {
-        _api.free()(this->_top);
+        _api().free(this->_top);
     }
 
     auto push(wrapper obj) noexcept -> auto& {
@@ -189,7 +190,7 @@ public:
 //------------------------------------------------------------------------------
 template <typename Tag, typename T>
 class object_stack<basic_owned_handle<Tag, T*, nullptr>>
-  : object_stack_base<basic_handle<Tag, T*, nullptr>> {
+  : public object_stack_base<basic_handle<Tag, T*, nullptr>> {
 
     using base = object_stack_base<basic_handle<Tag, T*, nullptr>>;
     using base::_api;
@@ -222,5 +223,32 @@ public:
 #endif
 //------------------------------------------------------------------------------
 } // namespace eagine::sslplus
+namespace eagine::c_api {
+
+template <std::size_t I, typename Stack, typename Tag, typename T>
+struct make_arg_map<
+  I,
+  I,
+  Stack*,
+  sslplus::object_stack<basic_handle<Tag, T*, nullptr>>> {
+    template <typename... P>
+    constexpr auto operator()(size_constant<I> i, P&&... p) const noexcept {
+        return trivial_map{}(i, std::forward<P>(p)...).native();
+    }
+};
+
+template <std::size_t I, typename Stack, typename Tag, typename T>
+struct make_arg_map<
+  I,
+  I,
+  Stack*,
+  sslplus::object_stack<basic_owned_handle<Tag, T*, nullptr>>> {
+    template <typename... P>
+    constexpr auto operator()(size_constant<I> i, P&&... p) const noexcept {
+        return trivial_map{}(i, std::forward<P>(p)...).native();
+    }
+};
+//------------------------------------------------------------------------------
+} // namespace eagine::c_api
 
 #endif // EAGINE_SSLPLUS_API_OBJECT_STACK_HPP

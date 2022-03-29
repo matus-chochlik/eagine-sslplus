@@ -5,10 +5,7 @@
 /// See accompanying file LICENSE_1_0.txt or copy at
 ///  http://www.boost.org/LICENSE_1_0.txt
 ///
-// clang-format off
 #include <eagine/sslplus/api/c_api.inl>
-#include <eagine/sslplus/api/api.inl>
-// clang-format on
 
 namespace eagine::sslplus {
 //------------------------------------------------------------------------------
@@ -22,7 +19,7 @@ inline auto basic_ssl_api<ApiTraits>::data_digest(
 
         if(dst.size() >= span_size(req_size)) {
             if(ok mdctx{this->new_message_digest()}) {
-                auto cleanup{this->delete_message_digest.raii(mdctx)};
+                const auto cleanup{this->delete_message_digest.raii(mdctx)};
 
                 this->message_digest_init(mdctx, mdtype);
                 this->message_digest_update(mdctx, data);
@@ -42,7 +39,7 @@ inline auto basic_ssl_api<ApiTraits>::sign_data_digest(
   const pkey pky) const noexcept -> memory::block {
     if(mdtype && pky) {
         if(ok mdctx{this->new_message_digest()}) {
-            auto cleanup{this->delete_message_digest.raii(mdctx)};
+            const auto cleanup{this->delete_message_digest.raii(mdctx)};
 
             if(this->message_digest_sign_init(mdctx, mdtype, pky)) {
                 if(this->message_digest_sign_update(mdctx, data)) {
@@ -64,12 +61,11 @@ inline auto basic_ssl_api<ApiTraits>::verify_data_digest(
   const pkey pky) const noexcept -> bool {
     if(mdtype && pky) {
         if(ok mdctx{this->new_message_digest()}) {
-            auto cleanup{this->delete_message_digest.raii(mdctx)};
+            const auto cleanup{this->delete_message_digest.raii(mdctx)};
 
             if(this->message_digest_verify_init(mdctx, mdtype, pky)) {
                 if(this->message_digest_verify_update(mdctx, data)) {
-                    return extract_or(
-                      this->message_digest_verify_final(mdctx, sig), false);
+                    return bool(this->message_digest_verify_final(mdctx, sig));
                 }
             }
         }
@@ -82,7 +78,7 @@ auto basic_ssl_api<ApiTraits>::parse_private_key(
   const memory::const_block blk,
   password_callback get_passwd) const noexcept -> combined_result<owned_pkey> {
     if(ok mbio{this->new_block_basic_io(blk)}) {
-        auto del_bio{this->delete_basic_io.raii(mbio)};
+        const auto del_bio{this->delete_basic_io.raii(mbio)};
 
         return this->read_bio_private_key(mbio, get_passwd);
     }
@@ -95,7 +91,7 @@ auto basic_ssl_api<ApiTraits>::parse_public_key(
   const memory::const_block blk,
   password_callback get_passwd) const noexcept -> combined_result<owned_pkey> {
     if(ok mbio{this->new_block_basic_io(blk)}) {
-        auto del_bio{this->delete_basic_io.raii(mbio)};
+        const auto del_bio{this->delete_basic_io.raii(mbio)};
 
         return this->read_bio_public_key(mbio, get_passwd);
     }
@@ -108,7 +104,7 @@ auto basic_ssl_api<ApiTraits>::parse_x509(
   const memory::const_block blk,
   password_callback get_passwd) const noexcept -> combined_result<owned_x509> {
     if(ok mbio{this->new_block_basic_io(blk)}) {
-        auto del_bio{this->delete_basic_io.raii(mbio)};
+        const auto del_bio{this->delete_basic_io.raii(mbio)};
 
         return this->read_bio_x509(mbio, get_passwd);
     }
@@ -121,11 +117,11 @@ auto basic_ssl_api<ApiTraits>::ca_verify_certificate(
   const string_view ca_file_path,
   const x509 cert) const noexcept -> bool {
     if(ok store{this->new_x509_store()}) {
-        auto del_store{this->delete_x509_store.raii(store)};
+        const auto del_store{this->delete_x509_store.raii(store)};
 
         if(this->load_into_x509_store(store, ca_file_path)) {
             if(ok vrfy_ctx{this->new_x509_store_ctx()}) {
-                auto del_vrfy{this->delete_x509_store_ctx.raii(vrfy_ctx)};
+                const auto del_vrfy{this->delete_x509_store_ctx.raii(vrfy_ctx)};
 
                 if(this->init_x509_store_ctx(vrfy_ctx, store, cert)) {
                     if(ok verify_res{this->x509_verify_certificate(vrfy_ctx)}) {
@@ -143,11 +139,11 @@ auto basic_ssl_api<ApiTraits>::ca_verify_certificate(
   const x509 ca_cert,
   const x509 cert) const noexcept -> bool {
     if(ok store{this->new_x509_store()}) {
-        auto del_store{this->delete_x509_store.raii(store)};
+        const auto del_store{this->delete_x509_store.raii(store)};
 
         if(this->add_cert_into_x509_store(store, ca_cert)) {
             if(ok vrfy_ctx{this->new_x509_store_ctx()}) {
-                auto del_vrfy{this->delete_x509_store_ctx.raii(vrfy_ctx)};
+                const auto del_vrfy{this->delete_x509_store_ctx.raii(vrfy_ctx)};
 
                 if(this->init_x509_store_ctx(vrfy_ctx, store, cert)) {
                     if(ok verify_res{this->x509_verify_certificate(vrfy_ctx)}) {

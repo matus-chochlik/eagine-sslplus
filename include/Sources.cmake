@@ -4,6 +4,7 @@
 #  http://www.boost.org/LICENSE_1_0.txt
 #
 set(HEADERS
+    eagine/sslplus/config/basic.hpp
     eagine/sslplus/api/api.hpp
     eagine/sslplus/api/api_traits.hpp
     eagine/sslplus/api/c_api.hpp
@@ -20,7 +21,6 @@ set(HEADERS
 
 set(PUB_INLS
     eagine/sslplus/api/c_api.inl
-    eagine/sslplus/api/api.inl
     eagine/sslplus/api.inl
 )
 
