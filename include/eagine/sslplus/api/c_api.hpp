@@ -61,8 +61,8 @@ public:
 
     using x509_store_ctx_verify_callback_type = int(int, x509_store_ctx_type*);
 
-    template <typename Result>
-    constexpr auto check_result(Result res) const noexcept {
+    template <typename Result, typename... U>
+    constexpr auto check_result(Result res, U&&...) const noexcept {
         res.error_code(this->err_get_error());
         return res;
     }
