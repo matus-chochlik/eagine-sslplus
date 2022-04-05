@@ -127,7 +127,7 @@ public:
       c_api::replaced_with_map<1>>
       copy_engine{*this};
 
-    adapted_function<&ssl_api::engine_free, int(owned_engine&), collapse_bool_map>
+    adapted_function<&ssl_api::engine_free, int(owned_engine), collapse_bool_map>
       delete_engine{*this};
 
     adapted_function<&ssl_api::engine_init, int(engine), collapse_bool_map>
@@ -245,13 +245,10 @@ public:
       owned_basic_io(memory::const_block)>
       new_block_basic_io{*this};
 
-    adapted_function<&ssl_api::bio_free, int(owned_basic_io&), collapse_bool_map>
+    adapted_function<&ssl_api::bio_free, int(owned_basic_io), collapse_bool_map>
       delete_basic_io{*this};
 
-    adapted_function<
-      &ssl_api::bio_free_all,
-      int(owned_basic_io&),
-      collapse_bool_map>
+    adapted_function<&ssl_api::bio_free_all, int(owned_basic_io), collapse_bool_map>
       delete_all_basic_ios{*this};
 
     adapted_function<&ssl_api::rand_bytes, int(memory::block), collapse_bool_map>
@@ -260,7 +257,7 @@ public:
     adapted_function<&ssl_api::evp_pkey_up_ref, owned_pkey(pkey)> copy_pkey{
       *this};
 
-    adapted_function<&ssl_api::evp_pkey_free, int(owned_pkey&), collapse_bool_map>
+    adapted_function<&ssl_api::evp_pkey_free, int(owned_pkey), collapse_bool_map>
       delete_pkey{*this};
 
     adapted_function<&ssl_api::evp_aes_128_ctr, cipher_type()>
@@ -286,7 +283,7 @@ public:
 
     adapted_function<
       &ssl_api::evp_cipher_ctx_free,
-      int(owned_cipher&),
+      int(owned_cipher),
       collapse_bool_map>
       delete_cipher{*this};
 
@@ -518,7 +515,7 @@ public:
 
     adapted_function<
       &ssl_api::evp_md_ctx_free,
-      int(owned_message_digest&),
+      int(owned_message_digest),
       collapse_bool_map>
       delete_message_digest{*this};
 
@@ -719,7 +716,7 @@ public:
 
     adapted_function<
       &ssl_api::x509_store_ctx_free,
-      int(owned_x509_store_ctx&),
+      int(owned_x509_store_ctx),
       collapse_bool_map>
       delete_x509_store_ctx{*this};
 
@@ -740,7 +737,7 @@ public:
 
     adapted_function<
       &ssl_api::x509_store_free,
-      int(owned_x509_store&),
+      int(owned_x509_store),
       collapse_bool_map>
       delete_x509_store{*this};
 
@@ -767,7 +764,7 @@ public:
 
     adapted_function<
       &ssl_api::x509_crl_free,
-      int(owned_x509_crl&),
+      int(owned_x509_crl),
       collapse_bool_map>
       delete_x509_crl{*this};
 
@@ -785,7 +782,7 @@ public:
     adapted_function<&ssl_api::x509_get_subject_name, x509_name(x509)>
       get_x509_subject_name{*this};
 
-    adapted_function<&ssl_api::x509_free, int(owned_x509&), collapse_bool_map>
+    adapted_function<&ssl_api::x509_free, int(owned_x509), collapse_bool_map>
       delete_x509{*this};
 
     adapted_function<&ssl_api::x509_name_entry_count, span_size_t(x509_name)>

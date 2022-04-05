@@ -19,13 +19,13 @@ template <typename Handle>
 class object_stack;
 //------------------------------------------------------------------------------
 template <typename Tag>
-class object_stack<basic_handle<Tag, nothing_t*, nullptr>> {
+class object_stack<c_api::basic_handle<Tag, nothing_t*, nullptr>> {
 public:
     constexpr auto size() const noexcept -> int {
         return 0;
     }
 
-    constexpr auto push(basic_handle<Tag, nothing_t*, nullptr>) noexcept
+    constexpr auto push(c_api::basic_handle<Tag, nothing_t*, nullptr>) noexcept
       -> auto& {
         return *this;
     }
@@ -35,7 +35,7 @@ public:
     }
 
     constexpr auto get(const int) noexcept
-      -> basic_handle<Tag, nothing_t*, nullptr> {
+      -> c_api::basic_handle<Tag, nothing_t*, nullptr> {
         return {};
     }
 
@@ -102,7 +102,8 @@ template <typename Handle>
 class object_stack_base;
 
 template <typename Tag, typename T>
-class object_stack_base<basic_handle<Tag, T*, nullptr>> : stack_api<Tag> {
+class object_stack_base<c_api::basic_handle<Tag, T*, nullptr>>
+  : stack_api<Tag> {
 protected:
     typename stack_api<Tag>::stack_type* _top{nullptr};
 
@@ -120,7 +121,7 @@ protected:
     ~object_stack_base() noexcept = default;
 
 public:
-    using wrapper = basic_handle<Tag, T*, nullptr>;
+    using wrapper = c_api::basic_handle<Tag, T*, nullptr>;
 
     object_stack_base(object_stack_base&& temp) noexcept
       : _top{temp._top} {
@@ -154,15 +155,15 @@ public:
 // object_stack
 //------------------------------------------------------------------------------
 template <typename Tag, typename T>
-class object_stack<basic_handle<Tag, T*, nullptr>>
-  : public object_stack_base<basic_handle<Tag, T*, nullptr>> {
+class object_stack<c_api::basic_handle<Tag, T*, nullptr>>
+  : public object_stack_base<c_api::basic_handle<Tag, T*, nullptr>> {
 
-    using base = object_stack_base<basic_handle<Tag, T*, nullptr>>;
+    using base = object_stack_base<c_api::basic_handle<Tag, T*, nullptr>>;
     using base::_api;
     using base::_idx_ok;
 
 public:
-    using wrapper = basic_handle<Tag, T*, nullptr>;
+    using wrapper = c_api::basic_handle<Tag, T*, nullptr>;
 
     object_stack() noexcept
       : base{_api().new_null()} {}
@@ -189,15 +190,15 @@ public:
 // object_stack owned
 //------------------------------------------------------------------------------
 template <typename Tag, typename T>
-class object_stack<basic_owned_handle<Tag, T*, nullptr>>
-  : public object_stack_base<basic_handle<Tag, T*, nullptr>> {
+class object_stack<c_api::basic_owned_handle<Tag, T*, nullptr>>
+  : public object_stack_base<c_api::basic_handle<Tag, T*, nullptr>> {
 
-    using base = object_stack_base<basic_handle<Tag, T*, nullptr>>;
+    using base = object_stack_base<c_api::basic_handle<Tag, T*, nullptr>>;
     using base::_api;
     using base::_idx_ok;
 
 public:
-    using wrapper = basic_owned_handle<Tag, T*, nullptr>;
+    using wrapper = c_api::basic_owned_handle<Tag, T*, nullptr>;
 
     object_stack() noexcept
       : base{_api().new_null()} {}
@@ -230,7 +231,7 @@ struct make_arg_map<
   I,
   I,
   Stack*,
-  sslplus::object_stack<basic_handle<Tag, T*, nullptr>>> {
+  sslplus::object_stack<c_api::basic_handle<Tag, T*, nullptr>>> {
     template <typename... P>
     constexpr auto operator()(size_constant<I> i, P&&... p) const noexcept {
         return trivial_map{}(i, std::forward<P>(p)...).native();
@@ -242,7 +243,7 @@ struct make_arg_map<
   I,
   I,
   Stack*,
-  sslplus::object_stack<basic_owned_handle<Tag, T*, nullptr>>> {
+  sslplus::object_stack<c_api::basic_owned_handle<Tag, T*, nullptr>>> {
     template <typename... P>
     constexpr auto operator()(size_constant<I> i, P&&... p) const noexcept {
         return trivial_map{}(i, std::forward<P>(p)...).native();
