@@ -220,22 +220,10 @@ public:
       std::uint64_t(asn1_integer)>
       get_uint64{*this};
 
-    using _object_to_text_t = adapted_function<
+    adapted_function<
       &ssl_api::obj_obj2txt,
-      int(string_span, asn1_object, bool)>;
-
-    struct : _object_to_text_t {
-        using base = _object_to_text_t;
-        using base::base;
-
-        constexpr auto operator()(
-          string_span dst,
-          asn1_object obj,
-          bool no_name = false) const noexcept {
-            return head(
-              dst, extract_or(base::operator()(dst, obj, no_name), 0));
-        }
-    } object_to_text{*this};
+      c_api::head_transformed<int, 1>(string_span, asn1_object, bool)>
+      object_to_text{*this};
 
     adapted_function<&ssl_api::bio_new, owned_basic_io(basic_io_method)>
       new_basic_io{*this};
@@ -543,35 +531,18 @@ public:
       collapse_bool_map>
       message_digest_update{*this};
 
-    using _message_digest_final_t = adapted_function<
+    adapted_function<
       &ssl_api::evp_digest_final,
-      memory::block(message_digest, memory::block, unsigned int&)>;
+      c_api::head_transformed<unsigned, 2, 3>(
+        message_digest,
+        memory::block,
+        c_api::skipped)>
+      message_digest_final{*this};
 
-    struct : _message_digest_final_t {
-        using base = _message_digest_final_t;
-        using base::base;
-        constexpr auto operator()(message_digest mdc, memory::block blk)
-          const noexcept {
-            unsigned int size{0U};
-            return base::operator()(mdc, blk, size)
-              .replaced_with(head(blk, span_size(size)));
-        }
-    } message_digest_final{*this};
-
-    using _message_digest_final_ex_t = adapted_function<
+    adapted_function<
       &ssl_api::evp_digest_final_ex,
-      memory::block(message_digest, memory::block, unsigned int&)>;
-
-    struct : _message_digest_final_ex_t {
-        using base = _message_digest_final_ex_t;
-        using base::base;
-        constexpr auto operator()(message_digest mdc, memory::block blk)
-          const noexcept {
-            unsigned int size{0U};
-            return base::operator()(mdc, blk, size)
-              .replaced_with(head(blk, span_size(size)));
-        }
-    } message_digest_final_ex{*this};
+      c_api::head_transformed<unsigned, 2, 3>(message_digest, memory::block)>
+      message_digest_final_ex{*this};
 
     using _message_digest_sign_init_t = adapted_function<
       &ssl_api::evp_digest_sign_init,
@@ -606,10 +577,14 @@ public:
       collapse_bool_map>
       message_digest_sign_update{*this};
 
-    using _message_digest_sign_final_t = adapted_function<
-      &ssl_api::evp_digest_sign_final,
-      int(message_digest, memory::block, size_t&),
-      collapse_bool_map>;
+    using _message_digest_sign_final_t = c_api::combined<
+      adapted_function<
+        &ssl_api::evp_digest_sign_final,
+        int(message_digest, memory::block, size_t&),
+        collapse_bool_map>,
+      adapted_function<
+        &ssl_api::evp_digest_sign_final,
+        c_api::head_transformed<size_t, 2, 3>(message_digest, memory::block)>>;
 
     struct : _message_digest_sign_final_t {
         using base = _message_digest_sign_final_t;
@@ -620,14 +595,6 @@ public:
             return base::operator()(mdc, {}, size)
               .replaced_with(span_size(size));
         }
-
-        constexpr auto operator()(message_digest mdc, memory::block blk)
-          const noexcept {
-            auto size = limit_cast<size_t>(blk.size());
-            return base::operator()(mdc, blk, size)
-              .replaced_with(head(blk, span_size(size)));
-        }
-
     } message_digest_sign_final{*this};
 
     using _message_digest_verify_init_t = adapted_function<
