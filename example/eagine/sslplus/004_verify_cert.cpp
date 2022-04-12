@@ -32,6 +32,33 @@ auto main(main_ctx& ctx) -> int {
     if(ok ca_cert{ssl.parse_x509(ca_cert_pem, {})}) {
         const auto del_ca_cert{ssl.delete_x509.raii(ca_cert)};
 
+        if(const auto subname{ssl.get_x509_subject_name(ca_cert)}) {
+            const auto count{
+              extract(ssl.get_name_entry_count(extract(subname)))};
+            for(const auto index : integer_range(count)) {
+                if(const auto entry{
+                     ssl.get_name_entry(extract(subname), index)}) {
+                    const auto object{
+                      ssl.get_name_entry_object(extract(entry))};
+                    const auto value{ssl.get_name_entry_data(extract(entry))};
+
+                    std::array<char, 96> namebuf{};
+                    const auto name{ssl.object_to_text(
+                      cover(namebuf), extract(object), false)};
+
+                    ctx.cio()
+                      .print(
+                        EAGINE_ID(ssl),
+                        "CA certificate common name entry "
+                        "${index}: ${attribute}=${value}")
+                      .arg(EAGINE_ID(index), index)
+                      .arg(EAGINE_ID(attribute), extract(name))
+                      .arg(
+                        EAGINE_ID(value), ssl.get_string_view(extract(value)));
+                }
+            }
+        }
+
         file_contents cert_pem{cert_path};
         if(ok cert{ssl.parse_x509(cert_pem, {})}) {
             const auto del_cert{ssl.delete_x509.raii(cert)};
@@ -56,14 +83,15 @@ auto main(main_ctx& ctx) -> int {
 
                             std::array<char, 96> namebuf{};
                             const auto name{ssl.object_to_text(
-                              cover(namebuf), extract(object))};
+                              cover(namebuf), extract(object), false)};
 
                             ctx.cio()
                               .print(
                                 EAGINE_ID(ssl),
-                                "certificate common name entry ${index}:")
+                                "certificate common name entry ${index}: "
+                                "${attribute}=${value}")
                               .arg(EAGINE_ID(index), index)
-                              .arg(EAGINE_ID(attribute), name)
+                              .arg(EAGINE_ID(attribute), extract(name))
                               .arg(
                                 EAGINE_ID(value),
                                 ssl.get_string_view(extract(value)));

@@ -220,22 +220,10 @@ public:
       std::uint64_t(asn1_integer)>
       get_uint64{*this};
 
-    using _object_to_text_t = adapted_function<
+    adapted_function<
       &ssl_api::obj_obj2txt,
-      int(string_span, asn1_object, bool)>;
-
-    struct : _object_to_text_t {
-        using base = _object_to_text_t;
-        using base::base;
-
-        constexpr auto operator()(
-          string_span dst,
-          asn1_object obj,
-          bool no_name = false) const noexcept {
-            return head(
-              dst, extract_or(base::operator()(dst, obj, no_name), 0));
-        }
-    } object_to_text{*this};
+      c_api::head_transformed<int, 1>(string_span, asn1_object, bool)>
+      object_to_text{*this};
 
     adapted_function<&ssl_api::bio_new, owned_basic_io(basic_io_method)>
       new_basic_io{*this};
@@ -543,35 +531,18 @@ public:
       collapse_bool_map>
       message_digest_update{*this};
 
-    using _message_digest_final_t = adapted_function<
+    adapted_function<
       &ssl_api::evp_digest_final,
-      memory::block(message_digest, memory::block, unsigned int&)>;
+      c_api::head_transformed<unsigned, 2, 3>(
+        message_digest,
+        memory::block,
+        c_api::skipped)>
+      message_digest_final{*this};
 
-    struct : _message_digest_final_t {
-        using base = _message_digest_final_t;
-        using base::base;
-        constexpr auto operator()(message_digest mdc, memory::block blk)
-          const noexcept {
-            unsigned int size{0U};
-            return base::operator()(mdc, blk, size)
-              .replaced_with(head(blk, span_size(size)));
-        }
-    } message_digest_final{*this};
-
-    using _message_digest_final_ex_t = adapted_function<
+    adapted_function<
       &ssl_api::evp_digest_final_ex,
-      memory::block(message_digest, memory::block, unsigned int&)>;
-
-    struct : _message_digest_final_ex_t {
-        using base = _message_digest_final_ex_t;
-        using base::base;
-        constexpr auto operator()(message_digest mdc, memory::block blk)
-          const noexcept {
-            unsigned int size{0U};
-            return base::operator()(mdc, blk, size)
-              .replaced_with(head(blk, span_size(size)));
-        }
-    } message_digest_final_ex{*this};
+      c_api::head_transformed<unsigned, 2, 3>(message_digest, memory::block)>
+      message_digest_final_ex{*this};
 
     using _message_digest_sign_init_t = adapted_function<
       &ssl_api::evp_digest_sign_init,
@@ -606,10 +577,14 @@ public:
       collapse_bool_map>
       message_digest_sign_update{*this};
 
-    using _message_digest_sign_final_t = adapted_function<
-      &ssl_api::evp_digest_sign_final,
-      int(message_digest, memory::block, size_t&),
-      collapse_bool_map>;
+    using _message_digest_sign_final_t = c_api::combined<
+      adapted_function<
+        &ssl_api::evp_digest_sign_final,
+        int(message_digest, memory::block, size_t&),
+        collapse_bool_map>,
+      adapted_function<
+        &ssl_api::evp_digest_sign_final,
+        c_api::head_transformed<size_t, 2, 3>(message_digest, memory::block)>>;
 
     struct : _message_digest_sign_final_t {
         using base = _message_digest_sign_final_t;
@@ -620,14 +595,6 @@ public:
             return base::operator()(mdc, {}, size)
               .replaced_with(span_size(size));
         }
-
-        constexpr auto operator()(message_digest mdc, memory::block blk)
-          const noexcept {
-            auto size = limit_cast<size_t>(blk.size());
-            return base::operator()(mdc, blk, size)
-              .replaced_with(head(blk, span_size(size)));
-        }
-
     } message_digest_sign_final{*this};
 
     using _message_digest_verify_init_t = adapted_function<
@@ -673,22 +640,16 @@ public:
     adapted_function<&ssl_api::x509_store_ctx_new, owned_x509_store_ctx()>
       new_x509_store_ctx{*this};
 
-    using _init_x509_store_ctx_t = adapted_function<
-      &ssl_api::x509_store_ctx_init,
-      int(x509_store_ctx, x509_store, x509, const object_stack<x509>&),
-      collapse_bool_map>;
-
-    struct : _init_x509_store_ctx_t {
-        using base = _init_x509_store_ctx_t;
-        using base::base;
-        using base::operator();
-
-        constexpr auto operator()(x509_store_ctx ctx, x509_store xst, x509 crt)
-          const noexcept {
-            return (*this)(ctx, xst, crt, object_stack<x509>{});
-        }
-
-    } init_x509_store_ctx{*this};
+    c_api::combined<
+      adapted_function<
+        &ssl_api::x509_store_ctx_init,
+        int(x509_store_ctx, x509_store, x509, const object_stack<x509>&),
+        collapse_bool_map>,
+      adapted_function<
+        &ssl_api::x509_store_ctx_init,
+        int(x509_store_ctx, x509_store, x509, c_api::substituted<nullptr>),
+        collapse_bool_map>>
+      init_x509_store_ctx{*this};
 
     adapted_function<
       &ssl_api::x509_store_ctx_set0_trusted_stack,
@@ -803,89 +764,69 @@ public:
       asn1_string(x509_name_entry)>
       get_name_entry_data{*this};
 
-    using _read_bio_private_key_t = adapted_function<
-      &ssl_api::pem_read_bio_private_key,
-      owned_pkey(basic_io, pkey&, password_callback)>;
+    c_api::combined<
+      adapted_function<
+        &ssl_api::pem_read_bio_private_key,
+        owned_pkey(basic_io, pkey&, password_callback)>,
+      adapted_function<
+        &ssl_api::pem_read_bio_private_key,
+        owned_pkey(basic_io, c_api::substituted<nullptr>, password_callback)>,
+      adapted_function<
+        &ssl_api::pem_read_bio_private_key,
+        owned_pkey(
+          basic_io,
+          c_api::substituted<nullptr>,
+          c_api::substituted<nullptr>,
+          c_api::substituted<nullptr>)>>
+      read_bio_private_key{*this};
 
-    struct : _read_bio_private_key_t {
-        using base = _read_bio_private_key_t;
-        using base::base;
-        using base::operator();
+    c_api::combined<
+      adapted_function<
+        &ssl_api::pem_read_bio_pubkey,
+        owned_pkey(basic_io, pkey&, password_callback)>,
+      adapted_function<
+        &ssl_api::pem_read_bio_pubkey,
+        owned_pkey(basic_io, c_api::substituted<nullptr>, password_callback)>,
+      adapted_function<
+        &ssl_api::pem_read_bio_pubkey,
+        owned_pkey(
+          basic_io,
+          c_api::substituted<nullptr>,
+          c_api::substituted<nullptr>,
+          c_api::substituted<nullptr>)>>
+      read_bio_public_key{*this};
 
-        constexpr auto operator()(basic_io bio) const noexcept {
-            pkey pky{};
-            return base::operator()(bio, pky, password_callback{});
-        }
+    c_api::combined<
+      adapted_function<
+        &ssl_api::pem_read_bio_x509_crl,
+        owned_x509_crl(basic_io, x509_crl&, password_callback)>,
+      adapted_function<
+        &ssl_api::pem_read_bio_x509_crl,
+        owned_x509_crl(basic_io, c_api::substituted<nullptr>, password_callback)>,
+      adapted_function<
+        &ssl_api::pem_read_bio_x509_crl,
+        owned_x509_crl(
+          basic_io,
+          c_api::substituted<nullptr>,
+          c_api::substituted<nullptr>,
+          c_api::substituted<nullptr>)>>
+      read_bio_x509_crl{*this};
 
-        constexpr auto operator()(basic_io bio, password_callback get_passwd)
-          const noexcept {
-            pkey pky{};
-            return base::operator()(bio, pky, get_passwd);
-        }
-    } read_bio_private_key{*this};
-
-    using _read_bio_public_key_t = adapted_function<
-      &ssl_api::pem_read_bio_pubkey,
-      owned_pkey(basic_io, pkey&, password_callback)>;
-
-    struct : _read_bio_public_key_t {
-        using base = _read_bio_public_key_t;
-        using base::base;
-        using base::operator();
-
-        constexpr auto operator()(basic_io bio) const noexcept {
-            pkey pky{};
-            return base::operator()(bio, pky, password_callback{});
-        }
-
-        constexpr auto operator()(basic_io bio, password_callback get_passwd)
-          const noexcept {
-            pkey pky{};
-            return base::operator()(bio, pky, get_passwd);
-        }
-    } read_bio_public_key{*this};
-
-    using _read_bio_x509_crl_t = adapted_function<
-      &ssl_api::pem_read_bio_x509_crl,
-      owned_x509_crl(basic_io, x509_crl&, password_callback)>;
-
-    struct : _read_bio_x509_crl_t {
-        using base = _read_bio_x509_crl_t;
-        using base::base;
-        using base::operator();
-
-        constexpr auto operator()(basic_io bio) const noexcept {
-            x509_crl crl{};
-            return base::operator()(bio, crl, password_callback{});
-        }
-
-        constexpr auto operator()(basic_io bio, password_callback get_passwd)
-          const noexcept {
-            x509_crl crl{};
-            return base::operator()(bio, crl, get_passwd);
-        }
-    } read_bio_x509_crl{*this};
-
-    using _read_bio_x509_t = adapted_function<
-      &ssl_api::pem_read_bio_x509,
-      owned_x509(basic_io, x509&, password_callback)>;
-
-    struct : _read_bio_x509_t {
-        using base = _read_bio_x509_t;
-        using base::base;
-        using base::operator();
-
-        constexpr auto operator()(basic_io bio) const noexcept {
-            x509 x{};
-            return base::operator()(bio, x, password_callback{});
-        }
-
-        constexpr auto operator()(basic_io bio, password_callback get_passwd)
-          const noexcept {
-            x509 x{};
-            return base::operator()(bio, x, get_passwd);
-        }
-    } read_bio_x509{*this};
+    c_api::combined<
+      adapted_function<
+        &ssl_api::pem_read_bio_x509,
+        owned_x509(basic_io, x509&, password_callback)>,
+      adapted_function<
+        &ssl_api::pem_read_bio_x509,
+        owned_x509(basic_io, c_api::substituted<nullptr>, password_callback)>,
+      adapted_function<
+        &ssl_api::pem_read_bio_x509,
+        owned_x509(
+          basic_io,
+          c_api::substituted<nullptr>,
+          c_api::substituted<nullptr>,
+          c_api::substituted<nullptr>)>>
+      read_bio_x509{*this};
 
     basic_ssl_operations(api_traits& traits)
       : ssl_api{traits} {}

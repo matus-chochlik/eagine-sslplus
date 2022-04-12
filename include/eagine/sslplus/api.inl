@@ -168,7 +168,7 @@ auto basic_ssl_api<ApiTraits>::find_name_entry(
             if(const auto object{this->get_name_entry_object(extract(entry))}) {
                 const auto cur_name{this->object_to_text(
                   cover(namebuf), extract(object), no_name)};
-                if(are_equal(cur_name, ent_name)) {
+                if(are_equal(extract(cur_name), ent_name)) {
                     if(const auto data{
                          this->get_name_entry_data(extract(entry))}) {
                         return this->get_string_view(extract(data));
@@ -191,8 +191,8 @@ auto basic_ssl_api<ApiTraits>::find_name_oid_entry(
         if(const auto entry{this->get_name_entry(name, index)}) {
             if(const auto object{this->get_name_entry_object(extract(entry))}) {
                 if(are_equal(
-                     this->object_to_text(
-                       cover(namebuf), extract(object), false),
+                     extract_or(this->object_to_text(
+                       cover(namebuf), extract(object), false)),
                      ent_name)) {
                     if(const auto data{
                          this->get_name_entry_data(extract(entry))}) {
@@ -200,8 +200,8 @@ auto basic_ssl_api<ApiTraits>::find_name_oid_entry(
                     }
                 }
                 if(are_equal(
-                     this->object_to_text(
-                       cover(namebuf), extract(object), true),
+                     extract_or(this->object_to_text(
+                       cover(namebuf), extract(object), true)),
                      ent_oid)) {
                     if(const auto data{
                          this->get_name_entry_data(extract(entry))}) {
