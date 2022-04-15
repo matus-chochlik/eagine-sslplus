@@ -282,52 +282,43 @@ public:
         bool)>
       cipher_init_ex{*this};
 
-    using _cipher_update_t = adapted_function<
-      &ssl_api::evp_cipher_update,
-      memory::split_block(cipher, memory::const_block, int&, memory::const_block)>;
+    c_api::combined<
+      adapted_function<
+        &ssl_api::evp_cipher_update,
+        memory::
+          split_block(cipher, memory::const_block, int&, memory::const_block)>,
+      adapted_function<
+        &ssl_api::evp_cipher_update,
+        c_api::split_transformed<int, 2, 3>(
+          cipher,
+          memory::split_block,
+          c_api::skipped,
+          memory::const_block)>>
+      cipher_update{*this};
 
-    struct : _cipher_update_t {
-        using base = _cipher_update_t;
-        using base::base;
-        constexpr auto operator()(
-          cipher cyc,
-          memory::split_block out,
-          memory::const_block in) const noexcept {
-            int outl{0};
-            return base::operator()(cyc, out.tail(), outl, in)
-              .replaced_with(out.advance(span_size(outl)));
-        }
-    } cipher_update{*this};
+    c_api::combined<
+      adapted_function<
+        &ssl_api::evp_cipher_final,
+        memory::split_block(cipher, memory::const_block, int&)>,
+      adapted_function<
+        &ssl_api::evp_cipher_final,
+        c_api::split_transformed<int, 2, 3>(
+          cipher,
+          memory::split_block,
+          c_api::skipped)>>
+      cipher_final{*this};
 
-    using _cipher_final_t = adapted_function<
-      &ssl_api::evp_cipher_final,
-      memory::split_block(cipher, memory::const_block, int&)>;
-
-    struct : _cipher_final_t {
-        using base = _cipher_final_t;
-        using base::base;
-        constexpr auto operator()(cipher cyc, memory::split_block out)
-          const noexcept {
-            int outl{0};
-            return base::operator()(cyc, out.tail(), outl)
-              .replaced_with(out.advance(span_size(outl)));
-        }
-    } cipher_final{*this};
-
-    using _cipher_final_ex_t = adapted_function<
-      &ssl_api::evp_cipher_final_ex,
-      memory::split_block(cipher, memory::const_block, int&)>;
-
-    struct : _cipher_final_ex_t {
-        using base = _cipher_final_ex_t;
-        using base::base;
-        constexpr auto operator()(cipher cyc, memory::split_block out)
-          const noexcept {
-            int outl{0};
-            return base::operator()(cyc, out.tail(), outl)
-              .replaced_with(out.advance(span_size(outl)));
-        }
-    } cipher_final_ex{*this};
+    c_api::combined<
+      adapted_function<
+        &ssl_api::evp_cipher_final_ex,
+        memory::split_block(cipher, memory::const_block, int&)>,
+      adapted_function<
+        &ssl_api::evp_cipher_final_ex,
+        c_api::split_transformed<int, 2, 3>(
+          cipher,
+          memory::split_block,
+          c_api::skipped)>>
+      cipher_final_ex{*this};
 
     adapted_function<
       &ssl_api::evp_encrypt_init,
@@ -346,52 +337,43 @@ public:
         bool)>
       encrypt_init_ex{*this};
 
-    using _encrypt_update_t = adapted_function<
-      &ssl_api::evp_encrypt_update,
-      memory::split_block(cipher, memory::const_block, int&, memory::const_block)>;
+    c_api::combined<
+      adapted_function<
+        &ssl_api::evp_encrypt_update,
+        memory::
+          split_block(cipher, memory::const_block, int&, memory::const_block)>,
+      adapted_function<
+        &ssl_api::evp_encrypt_update,
+        c_api::split_transformed<int, 2, 3>(
+          cipher,
+          memory::split_block,
+          c_api::skipped,
+          memory::const_block)>>
+      encrypt_update{*this};
 
-    struct : _encrypt_update_t {
-        using base = _encrypt_update_t;
-        using base::base;
-        constexpr auto operator()(
-          cipher cyc,
-          memory::split_block out,
-          memory::const_block in) const noexcept {
-            int outl{0};
-            return base::operator()(cyc, out.tail(), outl, in)
-              .replaced_with(out.advance(span_size(outl)));
-        }
-    } encrypt_update{*this};
+    c_api::combined<
+      adapted_function<
+        &ssl_api::evp_encrypt_final,
+        memory::split_block(cipher, memory::const_block, int&)>,
+      adapted_function<
+        &ssl_api::evp_encrypt_final,
+        c_api::split_transformed<int, 2, 3>(
+          cipher,
+          memory::split_block,
+          c_api::skipped)>>
+      encrypt_final{*this};
 
-    using _encrypt_final_t = adapted_function<
-      &ssl_api::evp_encrypt_final,
-      memory::split_block(cipher, memory::const_block, int&)>;
-
-    struct : _encrypt_final_t {
-        using base = _encrypt_final_t;
-        using base::base;
-        constexpr auto operator()(cipher cyc, memory::split_block out)
-          const noexcept {
-            int outl{0};
-            return base::operator()(cyc, out.tail(), outl)
-              .replaced_with(out.advance(span_size(outl)));
-        }
-    } encrypt_final{*this};
-
-    using _encrypt_final_ex_t = adapted_function<
-      &ssl_api::evp_encrypt_final_ex,
-      memory::split_block(cipher, memory::const_block, int&)>;
-
-    struct : _encrypt_final_ex_t {
-        using base = _encrypt_final_ex_t;
-        using base::base;
-        constexpr auto operator()(cipher cyc, memory::split_block out)
-          const noexcept {
-            int outl{0};
-            return base::operator()(cyc, out.tail(), outl)
-              .replaced_with(out.advance(span_size(outl)));
-        }
-    } encrypt_final_ex{*this};
+    c_api::combined<
+      adapted_function<
+        &ssl_api::evp_encrypt_final_ex,
+        memory::split_block(cipher, memory::const_block, int&)>,
+      adapted_function<
+        &ssl_api::evp_encrypt_final_ex,
+        c_api::split_transformed<int, 2, 3>(
+          cipher,
+          memory::split_block,
+          c_api::skipped)>>
+      encrypt_final_ex{*this};
 
     adapted_function<
       &ssl_api::evp_decrypt_init,
@@ -410,52 +392,43 @@ public:
         bool)>
       decrypt_init_ex{*this};
 
-    using _decrypt_update_t = adapted_function<
-      &ssl_api::evp_decrypt_update,
-      memory::split_block(cipher, memory::const_block, int&, memory::const_block)>;
+    c_api::combined<
+      adapted_function<
+        &ssl_api::evp_decrypt_update,
+        memory::
+          split_block(cipher, memory::const_block, int&, memory::const_block)>,
+      adapted_function<
+        &ssl_api::evp_decrypt_update,
+        c_api::split_transformed<int, 2, 3>(
+          cipher,
+          memory::split_block,
+          c_api::skipped,
+          memory::const_block)>>
+      decrypt_update{*this};
 
-    struct : _decrypt_update_t {
-        using base = _decrypt_update_t;
-        using base::base;
-        constexpr auto operator()(
-          cipher cyc,
-          memory::split_block out,
-          memory::const_block in) const noexcept {
-            int outl{0};
-            return base::operator()(cyc, out.tail(), outl, in)
-              .replaced_with(out.advance(span_size(outl)));
-        }
-    } decrypt_update{*this};
+    c_api::combined<
+      adapted_function<
+        &ssl_api::evp_decrypt_final,
+        memory::split_block(cipher, memory::const_block, int&)>,
+      adapted_function<
+        &ssl_api::evp_decrypt_final,
+        c_api::split_transformed<int, 2, 3>(
+          cipher,
+          memory::split_block,
+          c_api::skipped)>>
+      decrypt_final{*this};
 
-    using _decrypt_final_t = adapted_function<
-      &ssl_api::evp_decrypt_final,
-      memory::split_block(cipher, memory::const_block, int&)>;
-
-    struct : _decrypt_final_t {
-        using base = _decrypt_final_t;
-        using base::base;
-        constexpr auto operator()(cipher cyc, memory::split_block out)
-          const noexcept {
-            int outl{0};
-            return base::operator()(cyc, out.tail(), outl)
-              .replaced_with(out.advance(span_size(outl)));
-        }
-    } decrypt_final{*this};
-
-    using _decrypt_final_ex_t = adapted_function<
-      &ssl_api::evp_decrypt_final_ex,
-      memory::split_block(cipher, memory::const_block, int&)>;
-
-    struct : _decrypt_final_ex_t {
-        using base = _decrypt_final_ex_t;
-        using base::base;
-        constexpr auto operator()(cipher cyc, memory::split_block out)
-          const noexcept {
-            int outl{0};
-            return base::operator()(cyc, out.tail(), outl)
-              .replaced_with(out.advance(span_size(outl)));
-        }
-    } decrypt_final_ex{*this};
+    c_api::combined<
+      adapted_function<
+        &ssl_api::evp_decrypt_final_ex,
+        memory::split_block(cipher, memory::const_block, int&)>,
+      adapted_function<
+        &ssl_api::evp_decrypt_final_ex,
+        c_api::split_transformed<int, 2, 3>(
+          cipher,
+          memory::split_block,
+          c_api::skipped)>>
+      decrypt_final_ex{*this};
 
     // message_digest
     adapted_function<&ssl_api::evp_md_null, message_digest_type()>
