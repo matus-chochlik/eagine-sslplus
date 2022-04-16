@@ -494,32 +494,15 @@ public:
       c_api::head_transformed<unsigned, 2, 3>(message_digest, memory::block)>
       message_digest_final_ex{*this};
 
-    using _message_digest_sign_init_t = adapted_function<
+    adapted_function<
       &ssl_api::evp_digest_sign_init,
-      pkey_ctx(message_digest, pkey_ctx&, message_digest_type, engine, pkey)>;
-
-    struct : _message_digest_sign_init_t {
-        using base = _message_digest_sign_init_t;
-        using base::base;
-
-        constexpr auto operator()(
-          message_digest mdc,
-          message_digest_type mdt,
-          engine eng,
-          pkey pky) const noexcept {
-            pkey_ctx pkcx{};
-            return base::operator()(mdc, pkcx, mdt, eng, pky)
-              .replaced_with(pkcx);
-        }
-
-        constexpr auto operator()(
-          message_digest mdc,
-          message_digest_type mdt,
-          pkey pky) const noexcept {
-            pkey_ctx pkcx{};
-            return base::operator()(mdc, pkcx, mdt, {}, pky).replaced_with(pkcx);
-        }
-    } message_digest_sign_init{*this};
+      c_api::returned<pkey_ctx>(
+        message_digest,
+        c_api::returned<pkey_ctx>,
+        message_digest_type,
+        engine,
+        pkey)>
+      message_digest_sign_init{*this};
 
     adapted_function<
       &ssl_api::evp_digest_sign_update,
@@ -545,33 +528,15 @@ public:
         }
     } message_digest_sign_final{*this};
 
-    using _message_digest_verify_init_t = adapted_function<
+    adapted_function<
       &ssl_api::evp_digest_verify_init,
-      c_api::collapsed<
-        int>(message_digest, pkey_ctx&, message_digest_type, engine, pkey)>;
-
-    struct : _message_digest_verify_init_t {
-        using base = _message_digest_verify_init_t;
-        using base::base;
-        using base::operator();
-
-        constexpr auto operator()(
-          message_digest mdc,
-          message_digest_type mdt,
-          pkey pky) const noexcept {
-            pkey_ctx pkc{};
-            return base::operator()(mdc, pkc, mdt, {}, pky);
-        }
-
-        constexpr auto operator()(
-          message_digest mdc,
-          message_digest_type mdt,
-          engine eng,
-          pkey pky) const noexcept {
-            pkey_ctx pkc{};
-            return base::operator()(mdc, pkc, mdt, eng, pky);
-        }
-    } message_digest_verify_init{*this};
+      c_api::returned<pkey_ctx>(
+        message_digest,
+        c_api::returned<pkey_ctx>,
+        message_digest_type,
+        engine,
+        pkey)>
+      message_digest_verify_init{*this};
 
     adapted_function<
       &ssl_api::evp_digest_verify_update,
