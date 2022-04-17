@@ -558,8 +558,7 @@ public:
           int>(x509_store_ctx, x509_store, x509, const object_stack<x509>&)>,
       adapted_function<
         &ssl_api::x509_store_ctx_init,
-        c_api::collapsed<
-          int>(x509_store_ctx, x509_store, x509, c_api::substituted<nullptr>)>>
+        c_api::collapsed<int>(x509_store_ctx, x509_store, x509, c_api::defaulted)>>
       init_x509_store_ctx{*this};
 
     adapted_function<
@@ -663,14 +662,10 @@ public:
         owned_pkey(basic_io, pkey&, password_callback)>,
       adapted_function<
         &ssl_api::pem_read_bio_private_key,
-        owned_pkey(basic_io, c_api::substituted<nullptr>, password_callback)>,
+        owned_pkey(basic_io, c_api::defaulted, password_callback)>,
       adapted_function<
         &ssl_api::pem_read_bio_private_key,
-        owned_pkey(
-          basic_io,
-          c_api::substituted<nullptr>,
-          c_api::substituted<nullptr>,
-          c_api::substituted<nullptr>)>>
+        owned_pkey(basic_io, c_api::defaulted, c_api::defaulted, c_api::defaulted)>>
       read_bio_private_key{*this};
 
     c_api::combined<
@@ -679,14 +674,10 @@ public:
         owned_pkey(basic_io, pkey&, password_callback)>,
       adapted_function<
         &ssl_api::pem_read_bio_pubkey,
-        owned_pkey(basic_io, c_api::substituted<nullptr>, password_callback)>,
+        owned_pkey(basic_io, c_api::defaulted, password_callback)>,
       adapted_function<
         &ssl_api::pem_read_bio_pubkey,
-        owned_pkey(
-          basic_io,
-          c_api::substituted<nullptr>,
-          c_api::substituted<nullptr>,
-          c_api::substituted<nullptr>)>>
+        owned_pkey(basic_io, c_api::defaulted, c_api::defaulted, c_api::defaulted)>>
       read_bio_public_key{*this};
 
     c_api::combined<
@@ -695,14 +686,14 @@ public:
         owned_x509_crl(basic_io, x509_crl&, password_callback)>,
       adapted_function<
         &ssl_api::pem_read_bio_x509_crl,
-        owned_x509_crl(basic_io, c_api::substituted<nullptr>, password_callback)>,
+        owned_x509_crl(basic_io, c_api::defaulted, password_callback)>,
       adapted_function<
         &ssl_api::pem_read_bio_x509_crl,
         owned_x509_crl(
           basic_io,
-          c_api::substituted<nullptr>,
-          c_api::substituted<nullptr>,
-          c_api::substituted<nullptr>)>>
+          c_api::defaulted,
+          c_api::defaulted,
+          c_api::defaulted)>>
       read_bio_x509_crl{*this};
 
     c_api::combined<
@@ -711,14 +702,10 @@ public:
         owned_x509(basic_io, x509&, password_callback)>,
       adapted_function<
         &ssl_api::pem_read_bio_x509,
-        owned_x509(basic_io, c_api::substituted<nullptr>, password_callback)>,
+        owned_x509(basic_io, c_api::defaulted, password_callback)>,
       adapted_function<
         &ssl_api::pem_read_bio_x509,
-        owned_x509(
-          basic_io,
-          c_api::substituted<nullptr>,
-          c_api::substituted<nullptr>,
-          c_api::substituted<nullptr>)>>
+        owned_x509(basic_io, c_api::defaulted, c_api::defaulted, c_api::defaulted)>>
       read_bio_x509{*this};
 
     basic_ssl_operations(api_traits& traits)
