@@ -208,7 +208,7 @@ public:
 
     adapted_function<
       &ssl_api::obj_obj2txt,
-      c_api::head_transformed<int, 1>(string_span, asn1_object, bool)>
+      c_api::head_transformed<int, 0, 1>(string_span, asn1_object, bool)>
       object_to_text{*this};
 
     adapted_function<&ssl_api::bio_new, owned_basic_io(basic_io_method)>
@@ -289,7 +289,7 @@ public:
           split_block(cipher, memory::const_block, int&, memory::const_block)>,
       adapted_function<
         &ssl_api::evp_cipher_update,
-        c_api::split_transformed<int, 2, 3>(
+        c_api::split_transformed<int, 3, 2>(
           cipher,
           memory::split_block,
           c_api::skipped,
@@ -302,7 +302,7 @@ public:
         memory::split_block(cipher, memory::const_block, int&)>,
       adapted_function<
         &ssl_api::evp_cipher_final,
-        c_api::split_transformed<int, 2, 3>(
+        c_api::split_transformed<int, 3, 2>(
           cipher,
           memory::split_block,
           c_api::skipped)>>
@@ -314,7 +314,7 @@ public:
         memory::split_block(cipher, memory::const_block, int&)>,
       adapted_function<
         &ssl_api::evp_cipher_final_ex,
-        c_api::split_transformed<int, 2, 3>(
+        c_api::split_transformed<int, 3, 2>(
           cipher,
           memory::split_block,
           c_api::skipped)>>
@@ -344,7 +344,7 @@ public:
           split_block(cipher, memory::const_block, int&, memory::const_block)>,
       adapted_function<
         &ssl_api::evp_encrypt_update,
-        c_api::split_transformed<int, 2, 3>(
+        c_api::split_transformed<int, 3, 2>(
           cipher,
           memory::split_block,
           c_api::skipped,
@@ -357,7 +357,7 @@ public:
         memory::split_block(cipher, memory::const_block, int&)>,
       adapted_function<
         &ssl_api::evp_encrypt_final,
-        c_api::split_transformed<int, 2, 3>(
+        c_api::split_transformed<int, 3, 2>(
           cipher,
           memory::split_block,
           c_api::skipped)>>
@@ -369,7 +369,7 @@ public:
         memory::split_block(cipher, memory::const_block, int&)>,
       adapted_function<
         &ssl_api::evp_encrypt_final_ex,
-        c_api::split_transformed<int, 2, 3>(
+        c_api::split_transformed<int, 3, 2>(
           cipher,
           memory::split_block,
           c_api::skipped)>>
@@ -399,7 +399,7 @@ public:
           split_block(cipher, memory::const_block, int&, memory::const_block)>,
       adapted_function<
         &ssl_api::evp_decrypt_update,
-        c_api::split_transformed<int, 2, 3>(
+        c_api::split_transformed<int, 3, 2>(
           cipher,
           memory::split_block,
           c_api::skipped,
@@ -412,7 +412,7 @@ public:
         memory::split_block(cipher, memory::const_block, int&)>,
       adapted_function<
         &ssl_api::evp_decrypt_final,
-        c_api::split_transformed<int, 2, 3>(
+        c_api::split_transformed<int, 3, 2>(
           cipher,
           memory::split_block,
           c_api::skipped)>>
@@ -424,7 +424,7 @@ public:
         memory::split_block(cipher, memory::const_block, int&)>,
       adapted_function<
         &ssl_api::evp_decrypt_final_ex,
-        c_api::split_transformed<int, 2, 3>(
+        c_api::split_transformed<int, 3, 2>(
           cipher,
           memory::split_block,
           c_api::skipped)>>
@@ -483,7 +483,7 @@ public:
 
     adapted_function<
       &ssl_api::evp_digest_final,
-      c_api::head_transformed<unsigned, 2, 3>(
+      c_api::head_transformed<unsigned, 3, 2>(
         message_digest,
         memory::block,
         c_api::skipped)>
@@ -491,7 +491,7 @@ public:
 
     adapted_function<
       &ssl_api::evp_digest_final_ex,
-      c_api::head_transformed<unsigned, 2, 3>(message_digest, memory::block)>
+      c_api::head_transformed<unsigned, 3, 2>(message_digest, memory::block)>
       message_digest_final_ex{*this};
 
     adapted_function<
@@ -515,7 +515,7 @@ public:
         c_api::collapsed<int>(message_digest, memory::block, size_t&)>,
       adapted_function<
         &ssl_api::evp_digest_sign_final,
-        c_api::head_transformed<size_t, 2, 3>(message_digest, memory::block)>>;
+        c_api::head_transformed<size_t, 3, 2>(message_digest, memory::block)>>;
 
     struct : _message_digest_sign_final_t {
         using base = _message_digest_sign_final_t;
