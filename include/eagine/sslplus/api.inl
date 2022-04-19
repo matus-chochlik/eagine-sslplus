@@ -41,7 +41,7 @@ inline auto basic_ssl_api<ApiTraits>::sign_data_digest(
         if(ok mdctx{this->new_message_digest()}) {
             const auto cleanup{this->delete_message_digest.raii(mdctx)};
 
-            if(this->message_digest_sign_init(mdctx, mdtype, pky)) {
+            if(this->message_digest_sign_init(mdctx, mdtype, engine{}, pky)) {
                 if(this->message_digest_sign_update(mdctx, data)) {
                     return extract_or(
                       this->message_digest_sign_final(mdctx, dst),
@@ -63,7 +63,7 @@ inline auto basic_ssl_api<ApiTraits>::verify_data_digest(
         if(ok mdctx{this->new_message_digest()}) {
             const auto cleanup{this->delete_message_digest.raii(mdctx)};
 
-            if(this->message_digest_verify_init(mdctx, mdtype, pky)) {
+            if(this->message_digest_verify_init(mdctx, mdtype, engine{}, pky)) {
                 if(this->message_digest_verify_update(mdctx, data)) {
                     return bool(this->message_digest_verify_final(mdctx, sig));
                 }

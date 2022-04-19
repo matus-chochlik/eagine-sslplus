@@ -67,6 +67,14 @@ public:
         return res;
     }
 
+    template <typename Result, c_api::result_validity Validity>
+    static constexpr auto collapse(
+      c_api::result<Result, ssl_result_info, Validity>&& r) noexcept {
+        return r.collapsed(
+          [](int value) { return value == 1; },
+          [](auto& info) { info.set_unknown_error(); });
+    }
+
 #ifdef __GNUC__
     EAGINE_DIAG_PUSH()
     EAGINE_DIAG_OFF(address)

@@ -66,14 +66,6 @@ using ssl_result = c_api::result<Result, ssl_result_info>;
 template <typename Result>
 using ssl_opt_result = c_api::opt_result<Result, ssl_result_info>;
 //------------------------------------------------------------------------------
-template <typename Result, c_api::result_validity Validity>
-inline auto collapse_bool(
-  c_api::result<Result, ssl_result_info, Validity>&& r) noexcept {
-    return r.collapsed(
-      [](int value) { return value == 1; },
-      [](auto& info) { info.set_unknown_error(); });
-}
-//------------------------------------------------------------------------------
 } // namespace eagine::sslplus
 
 #endif // EAGINE_SSLPLUS_API_RESULT_HPP
