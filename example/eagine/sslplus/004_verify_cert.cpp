@@ -35,6 +35,11 @@ auto main(main_ctx& ctx) -> int {
         if(const auto subname{ssl.get_x509_subject_name(ca_cert)}) {
             const auto count{
               extract(ssl.get_name_entry_count(extract(subname)))};
+            const auto entry_cio{
+              ctx.cio()
+                .print(EAGINE_ID(ssl), "CA certificate common name entries:")
+                .to_be_continued()};
+
             for(const auto index : integer_range(count)) {
                 if(const auto entry{
                      ssl.get_name_entry(extract(subname), index)}) {
@@ -46,11 +51,7 @@ auto main(main_ctx& ctx) -> int {
                     const auto name{ssl.object_to_text(
                       cover(namebuf), extract(object), false)};
 
-                    ctx.cio()
-                      .print(
-                        EAGINE_ID(ssl),
-                        "CA certificate common name entry "
-                        "${index}: ${attribute}=${value}")
+                    entry_cio.print("${index}: ${attribute}=${value}")
                       .arg(EAGINE_ID(index), index)
                       .arg(EAGINE_ID(attribute), extract(name))
                       .arg(
@@ -73,6 +74,12 @@ auto main(main_ctx& ctx) -> int {
                         "successfully verified certificate ${certPath}")
                       .arg(EAGINE_ID(certPath), EAGINE_ID(FsPath), cert_path)
                       .arg(EAGINE_ID(snEntCount), count);
+                    const auto entry_cio{
+                      ctx.cio()
+                        .print(
+                          EAGINE_ID(ssl), "certificate common name entries:")
+                        .to_be_continued()};
+
                     for(const auto index : integer_range(count)) {
                         if(const auto entry{
                              ssl.get_name_entry(extract(subname), index)}) {
@@ -85,11 +92,7 @@ auto main(main_ctx& ctx) -> int {
                             const auto name{ssl.object_to_text(
                               cover(namebuf), extract(object), false)};
 
-                            ctx.cio()
-                              .print(
-                                EAGINE_ID(ssl),
-                                "certificate common name entry ${index}: "
-                                "${attribute}=${value}")
+                            entry_cio.print("${index}: ${attribute}=${value}")
                               .arg(EAGINE_ID(index), index)
                               .arg(EAGINE_ID(attribute), extract(name))
                               .arg(
