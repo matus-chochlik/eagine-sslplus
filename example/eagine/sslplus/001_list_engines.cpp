@@ -23,9 +23,11 @@ auto main(main_ctx& ctx) -> int {
 
     ssl.load_builtin_engines();
 
-    const auto func = [&out, &ssl](sslplus::engine eng) {
+    const auto engines_cio{out.cio_print("SSL engines").to_be_continued()};
+
+    const auto func = [&](sslplus::engine eng) {
         const string_view na("N/A");
-        out.cio_print("engine ${id}: '${name}'")
+        engines_cio.print("engine ${id}: '${name}'")
           .arg(EAGINE_ID(id), extract_or(ssl.get_engine_id(eng), na))
           .arg(EAGINE_ID(name), extract_or(ssl.get_engine_name(eng), na));
     };
