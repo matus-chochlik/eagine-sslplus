@@ -10,7 +10,7 @@ namespace eagine {
 
 /// @brief C++ wrapper core for the OpenSSL API is placed in this namespace.
 namespace sslplus {
-/// @defgroup sslplus OpenSSL API wrappers
+/// @defgroup ssl_api_wrap  OpenSSL API wrappers
 }
 
 } // namespace eagine
