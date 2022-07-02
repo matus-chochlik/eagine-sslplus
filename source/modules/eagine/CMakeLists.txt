@@ -43,9 +43,7 @@ eagine_add_module(
 eagine_add_module(
 	eagine.sslplus PARTITION c_api
 	IMPORTS
-		config
-		api_traits
-		result
+		config api_traits result
 		eagine.core.types
 		eagine.core.c_api
 )
@@ -53,6 +51,19 @@ eagine_add_module(
 eagine_add_module(
 	eagine.sslplus PARTITION constants
 	IMPORTS c_api
+)
+
+eagine_add_module(
+	eagine.sslplus PARTITION api
+	IMPORTS
+		config api_traits result
+		object_handle object_stack
+		c_api constants
+		eagine.core.types
+		eagine.core.memory
+		eagine.core.string
+		eagine.core.utility
+		eagine.core.c_api
 )
 
 eagine_add_module(
@@ -67,6 +78,7 @@ eagine_add_module(
 		api_traits
 		c_api
 		constants
+		api
 	SOURCES
 )
 
