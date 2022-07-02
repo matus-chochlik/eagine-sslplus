@@ -17,7 +17,11 @@ import :api_traits;
 import :result;
 import :object_handle;
 import :object_stack;
+import :constants;
 import :c_api;
+import <array>;
+import <tuple>;
+import <type_traits>;
 
 namespace eagine::sslplus {
 //------------------------------------------------------------------------------
@@ -744,5 +748,440 @@ public:
       : ssl_api{traits} {}
 };
 //------------------------------------------------------------------------------
+export template <typename ApiTraits>
+class basic_ssl_api
+  : protected ApiTraits
+  , public basic_ssl_operations<ApiTraits>
+  , public basic_ssl_constants<ApiTraits> {
+public:
+    template <typename R>
+    using combined_result = typename ApiTraits::template combined_result<R>;
+
+    using evp_md_type = ssl_types::evp_md_type;
+
+    basic_ssl_api(ApiTraits traits)
+      : ApiTraits{std::move(traits)}
+      , basic_ssl_operations<ApiTraits>{*static_cast<ApiTraits*>(this)}
+      , basic_ssl_constants<ApiTraits>{
+          *static_cast<ApiTraits*>(this),
+          *static_cast<basic_ssl_operations<ApiTraits>*>(this)} {}
+
+    basic_ssl_api()
+      : basic_ssl_api{ApiTraits{}} {}
+
+    template <typename Function>
+    void for_each_engine(Function function) const {
+        if(auto opt_eng{this->get_first_engine()}) {
+            owned_engine eng = std::move(extract(opt_eng));
+            while(eng) {
+                function(engine(eng));
+                opt_eng = this->get_next_engine(eng);
+                if(opt_eng) {
+                    eng = std::move(extract(opt_eng));
+                }
+            }
+        }
+    }
+
+    auto data_digest(
+      const memory::const_block data,
+      memory::block dst,
+      const message_digest_type mdtype) const noexcept -> memory::block;
+
+    template <typename OptMdt>
+    auto do_data_digest(
+      const memory::const_block data,
+      memory::block dst,
+      OptMdt opt_mdtype) const noexcept -> memory::block {
+        if(opt_mdtype) {
+            return data_digest(data, dst, extract(opt_mdtype));
+        }
+        return {};
+    }
+
+    auto md5_digest(const memory::const_block data, memory::block dst)
+      const noexcept {
+        return do_data_digest(data, dst, this->message_digest_md5());
+    }
+
+    auto sha1_digest(const memory::const_block data, memory::block dst)
+      const noexcept {
+        return do_data_digest(data, dst, this->message_digest_sha1());
+    }
+
+    auto sha224_digest(const memory::const_block data, memory::block dst)
+      const noexcept {
+        return do_data_digest(data, dst, this->message_digest_sha224());
+    }
+
+    auto sha256_digest(const memory::const_block data, memory::block dst)
+      const noexcept {
+        return do_data_digest(data, dst, this->message_digest_sha256());
+    }
+
+    auto sha384_digest(const memory::const_block data, memory::block dst)
+      const noexcept {
+        return do_data_digest(data, dst, this->message_digest_sha384());
+    }
+
+    auto sha512_digest(const memory::const_block data, memory::block dst)
+      const noexcept {
+        return do_data_digest(data, dst, this->message_digest_sha512());
+    }
+
+    auto sign_data_digest(
+      const memory::const_block data,
+      memory::block dst,
+      const message_digest_type mdtype,
+      const pkey pky) const noexcept -> memory::block;
+
+    auto verify_data_digest(
+      const memory::const_block data,
+      const memory::const_block sig,
+      const message_digest_type mdtype,
+      const pkey pky) const noexcept -> bool;
+
+    auto parse_private_key(
+      const memory::const_block blk,
+      password_callback get_passwd = {}) const noexcept
+      -> combined_result<owned_pkey>;
+
+    auto parse_public_key(
+      const memory::const_block blk,
+      password_callback get_passwd = {}) const noexcept
+      -> combined_result<owned_pkey>;
+
+    auto parse_x509(
+      const memory::const_block blk,
+      password_callback get_passwd = {}) const noexcept
+      -> combined_result<owned_x509>;
+
+    auto ca_verify_certificate(const string_view ca_file_path, const x509)
+      const noexcept -> bool;
+
+    auto ca_verify_certificate(const x509 ca_cert, const x509) const noexcept
+      -> bool;
+
+    auto find_name_entry(
+      const x509_name name,
+      const string_view ent_name,
+      const bool no_name = false) const noexcept -> string_view;
+
+    auto find_name_oid_entry(
+      const x509_name name,
+      const string_view ent_name,
+      const string_view ent_oid) const noexcept -> string_view;
+
+    auto find_certificate_issuer_name_entry(
+      const x509 cert,
+      const string_view ent_name) const noexcept -> string_view;
+
+    auto find_certificate_subject_name_entry(
+      const x509 cert,
+      const string_view ent_name) const noexcept -> string_view;
+
+    auto find_certificate_subject_name_entry(
+      const x509 cert,
+      const string_view ent_name,
+      const string_view ent_oid) const noexcept -> string_view;
+
+    auto certificate_subject_name_has_entry_value(
+      const x509 cert,
+      const string_view ent_name,
+      const string_view value) const noexcept -> bool;
+
+    auto certificate_subject_name_has_entry_value(
+      const x509 cert,
+      const string_view ent_name,
+      const string_view ent_oid,
+      const string_view value) const noexcept -> bool;
+};
+//------------------------------------------------------------------------------
+export template <std::size_t I, typename ApiTraits>
+auto get(basic_ssl_api<ApiTraits>& x) noexcept ->
+  typename std::tuple_element<I, basic_ssl_api<ApiTraits>>::type& {
+    return x;
+}
+
+export template <std::size_t I, typename ApiTraits>
+auto get(const basic_ssl_api<ApiTraits>& x) noexcept -> const
+  typename std::tuple_element<I, basic_ssl_api<ApiTraits>>::type& {
+    return x;
+}
+//------------------------------------------------------------------------------
+template <typename ApiTraits>
+auto basic_ssl_api<ApiTraits>::data_digest(
+  const memory::const_block data,
+  memory::block dst,
+  const message_digest_type mdtype) const noexcept -> memory::block {
+    if(mdtype) {
+        const auto req_size = extract_or(this->message_digest_size(mdtype), 0);
+
+        if(dst.size() >= span_size(req_size)) {
+            if(ok mdctx{this->new_message_digest()}) {
+                const auto cleanup{this->delete_message_digest.raii(mdctx)};
+
+                this->message_digest_init(mdctx, mdtype);
+                this->message_digest_update(mdctx, data);
+                return extract_or(
+                  this->message_digest_final(mdctx, dst), memory::block{});
+            }
+        }
+    }
+    return {};
+}
+//------------------------------------------------------------------------------
+template <typename ApiTraits>
+auto basic_ssl_api<ApiTraits>::sign_data_digest(
+  const memory::const_block data,
+  memory::block dst,
+  const message_digest_type mdtype,
+  const pkey pky) const noexcept -> memory::block {
+    if(mdtype && pky) {
+        if(ok mdctx{this->new_message_digest()}) {
+            const auto cleanup{this->delete_message_digest.raii(mdctx)};
+
+            if(this->message_digest_sign_init(mdctx, mdtype, engine{}, pky)) {
+                if(this->message_digest_sign_update(mdctx, data)) {
+                    return extract_or(
+                      this->message_digest_sign_final(mdctx, dst),
+                      memory::block{});
+                }
+            }
+        }
+    }
+    return {};
+}
+//------------------------------------------------------------------------------
+template <typename ApiTraits>
+auto basic_ssl_api<ApiTraits>::verify_data_digest(
+  const memory::const_block data,
+  const memory::const_block sig,
+  const message_digest_type mdtype,
+  const pkey pky) const noexcept -> bool {
+    if(mdtype && pky) {
+        if(ok mdctx{this->new_message_digest()}) {
+            const auto cleanup{this->delete_message_digest.raii(mdctx)};
+
+            if(this->message_digest_verify_init(mdctx, mdtype, engine{}, pky)) {
+                if(this->message_digest_verify_update(mdctx, data)) {
+                    return bool(this->message_digest_verify_final(mdctx, sig));
+                }
+            }
+        }
+    }
+    return false;
+}
+//------------------------------------------------------------------------------
+template <typename ApiTraits>
+auto basic_ssl_api<ApiTraits>::parse_private_key(
+  const memory::const_block blk,
+  password_callback get_passwd) const noexcept -> combined_result<owned_pkey> {
+    if(ok mbio{this->new_block_basic_io(blk)}) {
+        const auto del_bio{this->delete_basic_io.raii(mbio)};
+
+        return this->read_bio_private_key(mbio, get_passwd);
+    }
+
+    return {owned_pkey{}};
+}
+//------------------------------------------------------------------------------
+template <typename ApiTraits>
+auto basic_ssl_api<ApiTraits>::parse_public_key(
+  const memory::const_block blk,
+  password_callback get_passwd) const noexcept -> combined_result<owned_pkey> {
+    if(ok mbio{this->new_block_basic_io(blk)}) {
+        const auto del_bio{this->delete_basic_io.raii(mbio)};
+
+        return this->read_bio_public_key(mbio, get_passwd);
+    }
+
+    return {owned_pkey{}};
+}
+//------------------------------------------------------------------------------
+template <typename ApiTraits>
+auto basic_ssl_api<ApiTraits>::parse_x509(
+  const memory::const_block blk,
+  password_callback get_passwd) const noexcept -> combined_result<owned_x509> {
+    if(ok mbio{this->new_block_basic_io(blk)}) {
+        const auto del_bio{this->delete_basic_io.raii(mbio)};
+
+        return this->read_bio_x509(mbio, get_passwd);
+    }
+
+    return {owned_x509{}};
+}
+//------------------------------------------------------------------------------
+template <typename ApiTraits>
+auto basic_ssl_api<ApiTraits>::ca_verify_certificate(
+  const string_view ca_file_path,
+  const x509 cert) const noexcept -> bool {
+    if(ok store{this->new_x509_store()}) {
+        const auto del_store{this->delete_x509_store.raii(store)};
+
+        if(this->load_into_x509_store(store, ca_file_path)) {
+            if(ok vrfy_ctx{this->new_x509_store_ctx()}) {
+                const auto del_vrfy{this->delete_x509_store_ctx.raii(vrfy_ctx)};
+
+                if(this->init_x509_store_ctx(vrfy_ctx, store, cert)) {
+                    if(ok verify_res{this->x509_verify_certificate(vrfy_ctx)}) {
+                        return true;
+                    }
+                }
+            }
+        }
+    }
+    return false;
+}
+//------------------------------------------------------------------------------
+template <typename ApiTraits>
+auto basic_ssl_api<ApiTraits>::ca_verify_certificate(
+  const x509 ca_cert,
+  const x509 cert) const noexcept -> bool {
+    if(ok store{this->new_x509_store()}) {
+        const auto del_store{this->delete_x509_store.raii(store)};
+
+        if(this->add_cert_into_x509_store(store, ca_cert)) {
+            if(ok vrfy_ctx{this->new_x509_store_ctx()}) {
+                const auto del_vrfy{this->delete_x509_store_ctx.raii(vrfy_ctx)};
+
+                if(this->init_x509_store_ctx(vrfy_ctx, store, cert)) {
+                    if(ok verify_res{this->x509_verify_certificate(vrfy_ctx)}) {
+                        return true;
+                    }
+                }
+            }
+        }
+    }
+    return false;
+}
+//------------------------------------------------------------------------------
+template <typename ApiTraits>
+auto basic_ssl_api<ApiTraits>::find_name_entry(
+  const x509_name name,
+  const string_view ent_name,
+  const bool no_name) const noexcept -> string_view {
+    const auto count{extract(this->get_name_entry_count(name))};
+    std::array<char, 256> namebuf{};
+    for(const auto index : integer_range(count)) {
+        if(const auto entry{this->get_name_entry(name, index)}) {
+            if(const auto object{this->get_name_entry_object(extract(entry))}) {
+                const auto cur_name{this->object_to_text(
+                  cover(namebuf), extract(object), no_name)};
+                if(are_equal(extract(cur_name), ent_name)) {
+                    if(const auto data{
+                         this->get_name_entry_data(extract(entry))}) {
+                        return this->get_string_view(extract(data));
+                    }
+                }
+            }
+        }
+    }
+    return {};
+}
+//------------------------------------------------------------------------------
+template <typename ApiTraits>
+auto basic_ssl_api<ApiTraits>::find_name_oid_entry(
+  const x509_name name,
+  const string_view ent_name,
+  const string_view ent_oid) const noexcept -> string_view {
+    const auto count{extract(this->get_name_entry_count(name))};
+    std::array<char, 256> namebuf{};
+    for(const auto index : integer_range(count)) {
+        if(const auto entry{this->get_name_entry(name, index)}) {
+            if(const auto object{this->get_name_entry_object(extract(entry))}) {
+                if(are_equal(
+                     extract_or(this->object_to_text(
+                       cover(namebuf), extract(object), false)),
+                     ent_name)) {
+                    if(const auto data{
+                         this->get_name_entry_data(extract(entry))}) {
+                        return this->get_string_view(extract(data));
+                    }
+                }
+                if(are_equal(
+                     extract_or(this->object_to_text(
+                       cover(namebuf), extract(object), true)),
+                     ent_oid)) {
+                    if(const auto data{
+                         this->get_name_entry_data(extract(entry))}) {
+                        return this->get_string_view(extract(data));
+                    }
+                }
+            }
+        }
+    }
+    return {};
+}
+//------------------------------------------------------------------------------
+template <typename ApiTraits>
+auto basic_ssl_api<ApiTraits>::find_certificate_issuer_name_entry(
+  const x509 cert,
+  const string_view ent_name) const noexcept -> string_view {
+    if(const auto isuname{this->get_x509_issuer_name(cert)}) {
+        return find_name_entry(extract(isuname), ent_name);
+    }
+    return {};
+}
+//------------------------------------------------------------------------------
+template <typename ApiTraits>
+auto basic_ssl_api<ApiTraits>::find_certificate_subject_name_entry(
+  const x509 cert,
+  const string_view ent_name) const noexcept -> string_view {
+    if(const auto subname{this->get_x509_subject_name(cert)}) {
+        return this->find_name_entry(extract(subname), ent_name);
+    }
+    return {};
+}
+//------------------------------------------------------------------------------
+template <typename ApiTraits>
+auto basic_ssl_api<ApiTraits>::find_certificate_subject_name_entry(
+  const x509 cert,
+  const string_view ent_name,
+  const string_view ent_oid) const noexcept -> string_view {
+    if(const auto subname{this->get_x509_subject_name(cert)}) {
+        return this->find_name_oid_entry(extract(subname), ent_name, ent_oid);
+    }
+    return {};
+}
+//------------------------------------------------------------------------------
+template <typename ApiTraits>
+auto basic_ssl_api<ApiTraits>::certificate_subject_name_has_entry_value(
+  const x509 cert,
+  const string_view ent_name,
+  const string_view value) const noexcept -> bool {
+    return are_equal(
+      this->find_certificate_subject_name_entry(cert, ent_name), value);
+}
+//------------------------------------------------------------------------------
+template <typename ApiTraits>
+auto basic_ssl_api<ApiTraits>::certificate_subject_name_has_entry_value(
+  const x509 cert,
+  const string_view ent_name,
+  const string_view ent_oid,
+  const string_view value) const noexcept -> bool {
+    return are_equal(
+      this->find_certificate_subject_name_entry(cert, ent_name, ent_oid),
+      value);
+}
+//------------------------------------------------------------------------------
 } // namespace eagine::sslplus
+// NOLINTNEXTLINE(cert-dcl58-cpp)
+namespace std {
+//------------------------------------------------------------------------------
+export template <typename ApiTraits>
+struct tuple_size<eagine::sslplus::basic_ssl_api<ApiTraits>>
+  : public std::integral_constant<std::size_t, 2> {};
+
+export template <typename ApiTraits>
+struct tuple_element<0, eagine::sslplus::basic_ssl_api<ApiTraits>> {
+    using type = eagine::sslplus::basic_ssl_operations<ApiTraits>;
+};
+
+export template <typename ApiTraits>
+struct tuple_element<1, eagine::sslplus::basic_ssl_api<ApiTraits>> {
+    using type = eagine::sslplus::basic_ssl_constants<ApiTraits>;
+};
+//------------------------------------------------------------------------------
+} // namespace std
 
