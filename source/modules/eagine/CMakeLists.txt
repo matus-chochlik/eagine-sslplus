@@ -67,6 +67,15 @@ eagine_add_module(
 )
 
 eagine_add_module(
+	eagine.sslplus PARTITION resources
+	IMPORTS
+		eagine.core.types
+		eagine.core.memory
+		eagine.core.main_ctx
+		eagine.core.resource
+)
+
+eagine_add_module(
 	eagine.sslplus
 	PP_NAME SSLPLUS
 	INTERFACES sslplus
@@ -79,6 +88,7 @@ eagine_add_module(
 		c_api
 		constants
 		api
+		resources
 	SOURCES
 )
 
