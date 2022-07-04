@@ -85,8 +85,8 @@ eagine_add_module(
 		eagine.core.memory
 		eagine.core.identifier
 		eagine.core.resource
-		eagine.core.main_ctx
 )
+eagine_embed_target_resources(TARGET eagine.sslplus.embedded)
 
 eagine_add_module(
 	eagine.sslplus

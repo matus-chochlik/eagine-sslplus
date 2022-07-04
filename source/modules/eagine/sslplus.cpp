@@ -15,3 +15,5 @@ export import :object_stack;
 export import :c_api;
 export import :constants;
 export import :api;
+export import :resources;
+export import :embedded;
