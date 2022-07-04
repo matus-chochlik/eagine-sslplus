@@ -105,4 +105,8 @@ eagine_add_module(
 		embedded
 	SOURCES
 )
-
+target_link_libraries(
+	eagine.sslplus
+	PUBLIC
+		EAGine::SSLplus::Deps::OpenSSL
+)

@@ -1165,6 +1165,7 @@ auto basic_ssl_api<ApiTraits>::certificate_subject_name_has_entry_value(
       value);
 }
 //------------------------------------------------------------------------------
+export using ssl_api = basic_ssl_api<ssl_api_traits>;
 } // namespace eagine::sslplus
 // NOLINTNEXTLINE(cert-dcl58-cpp)
 namespace std {
