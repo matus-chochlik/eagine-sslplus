@@ -23,28 +23,6 @@ function(eagine_example_common EXAMPLE_NAME)
 		"${EXAMPLE_NAME}.cpp"
 		${ARGN}
 	)
-	eagine_add_exe_analysis(eagine-${EXAMPLE_NAME})
-	add_dependencies(eagine-sslplus-examples eagine-${EXAMPLE_NAME})
-	target_link_libraries(
-		eagine-${EXAMPLE_NAME}
-		PUBLIC EAGine::SSLplus
-		PRIVATE ${ARGN}
-	)
-
-	set_target_properties(
-		eagine-${EXAMPLE_NAME}
-		PROPERTIES FOLDER "Example/SSLplus"
-	)
-	eagine_install_example(eagine-${EXAMPLE_NAME})
-endfunction()
-
-function(eagine_example_module EXAMPLE_NAME)
-	add_executable(
-		eagine-${EXAMPLE_NAME}
-		EXCLUDE_FROM_ALL
-		"${EXAMPLE_NAME}.cpp"
-		${ARGN}
-	)
 	add_dependencies(eagine-sslplus-examples eagine-${EXAMPLE_NAME})
 	if(${WITH_MODULES})
 		eagine_target_modules(
@@ -71,13 +49,13 @@ endfunction()
 configure_file(example-ca.crt example-ca.crt)
 configure_file(example.crt example.crt)
 
-eagine_example_module(001_log_ca_cert)
-eagine_example_module(001_list_engines)
-eagine_example_module(002_hash_self)
-eagine_example_module(003_verify_cert)
-eagine_example_module(004_verify_cert)
-eagine_example_module(005_random_engine)
-eagine_example_module(008_sign_self)
+eagine_example_common(001_log_ca_cert)
+eagine_example_common(001_list_engines)
+eagine_example_common(002_hash_self)
+eagine_example_common(003_verify_cert)
+eagine_example_common(004_verify_cert)
+eagine_example_common(005_random_engine)
+eagine_example_common(008_sign_self)
 #
 eagine_embed_target_resources(TARGET eagine-004_verify_cert)
 
