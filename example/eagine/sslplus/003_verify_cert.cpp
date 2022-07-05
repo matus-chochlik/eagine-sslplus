@@ -5,6 +5,10 @@
 /// See accompanying file LICENSE_1_0.txt or copy at
 ///  http://www.boost.org/LICENSE_1_0.txt
 ///
+#if EAGINE_SSLPLUS_MODULE
+import eagine.core;
+import eagine.sslplus;
+#else
 #include <eagine/console/console.hpp>
 #include <eagine/file_contents.hpp>
 #include <eagine/logging/logger.hpp>
@@ -12,8 +16,7 @@
 #include <eagine/sslplus/openssl.hpp>
 
 #include <eagine/sslplus/api.hpp>
-
-#include <array>
+#endif
 
 namespace eagine {
 //------------------------------------------------------------------------------
@@ -41,32 +44,36 @@ auto main(main_ctx& ctx) -> int {
                 if(const auto serial{ssl.get_x509_serial_number(cert)}) {
                     ctx.cio()
                       .print(
-                        EAGINE_ID(ssl),
+                        identifier{"ssl"},
                         "successfully verified certificate ${certPath}")
-                      .arg(EAGINE_ID(certPath), EAGINE_ID(FsPath), cert_path)
                       .arg(
-                        EAGINE_ID(serialNo),
+                        identifier{"certPath"}, identifier{"FsPath"}, cert_path)
+                      .arg(
+                        identifier{"serialNo"},
                         extract(ssl.get_int64(extract(serial))));
                 } else {
                     ctx.log()
                       .error(
                         "failed to get certificate ${certPath} serial number")
-                      .arg(EAGINE_ID(certPath), EAGINE_ID(FsPath), cert_path);
+                      .arg(
+                        identifier{"certPath"},
+                        identifier{"FsPath"},
+                        cert_path);
                 }
             } else {
                 ctx.log()
                   .error("certificate does not have required value")
-                  .arg(EAGINE_ID(certPath), EAGINE_ID(FsPath), cert_path);
+                  .arg(identifier{"certPath"}, identifier{"FsPath"}, cert_path);
             }
         } else {
             ctx.log()
               .error("failed to verify certificate ${certPath}")
-              .arg(EAGINE_ID(certPath), EAGINE_ID(FsPath), cert_path);
+              .arg(identifier{"certPath"}, identifier{"FsPath"}, cert_path);
         }
     } else {
         ctx.log()
           .error("failed to load certificate ${certPath}")
-          .arg(EAGINE_ID(certPath), EAGINE_ID(FsPath), cert_path);
+          .arg(identifier{"certPath"}, identifier{"FsPath"}, cert_path);
     }
 
     return 0;
