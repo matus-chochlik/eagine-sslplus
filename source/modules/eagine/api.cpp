@@ -217,7 +217,7 @@ public:
         return {};
     }
 
-    auto get_string_view(asn1_string as) const noexcept {
+    auto get_string_view(asn1_string as) const noexcept -> string_view {
         return as_chars(get_string_block(as));
     }
 
@@ -235,6 +235,13 @@ public:
       &ssl_api::obj_obj2txt,
       c_api::head_transformed<int, 0, 1>(memory::string_span, asn1_object, bool)>
       object_to_text{*this};
+
+    auto get_object_text(
+      memory::string_span dest,
+      asn1_object obj,
+      bool no_name) const noexcept -> string_view {
+        return extract_or(this->object_to_text(dest, obj, no_name));
+    }
 
     simple_adapted_function<&ssl_api::bio_new, owned_basic_io(basic_io_method)>
       new_basic_io{*this};

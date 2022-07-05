@@ -75,9 +75,9 @@ eagine_example_module(001_log_ca_cert)
 eagine_example_module(001_list_engines)
 eagine_example_module(002_hash_self)
 eagine_example_module(003_verify_cert)
-eagine_example_common(004_verify_cert)
-eagine_example_common(005_random_engine)
-eagine_example_common(008_sign_self)
+eagine_example_module(004_verify_cert)
+eagine_example_module(005_random_engine)
+eagine_example_module(008_sign_self)
 #
 eagine_embed_target_resources(TARGET eagine-004_verify_cert)
 

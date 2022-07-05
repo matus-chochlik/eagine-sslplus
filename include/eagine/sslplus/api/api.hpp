@@ -211,6 +211,11 @@ public:
       c_api::head_transformed<int, 0, 1>(string_span, asn1_object, bool)>
       object_to_text{*this};
 
+    auto get_object_text(string_span dest, asn1_object obj, bool no_name)
+      const noexcept -> string_view {
+        return extract_or(this->object_to_text(dest, obj, no_name));
+    }
+
     adapted_function<&ssl_api::bio_new, owned_basic_io(basic_io_method)>
       new_basic_io{*this};
 

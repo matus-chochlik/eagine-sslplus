@@ -5,6 +5,11 @@
 /// See accompanying file LICENSE_1_0.txt or copy at
 ///  http://www.boost.org/LICENSE_1_0.txt
 ///
+#if EAGINE_SSLPLUS_MODULE
+import eagine.core;
+import eagine.sslplus;
+import <array>;
+#else
 #include <eagine/console/console.hpp>
 #include <eagine/embed.hpp>
 #include <eagine/file_contents.hpp>
@@ -13,8 +18,8 @@
 #include <eagine/sslplus/openssl.hpp>
 
 #include <eagine/sslplus/api.hpp>
-
 #include <array>
+#endif
 
 namespace eagine {
 //------------------------------------------------------------------------------
@@ -25,7 +30,7 @@ auto main(main_ctx& ctx) -> int {
         cert_path = arg;
     }
     const memory::const_block ca_cert_pem{
-      eagine::embed(EAGINE_ID(caCert), "example-ca.crt")};
+      eagine::embed(identifier{"caCert"}, "example-ca.crt")};
 
     const sslplus::ssl_api ssl;
 
@@ -37,7 +42,7 @@ auto main(main_ctx& ctx) -> int {
               extract(ssl.get_name_entry_count(extract(subname)))};
             const auto entry_cio{
               ctx.cio()
-                .print(EAGINE_ID(ssl), "CA certificate common name entries:")
+                .print(identifier{"ssl"}, "CA certificate common name entries:")
                 .to_be_continued()};
 
             for(const auto index : integer_range(count)) {
@@ -48,14 +53,15 @@ auto main(main_ctx& ctx) -> int {
                     const auto value{ssl.get_name_entry_data(extract(entry))};
 
                     std::array<char, 96> namebuf{};
-                    const auto name{ssl.object_to_text(
+                    const auto name{ssl.get_object_text(
                       cover(namebuf), extract(object), false)};
 
                     entry_cio.print("${index}: ${attribute}=${value}")
-                      .arg(EAGINE_ID(index), index)
-                      .arg(EAGINE_ID(attribute), extract(name))
+                      .arg(identifier{"index"}, index)
+                      .arg(identifier{"attribute"}, name)
                       .arg(
-                        EAGINE_ID(value), ssl.get_string_view(extract(value)));
+                        identifier{"value"},
+                        ssl.get_string_view(extract(value)));
                 }
             }
         }
@@ -70,14 +76,15 @@ auto main(main_ctx& ctx) -> int {
                       extract(ssl.get_name_entry_count(extract(subname)))};
                     ctx.cio()
                       .print(
-                        EAGINE_ID(ssl),
+                        identifier{"ssl"},
                         "successfully verified certificate ${certPath}")
-                      .arg(EAGINE_ID(certPath), EAGINE_ID(FsPath), cert_path)
-                      .arg(EAGINE_ID(snEntCount), count);
+                      .arg(
+                        identifier{"certPath"}, identifier{"FsPath"}, cert_path)
+                      .arg(identifier{"snEntCount"}, count);
                     const auto entry_cio{
                       ctx.cio()
                         .print(
-                          EAGINE_ID(ssl), "certificate common name entries:")
+                          identifier{"ssl"}, "certificate common name entries:")
                         .to_be_continued()};
 
                     for(const auto index : integer_range(count)) {
@@ -89,14 +96,14 @@ auto main(main_ctx& ctx) -> int {
                               ssl.get_name_entry_data(extract(entry))};
 
                             std::array<char, 96> namebuf{};
-                            const auto name{ssl.object_to_text(
+                            const auto name{ssl.get_object_text(
                               cover(namebuf), extract(object), false)};
 
                             entry_cio.print("${index}: ${attribute}=${value}")
-                              .arg(EAGINE_ID(index), index)
-                              .arg(EAGINE_ID(attribute), extract(name))
+                              .arg(identifier{"index"}, index)
+                              .arg(identifier{"attribute"}, name)
                               .arg(
-                                EAGINE_ID(value),
+                                identifier{"value"},
                                 ssl.get_string_view(extract(value)));
                         }
                     }
@@ -104,17 +111,20 @@ auto main(main_ctx& ctx) -> int {
                     ctx.log()
                       .error(
                         "failed to get certificate ${certPath} serial number")
-                      .arg(EAGINE_ID(certPath), EAGINE_ID(FsPath), cert_path);
+                      .arg(
+                        identifier{"certPath"},
+                        identifier{"FsPath"},
+                        cert_path);
                 }
             } else {
                 ctx.log()
                   .error("failed to verify certificate ${certPath}")
-                  .arg(EAGINE_ID(certPath), EAGINE_ID(FsPath), cert_path);
+                  .arg(identifier{"certPath"}, identifier{"FsPath"}, cert_path);
             }
         } else {
             ctx.log()
               .error("failed to load certificate ${certPath}")
-              .arg(EAGINE_ID(certPath), EAGINE_ID(FsPath), cert_path);
+              .arg(identifier{"certPath"}, identifier{"FsPath"}, cert_path);
         }
     }
 
