@@ -9,10 +9,12 @@ module;
 #if __has_include(<openssl/conf.h>) && __has_include(<openssl/evp.h>)
 #include <openssl/bio.h>
 #include <openssl/conf.h>
+#include <openssl/crypto.h>
 #include <openssl/engine.h>
 #include <openssl/err.h>
 #include <openssl/evp.h>
 #include <openssl/pem.h>
+#include <openssl/provider.h>
 #include <openssl/rand.h>
 #include <openssl/safestack.h>
 #define EAGINE_HAS_SSL 1
@@ -29,6 +31,10 @@ export struct ssl_types {
 #if EAGINE_HAS_SSL
     static constexpr bool has_api = true;
     using ui_method_type = ::UI_METHOD;
+    using dispatch_type = ::OSSL_DISPATCH;
+    using core_handle_type = ::OSSL_CORE_HANDLE;
+    using lib_ctx_type = ::OSSL_LIB_CTX;
+    using provider_type = ::OSSL_PROVIDER;
     using engine_type = ::ENGINE;
     using asn1_object_type = ::ASN1_OBJECT;
     using asn1_string_type = ::ASN1_STRING;
@@ -52,6 +58,11 @@ export struct ssl_types {
     using x509_stack_type = STACK_OF(X509);
 #else
     static constexpr bool has_api = false;
+    using ui_method_type = nothing_t;
+    using dispatch_type = nothing_t;
+    using core_handle_type = nothing_t;
+    using lib_ctx_type = nothing_t;
+    using provider_type = nothing_t;
     using engine_type = nothing_t;
     using asn1_object_type = nothing_t;
     using asn1_string_type = nothing_t;

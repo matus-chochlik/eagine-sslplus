@@ -9,10 +9,12 @@ module;
 #if __has_include(<openssl/conf.h>) && __has_include(<openssl/evp.h>)
 #include <openssl/bio.h>
 #include <openssl/conf.h>
+#include <openssl/crypto.h>
 #include <openssl/engine.h>
 #include <openssl/err.h>
 #include <openssl/evp.h>
 #include <openssl/pem.h>
+#include <openssl/provider.h>
 #include <openssl/rand.h>
 #include <openssl/safestack.h>
 #define EAGINE_HAS_SSL 1
@@ -49,6 +51,10 @@ public:
 
     static constexpr bool has_api = ssl_types::has_api;
     using ui_method_type = ssl_types::ui_method_type;
+    using dispatch_type = ssl_types::dispatch_type;
+    using core_handle_type = ssl_types::core_handle_type;
+    using lib_ctx_type = ssl_types::lib_ctx_type;
+    using provider_type = ssl_types::provider_type;
     using engine_type = ssl_types::engine_type;
     using asn1_object_type = ssl_types::asn1_object_type;
     using asn1_string_type = ssl_types::asn1_string_type;
@@ -123,6 +129,81 @@ public:
       const ui_method_type*(),
       EAGINE_SSL_STATIC_FUNC(UI_get_default_method)>
       ui_get_default_method;
+
+    // lib_ctx
+    ssl_api_function<lib_ctx_type*(), EAGINE_SSL_STATIC_FUNC(OSSL_LIB_CTX_new)>
+      lib_ctx_new;
+
+    ssl_api_function<
+      lib_ctx_type*(const core_handle_type*, const dispatch_type*),
+      EAGINE_SSL_STATIC_FUNC(OSSL_LIB_CTX_new_from_dispatch)>
+      lib_ctx_new_from_dispatch;
+
+    ssl_api_function<
+      lib_ctx_type*(const core_handle_type*, const dispatch_type*),
+      EAGINE_SSL_STATIC_FUNC(OSSL_LIB_CTX_new_child)>
+      lib_ctx_new_child;
+
+    ssl_api_function<
+      int(lib_ctx_type*, const char*),
+      EAGINE_SSL_STATIC_FUNC(OSSL_LIB_CTX_load_config)>
+      lib_ctx_load_config;
+
+    ssl_api_function<
+      lib_ctx_type*(),
+      EAGINE_SSL_STATIC_FUNC(OSSL_LIB_CTX_get0_global_default)>
+      lib_ctx_get_global_default;
+
+    ssl_api_function<
+      lib_ctx_type*(lib_ctx_type*),
+      EAGINE_SSL_STATIC_FUNC(OSSL_LIB_CTX_set0_default)>
+      lib_ctx_set_default;
+
+    ssl_api_function<
+      void(lib_ctx_type*),
+      EAGINE_SSL_STATIC_FUNC(OSSL_LIB_CTX_free)>
+      lib_ctx_free;
+
+    // provider
+    ssl_api_function<
+      int(lib_ctx_type*, const char*),
+      EAGINE_SSL_STATIC_FUNC(OSSL_PROVIDER_set_default_search_path)>
+      provider_set_default_search_path;
+
+    ssl_api_function<
+      provider_type*(lib_ctx_type*, const char*),
+      EAGINE_SSL_STATIC_FUNC(OSSL_PROVIDER_load)>
+      provider_load;
+
+    ssl_api_function<
+      provider_type*(lib_ctx_type*, const char*, int),
+      EAGINE_SSL_STATIC_FUNC(OSSL_PROVIDER_try_load)>
+      provider_try_load;
+
+    ssl_api_function<
+      int(provider_type*),
+      EAGINE_SSL_STATIC_FUNC(OSSL_PROVIDER_unload)>
+      provider_unload;
+
+    ssl_api_function<
+      int(lib_ctx_type*, const char*),
+      EAGINE_SSL_STATIC_FUNC(OSSL_PROVIDER_available)>
+      provider_available;
+
+    ssl_api_function<
+      const dispatch_type*(const provider_type*),
+      EAGINE_SSL_STATIC_FUNC(OSSL_PROVIDER_get0_dispatch)>
+      provider_get_dispatch;
+
+    ssl_api_function<
+      const char*(const provider_type*),
+      EAGINE_SSL_STATIC_FUNC(OSSL_PROVIDER_get0_name)>
+      provider_get_name;
+
+    ssl_api_function<
+      int(const provider_type*),
+      EAGINE_SSL_STATIC_FUNC(OSSL_PROVIDER_self_test)>
+      provider_self_test;
 
     // engine
     ssl_api_function<void(), EAGINE_SSL_STATIC_FUNC(ENGINE_load_builtin_engines)>
@@ -721,6 +802,21 @@ public:
       , ui_null{"UI_null", *this}
       , ui_openssl{"UI_OpenSSL", *this}
       , ui_get_default_method{"UI_get_default_method", *this}
+      , lib_ctx_new{"OSSL_LIB_CTX_new", *this}
+      , lib_ctx_new_from_dispatch{"OSSL_LIB_CTX_new_from_dispatch", *this}
+      , lib_ctx_new_child{"OSSL_LIB_CTX_new_child", *this}
+      , lib_ctx_load_config{"OSSL_LIB_CTX_load_config", *this}
+      , lib_ctx_get_global_default{"OSSL_LIB_CTX_get0_global_default", *this}
+      , lib_ctx_set_default{"OSSL_LIB_CTX_set0_default", *this}
+      , lib_ctx_free{"OSSL_LIB_CTX_free", *this}
+      , provider_set_default_search_path{"OSSL_PROVIDER_set_default_search_path", *this}
+      , provider_load{"OSSL_PROVIDER_load", *this}
+      , provider_try_load{"OSSL_PROVIDER_try_load", *this}
+      , provider_unload{"OSSL_PROVIDER_unload", *this}
+      , provider_get_dispatch{"OSSL_PROVIDER_get0_dispatch", *this}
+      , provider_available{"OSSL_PROVIDER_available", *this}
+      , provider_get_name{"OSSL_PROVIDER_get_name", *this}
+      , provider_self_test{"OSSL_PROVIDER_self_test", *this}
       , engine_load_builtin_engines{"ENGINE_load_builtin_engines", *this}
       , engine_get_first{"ENGINE_get_first", *this}
       , engine_get_last{"ENGINE_get_last", *this}
