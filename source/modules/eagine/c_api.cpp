@@ -10,13 +10,13 @@ module;
 #include <openssl/bio.h>
 #include <openssl/conf.h>
 #include <openssl/crypto.h>
-#include <openssl/engine.h>
 #include <openssl/err.h>
 #include <openssl/evp.h>
 #include <openssl/pem.h>
 #include <openssl/provider.h>
 #include <openssl/rand.h>
 #include <openssl/safestack.h>
+#include <openssl/ui.h>
 #define EAGINE_HAS_SSL 1
 #else
 #define EAGINE_HAS_SSL 0
@@ -204,96 +204,6 @@ public:
       int(const provider_type*),
       EAGINE_SSL_STATIC_FUNC(OSSL_PROVIDER_self_test)>
       provider_self_test;
-
-    // engine
-    ssl_api_function<void(), EAGINE_SSL_STATIC_FUNC(ENGINE_load_builtin_engines)>
-      engine_load_builtin_engines;
-
-    ssl_api_function<engine_type*(), EAGINE_SSL_STATIC_FUNC(ENGINE_get_first)>
-      engine_get_first;
-
-    ssl_api_function<engine_type*(), EAGINE_SSL_STATIC_FUNC(ENGINE_get_last)>
-      engine_get_last;
-
-    ssl_api_function<
-      engine_type*(engine_type*),
-      EAGINE_SSL_STATIC_FUNC(ENGINE_get_next)>
-      engine_get_next;
-
-    ssl_api_function<
-      engine_type*(engine_type*),
-      EAGINE_SSL_STATIC_FUNC(ENGINE_get_prev)>
-      engine_get_prev;
-
-    ssl_api_function<engine_type*(), EAGINE_SSL_STATIC_FUNC(ENGINE_new)>
-      engine_new;
-
-    ssl_api_function<
-      engine_type*(const char*),
-      EAGINE_SSL_STATIC_FUNC(ENGINE_by_id)>
-      engine_by_id;
-
-    ssl_api_function<int(engine_type*), EAGINE_SSL_STATIC_FUNC(ENGINE_up_ref)>
-      engine_up_ref;
-
-    ssl_api_function<int(engine_type*), EAGINE_SSL_STATIC_FUNC(ENGINE_free)>
-      engine_free;
-
-    ssl_api_function<int(engine_type*), EAGINE_SSL_STATIC_FUNC(ENGINE_init)>
-      engine_init;
-
-    ssl_api_function<int(engine_type*), EAGINE_SSL_STATIC_FUNC(ENGINE_finish)>
-      engine_finish;
-
-    ssl_api_function<
-      const char*(const engine_type*),
-      EAGINE_SSL_STATIC_FUNC(ENGINE_get_id)>
-      engine_get_id;
-
-    ssl_api_function<
-      const char*(const engine_type*),
-      EAGINE_SSL_STATIC_FUNC(ENGINE_get_name)>
-      engine_get_name;
-
-    ssl_api_function<
-      int(engine_type*),
-      EAGINE_SSL_STATIC_FUNC(ENGINE_set_default_RSA)>
-      engine_set_default_rsa;
-
-    ssl_api_function<
-      int(engine_type*),
-      EAGINE_SSL_STATIC_FUNC(ENGINE_set_default_DSA)>
-      engine_set_default_dsa;
-
-    ssl_api_function<
-      int(engine_type*),
-      EAGINE_SSL_STATIC_FUNC(ENGINE_set_default_DH)>
-      engine_set_default_dh;
-
-    ssl_api_function<
-      int(engine_type*),
-      EAGINE_SSL_STATIC_FUNC(ENGINE_set_default_RAND)>
-      engine_set_default_rand;
-
-    ssl_api_function<
-      int(engine_type*),
-      EAGINE_SSL_STATIC_FUNC(ENGINE_set_default_ciphers)>
-      engine_set_default_ciphers;
-
-    ssl_api_function<
-      int(engine_type*),
-      EAGINE_SSL_STATIC_FUNC(ENGINE_set_default_digests)>
-      engine_set_default_digests;
-
-    ssl_api_function<
-      evp_pkey_type*(engine_type*, const char*, ui_method_type*, void*),
-      EAGINE_SSL_STATIC_FUNC(ENGINE_load_private_key)>
-      engine_load_private_key;
-
-    ssl_api_function<
-      evp_pkey_type*(engine_type*, const char*, ui_method_type*, void*),
-      EAGINE_SSL_STATIC_FUNC(ENGINE_load_public_key)>
-      engine_load_public_key;
 
     // asn1
     ssl_api_function<
@@ -817,27 +727,6 @@ public:
       , provider_available{"OSSL_PROVIDER_available", *this}
       , provider_get_name{"OSSL_PROVIDER_get_name", *this}
       , provider_self_test{"OSSL_PROVIDER_self_test", *this}
-      , engine_load_builtin_engines{"ENGINE_load_builtin_engines", *this}
-      , engine_get_first{"ENGINE_get_first", *this}
-      , engine_get_last{"ENGINE_get_last", *this}
-      , engine_get_next{"ENGINE_get_next", *this}
-      , engine_get_prev{"ENGINE_get_prev", *this}
-      , engine_new{"ENGINE_new", *this}
-      , engine_by_id{"ENGINE_by_id", *this}
-      , engine_up_ref{"ENGINE_up_ref", *this}
-      , engine_free{"ENGINE_free", *this}
-      , engine_init{"ENGINE_init", *this}
-      , engine_finish{"ENGINE_finish", *this}
-      , engine_get_id{"ENGINE_get_id", *this}
-      , engine_get_name{"ENGINE_get_name", *this}
-      , engine_set_default_rsa{"ENGINE_set_default_RSA", *this}
-      , engine_set_default_dsa{"ENGINE_set_default_DSA", *this}
-      , engine_set_default_dh{"ENGINE_set_default_DH", *this}
-      , engine_set_default_rand{"ENGINE_set_default_RAND", *this}
-      , engine_set_default_ciphers{"ENGINE_set_default_CIPHERS", *this}
-      , engine_set_default_digests{"ENGINE_set_default_DIGESTS", *this}
-      , engine_load_private_key{"ENGINE_load_private_key", *this}
-      , engine_load_public_key{"ENGINE_load_public_key", *this}
       , asn1_string_length{"ASN1_STRING_length", *this}
       , asn1_string_get0_data{"ASN1_STRING_get0_data", *this}
       , asn1_integer_get_int64{"ASN1_INTEGER_get_int64", *this}

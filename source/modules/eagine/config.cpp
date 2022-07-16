@@ -10,13 +10,13 @@ module;
 #include <openssl/bio.h>
 #include <openssl/conf.h>
 #include <openssl/crypto.h>
-#include <openssl/engine.h>
 #include <openssl/err.h>
 #include <openssl/evp.h>
 #include <openssl/pem.h>
 #include <openssl/provider.h>
 #include <openssl/rand.h>
 #include <openssl/safestack.h>
+#include <openssl/ui.h>
 #define EAGINE_HAS_SSL 1
 #else
 #define EAGINE_HAS_SSL 0
