@@ -105,6 +105,69 @@ public:
     simple_adapted_function<&ssl_api::ui_openssl, ui_method()> openssl_ui{
       *this};
 
+    simple_adapted_function<&ssl_api::lib_ctx_new, owned_lib_ctx()> new_lib_ctx{
+      *this};
+
+    simple_adapted_function<
+      &ssl_api::lib_ctx_new_from_dispatch,
+      owned_lib_ctx(core_handle, dispatch)>
+      new_lib_ctx_from_dispatch{*this};
+
+    simple_adapted_function<
+      &ssl_api::lib_ctx_new_child,
+      owned_lib_ctx(core_handle, dispatch)>
+      new_lib_ctx_child{*this};
+
+    simple_adapted_function<
+      &ssl_api::lib_ctx_load_config,
+      bool(lib_ctx, string_view)>
+      load_lib_ctx_config{*this};
+
+    simple_adapted_function<&ssl_api::lib_ctx_get_global_default, lib_ctx()>
+      get_default_lib_ctx{*this};
+
+    simple_adapted_function<
+      &ssl_api::lib_ctx_get_global_default,
+      lib_ctx(lib_ctx)>
+      set_default_lib_ctx{*this};
+
+    simple_adapted_function<
+      &ssl_api::lib_ctx_free,
+      c_api::collapsed<int>(owned_lib_ctx)>
+      delete_lib_ctx{*this};
+
+    simple_adapted_function<
+      &ssl_api::provider_set_default_search_path,
+      void(lib_ctx, string_view)>
+      set_default_provider_search_path{*this};
+
+    simple_adapted_function<
+      &ssl_api::provider_load,
+      provider(lib_ctx, string_view)>
+      load_provider{*this};
+
+    simple_adapted_function<
+      &ssl_api::provider_try_load,
+      provider(lib_ctx, string_view)>
+      try_load_provider{*this};
+
+    simple_adapted_function<&ssl_api::provider_unload, void(provider)>
+      unload_provider{*this};
+
+    simple_adapted_function<
+      &ssl_api::provider_available,
+      bool(lib_ctx, string_view)>
+      is_provider_available{*this};
+
+    simple_adapted_function<&ssl_api::provider_get_name, string_view(provider)>
+      get_provider_name{*this};
+
+    simple_adapted_function<&ssl_api::provider_get_dispatch, dispatch(provider)>
+      get_provider_dispatch{*this};
+
+    simple_adapted_function<&ssl_api::provider_get_dispatch, bool(provider)>
+      provider_self_test{*this};
+
     plain_adapted_function<&ssl_api::engine_load_builtin_engines>
       load_builtin_engines{*this};
 

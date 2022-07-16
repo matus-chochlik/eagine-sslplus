@@ -15,6 +15,10 @@ namespace eagine::sslplus {
 #define EAGINE_SSLPLUS_TAG_TYPE(NAME) \
     static_message_id<id_v("ssl"), id_v(#NAME)>
 export using ui_method_tag = EAGINE_SSLPLUS_TAG_TYPE(UIMethod);
+export using dispatch_tag = EAGINE_SSLPLUS_TAG_TYPE(Dispatch);
+export using core_handle_tag = EAGINE_SSLPLUS_TAG_TYPE(CoreHandle);
+export using lib_ctx_tag = EAGINE_SSLPLUS_TAG_TYPE(LibCtx);
+export using provider_tag = EAGINE_SSLPLUS_TAG_TYPE(Provider);
 export using engine_tag = EAGINE_SSLPLUS_TAG_TYPE(Engine);
 export using asn1_object_tag = EAGINE_SSLPLUS_TAG_TYPE(ASN1Object);
 export using asn1_string_tag = EAGINE_SSLPLUS_TAG_TYPE(ASN1String);
@@ -39,6 +43,18 @@ export using x509_tag = EAGINE_SSLPLUS_TAG_TYPE(X509);
 //------------------------------------------------------------------------------
 export using ui_method =
   c_api::basic_handle<ui_method_tag, ssl_types::ui_method_type*, nullptr>;
+
+export using dispatch =
+  c_api::basic_handle<dispatch_tag, ssl_types::dispatch_type*, nullptr>;
+
+export using core_handle =
+  c_api::basic_handle<core_handle_tag, ssl_types::core_handle_type*, nullptr>;
+
+export using lib_ctx =
+  c_api::basic_handle<lib_ctx_tag, ssl_types::lib_ctx_type*, nullptr>;
+
+export using provider =
+  c_api::basic_handle<provider_tag, ssl_types::provider_type*, nullptr>;
 
 export using engine =
   c_api::basic_handle<engine_tag, ssl_types::engine_type*, nullptr>;
@@ -101,6 +117,18 @@ export using x509_crl =
 export using x509 =
   c_api::basic_handle<x509_tag, ssl_types::x509_type*, nullptr>;
 //------------------------------------------------------------------------------
+export using owned_dispatch =
+  c_api::basic_owned_handle<dispatch_tag, ssl_types::dispatch_type*, nullptr>;
+
+export using owned_core_handle = c_api::
+  basic_owned_handle<core_handle_tag, ssl_types::core_handle_type*, nullptr>;
+
+export using owned_lib_ctx =
+  c_api::basic_owned_handle<lib_ctx_tag, ssl_types::lib_ctx_type*, nullptr>;
+
+export using owned_provider =
+  c_api::basic_owned_handle<provider_tag, ssl_types::provider_type*, nullptr>;
+
 export using owned_engine =
   c_api::basic_owned_handle<engine_tag, ssl_types::engine_type*, nullptr>;
 
