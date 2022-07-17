@@ -16,27 +16,6 @@ inline basic_ssl_c_api<ApiTraits>::basic_ssl_c_api(ApiTraits& traits)
   , ui_null{"UI_null", *this}
   , ui_openssl{"UI_OpenSSL", *this}
   , ui_get_default_method{"UI_get_default_method", *this}
-  , engine_load_builtin_engines{"ENGINE_load_builtin_engines", *this}
-  , engine_get_first{"ENGINE_get_first", *this}
-  , engine_get_last{"ENGINE_get_last", *this}
-  , engine_get_next{"ENGINE_get_next", *this}
-  , engine_get_prev{"ENGINE_get_prev", *this}
-  , engine_new{"ENGINE_new", *this}
-  , engine_by_id{"ENGINE_by_id", *this}
-  , engine_up_ref{"ENGINE_up_ref", *this}
-  , engine_free{"ENGINE_free", *this}
-  , engine_init{"ENGINE_init", *this}
-  , engine_finish{"ENGINE_finish", *this}
-  , engine_get_id{"ENGINE_get_id", *this}
-  , engine_get_name{"ENGINE_get_name", *this}
-  , engine_set_default_rsa{"ENGINE_set_default_RSA", *this}
-  , engine_set_default_dsa{"ENGINE_set_default_DSA", *this}
-  , engine_set_default_dh{"ENGINE_set_default_DH", *this}
-  , engine_set_default_rand{"ENGINE_set_default_RAND", *this}
-  , engine_set_default_ciphers{"ENGINE_set_default_CIPHERS", *this}
-  , engine_set_default_digests{"ENGINE_set_default_DIGESTS", *this}
-  , engine_load_private_key{"ENGINE_load_private_key", *this}
-  , engine_load_public_key{"ENGINE_load_public_key", *this}
   , asn1_string_length{"ASN1_STRING_length", *this}
   , asn1_string_get0_data{"ASN1_STRING_get0_data", *this}
   , asn1_integer_get_int64{"ASN1_INTEGER_get_int64", *this}

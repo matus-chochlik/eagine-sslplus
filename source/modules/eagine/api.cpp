@@ -749,20 +749,6 @@ public:
     basic_ssl_api()
       : basic_ssl_api{ApiTraits{}} {}
 
-    template <typename Function>
-    void for_each_engine(Function function) const {
-        if(auto opt_eng{this->get_first_engine()}) {
-            owned_engine eng = std::move(extract(opt_eng));
-            while(eng) {
-                function(engine(eng));
-                opt_eng = this->get_next_engine(eng);
-                if(opt_eng) {
-                    eng = std::move(extract(opt_eng));
-                }
-            }
-        }
-    }
-
     auto data_digest(
       const memory::const_block data,
       memory::block dst,
