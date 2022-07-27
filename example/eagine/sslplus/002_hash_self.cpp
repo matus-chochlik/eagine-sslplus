@@ -5,6 +5,11 @@
 /// See accompanying file LICENSE_1_0.txt or copy at
 ///  http://www.boost.org/LICENSE_1_0.txt
 ///
+#if EAGINE_SSLPLUS_MODULE
+import eagine.core;
+import eagine.sslplus;
+import <array>;
+#else
 #include <eagine/console/console.hpp>
 #include <eagine/file_contents.hpp>
 #include <eagine/logging/logger.hpp>
@@ -12,8 +17,8 @@
 #include <eagine/sslplus/openssl.hpp>
 
 #include <eagine/sslplus/api.hpp>
-
 #include <array>
+#endif
 
 namespace eagine {
 //------------------------------------------------------------------------------
@@ -24,8 +29,8 @@ auto main(main_ctx& ctx) -> int {
     const sslplus::ssl_api ssl;
 
     if(memory::const_block hash{ssl.sha256_digest(data, cover(temp))}) {
-        ctx.cio().print(EAGINE_ID(sslplus), "data hashed successfully");
-        ctx.log().info("hash of self").arg(EAGINE_ID(hash), hash);
+        ctx.cio().print(identifier{"sslplus"}, "data hashed successfully");
+        ctx.log().info("hash of self").arg(identifier{"hash"}, hash);
     }
 
     return 0;

@@ -5,6 +5,11 @@
 /// See accompanying file LICENSE_1_0.txt or copy at
 ///  http://www.boost.org/LICENSE_1_0.txt
 ///
+#if EAGINE_SSLPLUS_MODULE
+import eagine.core;
+import eagine.sslplus;
+import <array>;
+#else
 #include <eagine/console/console.hpp>
 #include <eagine/embed.hpp>
 #include <eagine/file_contents.hpp>
@@ -13,8 +18,8 @@
 #include <eagine/sslplus/openssl.hpp>
 
 #include <eagine/sslplus/api.hpp>
-
 #include <array>
+#endif
 
 namespace eagine {
 //------------------------------------------------------------------------------
@@ -53,43 +58,48 @@ auto main(main_ctx& ctx) -> int {
                          ssl.sign_data_digest(data, cover(temp), md, pkey)}) {
 
                         ctx.cio()
-                          .print(EAGINE_ID(ssl), "signature of self (${size})")
-                          .arg(EAGINE_ID(size), EAGINE_ID(ByseSize), sig.size())
-                          .arg(EAGINE_ID(signature), memory::const_block{sig});
+                          .print(
+                            identifier{"ssl"}, "signature of self (${size})")
+                          .arg(
+                            identifier{"size"},
+                            identifier{"ByseSize"},
+                            sig.size())
+                          .arg(
+                            identifier{"signature"}, memory::const_block{sig});
 
                         if(ssl.verify_data_digest(data, sig, md, pkey)) {
                             ctx.cio().print(
-                              EAGINE_ID(ssl), "signature verified");
+                              identifier{"ssl"}, "signature verified");
                         } else {
                             log.error("failed to verify data signature")
-                              .arg(EAGINE_ID(keyId), key_id)
-                              .arg(EAGINE_ID(engineId), engine_id);
+                              .arg(identifier{"keyId"}, key_id)
+                              .arg(identifier{"engineId"}, engine_id);
                         }
                     } else {
                         log.error("failed to sign data")
-                          .arg(EAGINE_ID(keyId), key_id)
-                          .arg(EAGINE_ID(engineId), engine_id);
+                          .arg(identifier{"keyId"}, key_id)
+                          .arg(identifier{"engineId"}, engine_id);
                     }
                 } else {
                     log.error("failed to get message digest: ${reason}")
-                      .arg(EAGINE_ID(engineId), engine_id)
-                      .arg(EAGINE_ID(reason), (!md).message());
+                      .arg(identifier{"engineId"}, engine_id)
+                      .arg(identifier{"reason"}, (!md).message());
                 }
             } else {
                 log.error("failed to load key ${keyID} from engine: ${reason}")
-                  .arg(EAGINE_ID(keyId), key_id)
-                  .arg(EAGINE_ID(engineId), engine_id)
-                  .arg(EAGINE_ID(reason), (!pkey).message());
+                  .arg(identifier{"keyId"}, key_id)
+                  .arg(identifier{"engineId"}, engine_id)
+                  .arg(identifier{"reason"}, (!pkey).message());
             }
 
         } else {
             log.error("failed to init ssl engine ${engineId}: ${reason}")
-              .arg(EAGINE_ID(engineId), engine_id)
-              .arg(EAGINE_ID(reason), init_result.message());
+              .arg(identifier{"engineId"}, engine_id)
+              .arg(identifier{"reason"}, init_result.message());
         }
     } else {
         log.error("failed to open ssl engine ${engineId}")
-          .arg(EAGINE_ID(engineId), engine_id);
+          .arg(identifier{"engineId"}, engine_id);
     }
 
     return 0;

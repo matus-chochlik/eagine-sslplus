@@ -5,13 +5,17 @@
 /// See accompanying file LICENSE_1_0.txt or copy at
 ///  http://www.boost.org/LICENSE_1_0.txt
 ///
+export module eagine.sslplus:constants;
 
-namespace eagine {
+import :c_api;
+
+namespace eagine::sslplus {
 //------------------------------------------------------------------------------
-EAGINE_LIB_FUNC
-auto ca_certificate_pem(main_ctx& ctx) noexcept -> memory::const_block {
-    return ca_certificate_pem(
-      eagine::embed(identifier{"eagiCaCert"}, "@EAGINE_EMBED_CA_CERT@"), ctx);
-}
+export template <typename ApiTraits>
+struct basic_ssl_constants {
+public:
+    basic_ssl_constants(ApiTraits&, basic_ssl_c_api<ApiTraits>&) {}
+};
 //------------------------------------------------------------------------------
-} // namespace eagine
+} // namespace eagine::sslplus
+

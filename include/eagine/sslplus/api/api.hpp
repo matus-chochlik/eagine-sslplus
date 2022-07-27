@@ -93,87 +93,6 @@ public:
     adapted_function<&ssl_api::ui_null, ui_method()> null_ui{*this};
     adapted_function<&ssl_api::ui_openssl, ui_method()> openssl_ui{*this};
 
-    adapted_function<&ssl_api::engine_load_builtin_engines> load_builtin_engines{
-      *this};
-
-    adapted_function<&ssl_api::engine_get_first, owned_engine()>
-      get_first_engine{*this};
-
-    adapted_function<&ssl_api::engine_get_last, owned_engine()> get_last_engine{
-      *this};
-
-    adapted_function<&ssl_api::engine_get_next, owned_engine(owned_engine&)>
-      get_next_engine{*this};
-
-    adapted_function<&ssl_api::engine_get_prev, owned_engine(owned_engine&)>
-      get_prev_engine{*this};
-
-    adapted_function<&ssl_api::engine_new, owned_engine()> new_engine{*this};
-
-    adapted_function<&ssl_api::engine_by_id, owned_engine(string_view)>
-      open_engine{*this};
-
-    adapted_function<
-      &ssl_api::engine_up_ref,
-      owned_engine(engine),
-      c_api::replaced_with_map<1>>
-      copy_engine{*this};
-
-    adapted_function<&ssl_api::engine_free, c_api::collapsed<int>(owned_engine)>
-      delete_engine{*this};
-
-    adapted_function<&ssl_api::engine_init, c_api::collapsed<int>(engine)>
-      init_engine{*this};
-
-    adapted_function<&ssl_api::engine_finish, c_api::collapsed<int>(engine)>
-      finish_engine{*this};
-
-    adapted_function<&ssl_api::engine_get_id, string_view(engine)> get_engine_id{
-      *this};
-
-    adapted_function<&ssl_api::engine_get_name, string_view(engine)>
-      get_engine_name{*this};
-
-    adapted_function<
-      &ssl_api::engine_set_default_rsa,
-      c_api::collapsed<int>(engine)>
-      set_default_rsa{*this};
-
-    adapted_function<
-      &ssl_api::engine_set_default_dsa,
-      c_api::collapsed<int>(engine)>
-      set_default_dsa{*this};
-
-    adapted_function<
-      &ssl_api::engine_set_default_dh,
-      c_api::collapsed<int>(engine)>
-      set_default_dh{*this};
-
-    adapted_function<
-      &ssl_api::engine_set_default_rand,
-      c_api::collapsed<int>(engine)>
-      set_default_rand{*this};
-
-    adapted_function<
-      &ssl_api::engine_set_default_ciphers,
-      c_api::collapsed<int>(engine)>
-      set_default_ciphers{*this};
-
-    adapted_function<
-      &ssl_api::engine_set_default_digests,
-      c_api::collapsed<int>(engine)>
-      set_default_digests{*this};
-
-    adapted_function<
-      &ssl_api::engine_load_private_key,
-      owned_pkey(engine, string_view, ui_method)>
-      load_engine_private_key{*this};
-
-    adapted_function<
-      &ssl_api::engine_load_public_key,
-      owned_pkey(engine, string_view)>
-      load_engine_public_key{*this};
-
     // ASN1
     // string
     adapted_function<&ssl_api::asn1_string_length, span_size_t(asn1_string)>
@@ -210,6 +129,11 @@ public:
       &ssl_api::obj_obj2txt,
       c_api::head_transformed<int, 0, 1>(string_span, asn1_object, bool)>
       object_to_text{*this};
+
+    auto get_object_text(string_span dest, asn1_object obj, bool no_name)
+      const noexcept -> string_view {
+        return extract_or(this->object_to_text(dest, obj, no_name));
+    }
 
     adapted_function<&ssl_api::bio_new, owned_basic_io(basic_io_method)>
       new_basic_io{*this};

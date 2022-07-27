@@ -11,12 +11,12 @@
 #if __has_include(<openssl/conf.h>) && __has_include(<openssl/evp.h>)
 #include <openssl/bio.h>
 #include <openssl/conf.h>
-#include <openssl/engine.h>
 #include <openssl/err.h>
 #include <openssl/evp.h>
 #include <openssl/pem.h>
 #include <openssl/rand.h>
 #include <openssl/safestack.h>
+#include <openssl/ui.h>
 #endif
 
 #endif // EAGINE_SSLPLUS_OPENSSL_HPP

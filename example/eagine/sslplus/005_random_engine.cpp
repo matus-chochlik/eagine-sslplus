@@ -5,14 +5,19 @@
 /// See accompanying file LICENSE_1_0.txt or copy at
 ///  http://www.boost.org/LICENSE_1_0.txt
 ///
+#if EAGINE_SSLPLUS_MODULE
+import eagine.core;
+import eagine.sslplus;
+import <array>;
+#else
 #include <eagine/console/console.hpp>
 #include <eagine/logging/logger.hpp>
 #include <eagine/main_ctx.hpp>
 #include <eagine/sslplus/openssl.hpp>
 
 #include <eagine/sslplus/api.hpp>
-
 #include <array>
+#endif
 
 namespace eagine {
 //------------------------------------------------------------------------------
@@ -36,30 +41,30 @@ auto main(main_ctx& ctx) -> int {
                 if(const auto rand_result{ssl.random_bytes(cover(temp))}) {
                     ctx.cio()
                       .print(
-                        EAGINE_ID(ssl),
+                        identifier{"ssl"},
                         "got ${size} random bytes from engine ${id}")
-                      .arg(EAGINE_ID(size), temp.size())
-                      .arg(EAGINE_ID(id), engine_id)
-                      .arg(EAGINE_ID(bytes), view(temp));
+                      .arg(identifier{"size"}, temp.size())
+                      .arg(identifier{"id"}, engine_id)
+                      .arg(identifier{"bytes"}, view(temp));
                 } else {
                     log
                       .error("failed to get random bytes from ${id}: ${reason}")
-                      .arg(EAGINE_ID(id), engine_id)
-                      .arg(EAGINE_ID(reason), rand_result.message());
+                      .arg(identifier{"id"}, engine_id)
+                      .arg(identifier{"reason"}, rand_result.message());
                 }
             } else {
                 log.error("failed to set ${id} as random engine: ${reason}")
-                  .arg(EAGINE_ID(id), engine_id)
-                  .arg(EAGINE_ID(reason), set_result.message());
+                  .arg(identifier{"id"}, engine_id)
+                  .arg(identifier{"reason"}, set_result.message());
             }
         } else {
             log.error("failed to init ssl engine ${id}: ${reason}")
-              .arg(EAGINE_ID(id), engine_id)
-              .arg(EAGINE_ID(reason), init_result.message());
+              .arg(identifier{"id"}, engine_id)
+              .arg(identifier{"reason"}, init_result.message());
         }
     } else {
         log.error("failed to open ssl engine ${id}")
-          .arg(EAGINE_ID(id), engine_id);
+          .arg(identifier{"id"}, engine_id);
     }
 
     return 0;
