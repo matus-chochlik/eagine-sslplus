@@ -30,7 +30,7 @@ auto main(main_ctx& ctx) -> int {
         cert_path = arg;
     }
     const memory::const_block ca_cert_pem{
-      eagine::embed(identifier{"caCert"}, "example-ca.crt")};
+      eagine::embed<id_v("caCert")>("example-ca.crt")};
 
     const sslplus::ssl_api ssl;
 
