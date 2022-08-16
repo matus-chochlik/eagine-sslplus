@@ -11,7 +11,7 @@ namespace eagine {
 EAGINE_LIB_FUNC
 auto ca_certificate_pem(main_ctx& ctx) noexcept -> memory::const_block {
     return ca_certificate_pem(
-      eagine::embed(identifier{"eagiCaCert"}, "@EAGINE_EMBED_CA_CERT@"), ctx);
+      eagine::embed<"eagiCaCert">("@EAGINE_EMBED_CA_CERT@"), ctx);
 }
 //------------------------------------------------------------------------------
 } // namespace eagine

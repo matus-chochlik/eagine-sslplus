@@ -25,8 +25,8 @@ auto main(main_ctx& ctx) -> int {
         const string_view na("N/A");
         ctx.log()
           .info("found engine")
-          .arg(EAGINE_ID(id), extract_or(ssl.get_engine_id(eng), na))
-          .arg(EAGINE_ID(name), extract_or(ssl.get_engine_name(eng), na));
+          .arg("id", extract_or(ssl.get_engine_id(eng), na))
+          .arg("name", extract_or(ssl.get_engine_name(eng), na));
     };
 
     ssl.for_each_engine(func);

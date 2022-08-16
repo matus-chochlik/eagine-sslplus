@@ -12,8 +12,7 @@ import :config;
 
 namespace eagine::sslplus {
 //------------------------------------------------------------------------------
-#define EAGINE_SSLPLUS_TAG_TYPE(NAME) \
-    static_message_id<id_v("ssl"), id_v(#NAME)>
+#define EAGINE_SSLPLUS_TAG_TYPE(NAME) static_message_id<"ssl", #NAME>
 export using ui_method_tag = EAGINE_SSLPLUS_TAG_TYPE(UIMethod);
 export using dispatch_tag = EAGINE_SSLPLUS_TAG_TYPE(Dispatch);
 export using core_handle_tag = EAGINE_SSLPLUS_TAG_TYPE(CoreHandle);
