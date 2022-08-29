@@ -8,28 +8,23 @@ else()
 	add_subdirectory(lib)
 endif()
 
+set(EAGINE_SSLPLUS_EXPORT_TARGETS)
+
 if(TARGET eagine-sslplus)
 	add_library(EAGine::SSLplus INTERFACE IMPORTED GLOBAL)
-	target_link_libraries(EAGine::SSLplus INTERFACE eagine-sslplus-headers)
-
 	target_link_libraries(
 		EAGine::SSLplus
 		INTERFACE
+			eagine-sslplus-headers
 			eagine-sslplus
 	)
 
-	install(
-		TARGETS
+	list(
+		APPEND EAGINE_SSLPLUS_EXPORT_TARGETS
 			eagine-sslplus-generated-headers
 			eagine-sslplus-private-headers
 			eagine-sslplus-headers
 			eagine-sslplus
-		EXPORT SSLplus
-		LIBRARY DESTINATION lib
-		ARCHIVE DESTINATION lib
-		RUNTIME DESTINATION bin
-		INCLUDES DESTINATION include
-		PUBLIC_HEADER DESTINATION include
 	)
 
 	install(
@@ -39,3 +34,14 @@ if(TARGET eagine-sslplus)
 		DESTINATION lib/cmake/EAGine
 	)
 endif()
+
+install(
+	TARGETS ${EAGINE_SSLPLUS_EXPORT_TARGETS}
+	EXPORT SSLplus
+	LIBRARY DESTINATION lib
+	ARCHIVE DESTINATION lib
+	RUNTIME DESTINATION bin
+	INCLUDES DESTINATION include
+	PUBLIC_HEADER DESTINATION include
+)
+
