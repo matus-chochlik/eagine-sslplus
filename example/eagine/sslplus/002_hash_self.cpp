@@ -5,20 +5,9 @@
 /// See accompanying file LICENSE_1_0.txt or copy at
 ///  http://www.boost.org/LICENSE_1_0.txt
 ///
-#if EAGINE_SSLPLUS_MODULE
 import eagine.core;
 import eagine.sslplus;
 import <array>;
-#else
-#include <eagine/console/console.hpp>
-#include <eagine/file_contents.hpp>
-#include <eagine/logging/logger.hpp>
-#include <eagine/main_ctx.hpp>
-#include <eagine/sslplus/openssl.hpp>
-
-#include <eagine/sslplus/api.hpp>
-#include <array>
-#endif
 
 namespace eagine {
 //------------------------------------------------------------------------------
