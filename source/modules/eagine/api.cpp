@@ -891,7 +891,7 @@ public:
             return this->read_bio_x509(mbio, get_passwd);
         }
 
-        return {owned_x509{}};
+        return {};
     }
 
     auto ca_verify_certificate(const string_view ca_file_path, const x509 cert)

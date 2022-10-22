@@ -25,6 +25,10 @@ function(eagine_example_common EXAMPLE_NAME)
 	)
 	add_dependencies(eagine-sslplus-examples eagine-${EXAMPLE_NAME})
 	eagine_add_exe_analysis(eagine-${EXAMPLE_NAME})
+	target_compile_options(
+		eagine-${EXAMPLE_NAME}
+		PRIVATE $<$<BOOL:${EAGINE_CLANGXX_COMPILER}>:-Wno-unreachable-code>
+	)
 	eagine_target_modules(
 		eagine-${EXAMPLE_NAME}
 		eagine.core

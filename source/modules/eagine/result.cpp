@@ -29,6 +29,10 @@ public:
 //------------------------------------------------------------------------------
 export class ssl_result_info {
 public:
+    constexpr ssl_result_info() noexcept = default;
+    constexpr ssl_result_info(ssl_no_result_info) noexcept
+      : _error_code{~0UL} {}
+
     explicit constexpr operator bool() const noexcept {
         return _error_code == 0;
     }
