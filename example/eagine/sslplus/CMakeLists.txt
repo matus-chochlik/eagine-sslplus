@@ -24,20 +24,16 @@ function(eagine_example_common EXAMPLE_NAME)
 		${ARGN}
 	)
 	add_dependencies(eagine-sslplus-examples eagine-${EXAMPLE_NAME})
-	if(${WITH_MODULES})
-		eagine_target_modules(
-			eagine-${EXAMPLE_NAME}
-			eagine.core
-			eagine.sslplus
-		)
-	else()
-		eagine_add_exe_analysis(eagine-${EXAMPLE_NAME})
-		target_link_libraries(
-			eagine-${EXAMPLE_NAME}
-			PUBLIC EAGine::SSLplus
-			PRIVATE ${ARGN}
-		)
-	endif()
+	eagine_add_exe_analysis(eagine-${EXAMPLE_NAME})
+	target_compile_options(
+		eagine-${EXAMPLE_NAME}
+		PRIVATE $<$<BOOL:${EAGINE_CLANGXX_COMPILER}>:-Wno-unreachable-code>
+	)
+	eagine_target_modules(
+		eagine-${EXAMPLE_NAME}
+		eagine.core
+		eagine.sslplus
+	)
 
 	set_target_properties(
 		eagine-${EXAMPLE_NAME}
@@ -49,12 +45,10 @@ endfunction()
 configure_file(example-ca.crt example-ca.crt)
 configure_file(example.crt example.crt)
 
-if(${WITH_MODULES})
-eagine_example_common(002_provider)
-endif()
 
 eagine_example_common(001_log_ca_cert)
 eagine_example_common(002_hash_self)
+eagine_example_common(002_provider)
 eagine_example_common(003_verify_cert)
 eagine_example_common(004_verify_cert)
 # eagine_example_common(005_random_engine)
