@@ -6,6 +6,7 @@
 ///  http://www.boost.org/LICENSE_1_0.txt
 ///
 export module eagine.sslplus:api_traits;
+import eagine.core.memory;
 import eagine.core.c_api;
 import :result;
 
@@ -23,7 +24,20 @@ public:
     template <typename Result>
     using combined_result = c_api::combined_result<Result, ssl_result_info>;
 
+    template <typename Api, typename Tag, typename Signature>
+    auto link_function(
+      Api&,
+      const Tag,
+      const string_view name,
+      const std::type_identity<Signature>) -> std::add_pointer_t<Signature> {
+        return reinterpret_cast<std::add_pointer_t<Signature>>(
+          _link_function(name));
+    }
+
 private:
+    using _any_fnptr_t = void (*)();
+
+    auto _link_function(const string_view) -> _any_fnptr_t;
 };
 //------------------------------------------------------------------------------
 } // namespace eagine::sslplus

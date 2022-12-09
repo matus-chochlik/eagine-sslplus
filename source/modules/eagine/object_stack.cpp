@@ -8,23 +8,12 @@
 module;
 
 #include <cassert>
-#if __has_include(<openssl/conf.h>) && __has_include(<openssl/evp.h>)
-#include <openssl/bio.h>
-#include <openssl/conf.h>
-#include <openssl/err.h>
-#include <openssl/evp.h>
-#include <openssl/pem.h>
-#include <openssl/rand.h>
-#include <openssl/safestack.h>
-#define EAGINE_HAS_SSL 1
-#else
-#define EAGINE_HAS_SSL 0
-#endif
 
 export module eagine.sslplus:object_stack;
 
 import eagine.core.types;
 import eagine.core.c_api;
+import :config;
 import :object_handle;
 import <utility>;
 
@@ -59,56 +48,34 @@ public:
     }
 };
 //------------------------------------------------------------------------------
-#if EAGINE_HAS_SSL
-//------------------------------------------------------------------------------
 export template <typename Tag>
 struct stack_api;
 //------------------------------------------------------------------------------
 export template <>
 struct stack_api<x509_tag> {
-    using stack_type = STACK_OF(X509);
-    using element_type = ::X509;
+    using stack_type = ssl_types::x509_stack_type;
+    using element_type = ssl_types::x509_type;
 
-    static auto unpack(x509 obj) noexcept -> auto* {
-        return static_cast<::X509*>(obj);
-    }
+    auto unpack(x509 obj) const noexcept -> element_type*;
 
-    static auto new_null() noexcept -> auto* {
-        return sk_X509_new_null();
-    }
+    auto new_null() const noexcept -> stack_type*;
 
-    static auto free(stack_type* h) noexcept {
-        return sk_X509_free(h);
-    }
+    void free(stack_type* h) const noexcept;
 
-    static auto num(stack_type* h) noexcept {
-        return sk_X509_num(h);
-    }
+    auto num(stack_type* h) const noexcept -> int;
 
-    static auto push(stack_type* h, element_type* e) noexcept {
-        return sk_X509_push(h, e);
-    }
+    auto push(stack_type* h, element_type* e) const noexcept -> int;
 
-    static auto push_up_ref(stack_type* h, element_type* e) noexcept {
-        X509_up_ref(e);
-        return sk_X509_push(h, e);
-    }
+    auto push_up_ref(stack_type* h, element_type* e) const noexcept -> int;
 
-    static auto pop(stack_type* h) noexcept -> auto* {
-        return sk_X509_pop(h);
-    }
+    auto pop(stack_type* h) const noexcept -> element_type*;
 
-    static auto pop_free(stack_type* h) noexcept {
-        return sk_X509_pop_free(h, &X509_free);
-    }
+    void pop_free(stack_type* h) const noexcept;
 
-    static auto set(stack_type* h, const int i, element_type* e) noexcept {
-        return sk_X509_set(h, i, e);
-    }
+    auto set(stack_type* h, const int i, element_type* e) const noexcept
+      -> element_type*;
 
-    static auto value(stack_type* h, const int i) noexcept -> auto* {
-        return sk_X509_value(h, i);
-    }
+    auto value(stack_type* h, const int i) noexcept -> element_type*;
 };
 //------------------------------------------------------------------------------
 // object_stack_base
@@ -236,7 +203,6 @@ public:
         return wrapper{_api().pop(this->_top)};
     }
 };
-#endif
 //------------------------------------------------------------------------------
 } // namespace eagine::sslplus
 namespace eagine::c_api {

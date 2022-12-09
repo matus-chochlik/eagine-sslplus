@@ -6,28 +6,9 @@
 ///  http://www.boost.org/LICENSE_1_0.txt
 ///
 module;
-#if __has_include(<openssl/conf.h>) && __has_include(<openssl/evp.h>)
-#include <openssl/bio.h>
-#include <openssl/conf.h>
-#include <openssl/crypto.h>
-#include <openssl/err.h>
-#include <openssl/evp.h>
-#include <openssl/pem.h>
-#include <openssl/provider.h>
-#include <openssl/rand.h>
-#include <openssl/safestack.h>
-#include <openssl/ui.h>
-#define EAGINE_HAS_SSL 1
-#else
-#define EAGINE_HAS_SSL 0
-#endif
 
 #ifndef EAGINE_SSL_STATIC_FUNC
-#if EAGINE_HAS_SSL
-#define EAGINE_SSL_STATIC_FUNC(NAME) &::NAME
-#else
 #define EAGINE_SSL_STATIC_FUNC(NAME) nullptr
-#endif
 #endif
 
 export module eagine.sslplus:c_api;

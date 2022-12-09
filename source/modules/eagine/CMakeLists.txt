@@ -38,6 +38,7 @@ eagine_add_module(
 	eagine.sslplus PARTITION api_traits
 	IMPORTS
 		result
+		eagine.core.memory
 		eagine.core.c_api
 )
 
@@ -104,6 +105,8 @@ eagine_add_module(
 		resources
 		embedded
 	SOURCES
+		api_traits_impl
+		object_stack_impl
 )
 target_link_libraries(
 	eagine.sslplus
