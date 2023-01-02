@@ -184,7 +184,7 @@ public:
       -> memory::const_block {
         const auto data{get_string_data(as)};
         const auto size{get_string_length(as)};
-        if(data && size) {
+        if(data and size) {
             return {extract(data), extract(size)};
         }
         return {};
@@ -817,7 +817,7 @@ public:
       memory::block dst,
       const message_digest_type mdtype,
       const pkey pky) const noexcept -> memory::block {
-        if(mdtype && pky) {
+        if(mdtype and pky) {
             if(ok mdctx{this->new_message_digest()}) {
                 const auto cleanup{this->delete_message_digest.raii(mdctx)};
 
@@ -839,7 +839,7 @@ public:
       const memory::const_block sig,
       const message_digest_type mdtype,
       const pkey pky) const noexcept -> bool {
-        if(mdtype && pky) {
+        if(mdtype and pky) {
             if(ok mdctx{this->new_message_digest()}) {
                 const auto cleanup{this->delete_message_digest.raii(mdctx)};
 

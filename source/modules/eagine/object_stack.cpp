@@ -97,7 +97,7 @@ protected:
       : _top{top} {}
 
     auto _idx_ok(const int i) const noexcept -> bool {
-        return (i >= 0) && (i < size());
+        return (i >= 0) and (i < size());
     }
 
     ~object_stack_base() noexcept = default;

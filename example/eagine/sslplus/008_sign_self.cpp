@@ -71,13 +71,13 @@ auto main(main_ctx& ctx) -> int {
                 } else {
                     log.error("failed to get message digest: ${reason}")
                       .arg(identifier{"engineId"}, engine_id)
-                      .arg(identifier{"reason"}, (!md).message());
+                      .arg(identifier{"reason"}, (not md).message());
                 }
             } else {
                 log.error("failed to load key ${keyID} from engine: ${reason}")
                   .arg(identifier{"keyId"}, key_id)
                   .arg(identifier{"engineId"}, engine_id)
-                  .arg(identifier{"reason"}, (!pkey).message());
+                  .arg(identifier{"reason"}, (not pkey).message());
             }
 
         } else {
