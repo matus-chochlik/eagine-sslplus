@@ -19,9 +19,7 @@ import :object_handle;
 import :object_stack;
 import :constants;
 import :c_api;
-import <array>;
-import <tuple>;
-import <type_traits>;
+import std;
 
 namespace eagine::sslplus {
 //------------------------------------------------------------------------------
