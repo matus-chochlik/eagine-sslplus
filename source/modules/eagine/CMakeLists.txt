@@ -105,8 +105,8 @@ eagine_add_module(
 		resources
 		embedded
 	SOURCES
-		api_traits_impl
-		object_stack_impl
+		api_traits
+		object_stack
 )
 target_link_libraries(
 	eagine.sslplus

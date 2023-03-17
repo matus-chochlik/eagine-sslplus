@@ -18,6 +18,7 @@ import eagine.core.c_api;
 import :config;
 import :api_traits;
 import :result;
+import std;
 
 namespace eagine::sslplus {
 //------------------------------------------------------------------------------

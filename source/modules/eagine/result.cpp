@@ -43,7 +43,7 @@ public:
     }
 
     constexpr auto set_unknown_error() noexcept -> auto& {
-        if(!_error_code) {
+        if(not _error_code) {
             _error_code = ~0UL;
         }
         return *this;

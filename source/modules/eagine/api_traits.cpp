@@ -9,6 +9,7 @@ export module eagine.sslplus:api_traits;
 import eagine.core.memory;
 import eagine.core.c_api;
 import :result;
+import std;
 
 namespace eagine::sslplus {
 //------------------------------------------------------------------------------

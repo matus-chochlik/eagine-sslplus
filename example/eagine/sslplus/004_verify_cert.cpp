@@ -7,7 +7,7 @@
 ///
 import eagine.core;
 import eagine.sslplus;
-import <array>;
+import std;
 
 namespace eagine {
 //------------------------------------------------------------------------------

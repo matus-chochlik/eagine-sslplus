@@ -15,7 +15,7 @@ import eagine.core.types;
 import eagine.core.c_api;
 import :config;
 import :object_handle;
-import <utility>;
+import std;
 
 namespace eagine::sslplus {
 //------------------------------------------------------------------------------
@@ -97,7 +97,7 @@ protected:
       : _top{top} {}
 
     auto _idx_ok(const int i) const noexcept -> bool {
-        return (i >= 0) && (i < size());
+        return (i >= 0) and (i < size());
     }
 
     ~object_stack_base() noexcept = default;
