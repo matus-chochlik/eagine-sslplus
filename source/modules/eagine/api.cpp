@@ -7,6 +7,7 @@
 ///
 export module eagine.sslplus:api;
 
+import std;
 import eagine.core.types;
 import eagine.core.memory;
 import eagine.core.string;
@@ -19,7 +20,6 @@ import :object_handle;
 import :object_stack;
 import :constants;
 import :c_api;
-import std;
 
 namespace eagine::sslplus {
 //------------------------------------------------------------------------------

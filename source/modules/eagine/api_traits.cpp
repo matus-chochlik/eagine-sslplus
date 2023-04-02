@@ -6,10 +6,11 @@
 ///  http://www.boost.org/LICENSE_1_0.txt
 ///
 export module eagine.sslplus:api_traits;
+
+import std;
 import eagine.core.memory;
 import eagine.core.c_api;
 import :result;
-import std;
 
 namespace eagine::sslplus {
 //------------------------------------------------------------------------------

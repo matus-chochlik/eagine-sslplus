@@ -13,12 +13,12 @@ module;
 
 export module eagine.sslplus:c_api;
 
+import std;
 import eagine.core.types;
 import eagine.core.c_api;
 import :config;
 import :api_traits;
 import :result;
-import std;
 
 namespace eagine::sslplus {
 //------------------------------------------------------------------------------
