@@ -107,6 +107,8 @@ eagine_add_module(
 	SOURCES
 		api_traits
 		object_stack
+	IMPORTS
+		eagine.core.memory
 )
 target_link_libraries(
 	eagine.sslplus
