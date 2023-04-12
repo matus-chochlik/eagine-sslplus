@@ -91,7 +91,6 @@ eagine_embed_target_resources(TARGET eagine.sslplus.embedded)
 
 eagine_add_module(
 	eagine.sslplus
-	PP_NAME SSLPLUS
 	INTERFACES sslplus
 	PARTITIONS
 		config
