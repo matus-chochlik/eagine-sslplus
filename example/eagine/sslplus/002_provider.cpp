@@ -21,7 +21,7 @@ auto main(main_ctx& ctx) -> int {
     if(const ok provider{ssl.load_provider({}, provider_name)}) {
         ctx.log()
           .error("found provider '${name}'")
-          .arg("name", extract_or(ssl.get_provider_name(provider)));
+          .arg("name", ssl.get_provider_name(provider).or_default());
     } else {
         ctx.log()
           .error("failed to load provider '${name}'")
