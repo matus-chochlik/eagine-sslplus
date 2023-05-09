@@ -20,10 +20,6 @@ if(OpenSSL_FOUND)
 		)
 	endif()
 
-	target_compile_definitions(
-		EAGine::SSLplus::Deps::OpenSSL INTERFACE EAGINE_USE_OPENSSL=1
-	)
-
 	target_link_libraries(
 		EAGine::SSLplus::Deps::OpenSSL INTERFACE "${OPENSSL_LIBRARIES}"
 	)

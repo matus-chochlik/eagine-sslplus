@@ -7,6 +7,7 @@
 ///
 export module eagine.sslplus:api;
 
+import std;
 import eagine.core.types;
 import eagine.core.memory;
 import eagine.core.string;
@@ -19,7 +20,6 @@ import :object_handle;
 import :object_stack;
 import :constants;
 import :c_api;
-import std;
 
 namespace eagine::sslplus {
 //------------------------------------------------------------------------------
@@ -211,7 +211,7 @@ public:
       memory::string_span dest,
       asn1_object obj,
       bool no_name) const noexcept -> string_view {
-        return extract_or(this->object_to_text(dest, obj, no_name));
+        return this->object_to_text(dest, obj, no_name).or_default();
     }
 
     simple_adapted_function<&ssl_api::bio_new, owned_basic_io(basic_io_method)>
@@ -752,8 +752,7 @@ public:
       memory::block dst,
       const message_digest_type mdtype) const noexcept -> memory::block {
         if(mdtype) {
-            const auto req_size =
-              extract_or(this->message_digest_size(mdtype), 0);
+            const auto req_size = this->message_digest_size(mdtype).value_or(0);
 
             if(dst.size() >= span_size(req_size)) {
                 if(ok mdctx{this->new_message_digest()}) {
@@ -761,8 +760,7 @@ public:
 
                     this->message_digest_init(mdctx, mdtype);
                     this->message_digest_update(mdctx, data);
-                    return extract_or(
-                      this->message_digest_final(mdctx, dst), memory::block{});
+                    return this->message_digest_final(mdctx, dst).or_default();
                 }
             }
         }
@@ -822,9 +820,8 @@ public:
                 if(this->message_digest_sign_init(
                      mdctx, mdtype, engine{}, pky)) {
                     if(this->message_digest_sign_update(mdctx, data)) {
-                        return extract_or(
-                          this->message_digest_sign_final(mdctx, dst),
-                          memory::block{});
+                        return this->message_digest_sign_final(mdctx, dst)
+                          .or_default();
                     }
                 }
             }
@@ -971,8 +968,10 @@ public:
                 if(const auto object{
                      this->get_name_entry_object(extract(entry))}) {
                     if(are_equal(
-                         extract_or(this->object_to_text(
-                           cover(namebuf), extract(object), false)),
+                         this
+                           ->object_to_text(
+                             cover(namebuf), extract(object), false)
+                           .or_default(),
                          ent_name)) {
                         if(const auto data{
                              this->get_name_entry_data(extract(entry))}) {
@@ -980,8 +979,10 @@ public:
                         }
                     }
                     if(are_equal(
-                         extract_or(this->object_to_text(
-                           cover(namebuf), extract(object), true)),
+                         this
+                           ->object_to_text(
+                             cover(namebuf), extract(object), true)
+                           .or_default(),
                          ent_oid)) {
                         if(const auto data{
                              this->get_name_entry_data(extract(entry))}) {

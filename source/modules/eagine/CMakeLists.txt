@@ -91,7 +91,6 @@ eagine_embed_target_resources(TARGET eagine.sslplus.embedded)
 
 eagine_add_module(
 	eagine.sslplus
-	PP_NAME SSLPLUS
 	INTERFACES sslplus
 	PARTITIONS
 		config
@@ -107,6 +106,8 @@ eagine_add_module(
 	SOURCES
 		api_traits
 		object_stack
+	IMPORTS
+		eagine.core.memory
 )
 target_link_libraries(
 	eagine.sslplus

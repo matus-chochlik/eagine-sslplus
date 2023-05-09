@@ -11,11 +11,11 @@ module;
 
 export module eagine.sslplus:object_stack;
 
+import std;
 import eagine.core.types;
 import eagine.core.c_api;
 import :config;
 import :object_handle;
-import std;
 
 namespace eagine::sslplus {
 //------------------------------------------------------------------------------
