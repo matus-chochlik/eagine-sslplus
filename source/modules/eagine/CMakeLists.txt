@@ -71,21 +71,14 @@ eagine_add_module(
 eagine_add_module(
 	eagine.sslplus PARTITION resources
 	IMPORTS
-		eagine.core.types
-		eagine.core.memory
-		eagine.core.logging
-		eagine.core.main_ctx
-		eagine.core.resource
+		eagine.core
 )
 
 eagine_add_module(
 	eagine.sslplus PARTITION embedded
 	IMPORTS
 		resources
-		eagine.core.types
-		eagine.core.memory
-		eagine.core.identifier
-		eagine.core.resource
+		eagine.core
 )
 eagine_embed_target_resources(TARGET eagine.sslplus.embedded)
 
