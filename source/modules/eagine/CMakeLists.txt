@@ -2,7 +2,7 @@
 # Distributed under the Boost Software License, Version 1.0.
 # See accompanying file LICENSE_1_0.txt or copy at
 #  http://www.boost.org/LICENSE_1_0.txt
-configure_file(embedded.cpp.in embedded.cpp @ONLY)
+configure_file(embedded.cpp.in embedded.cppm @ONLY)
 
 eagine_add_module(
 	eagine.sslplus PARTITION config
@@ -80,7 +80,7 @@ eagine_add_module(
 		resources
 		eagine.core
 )
-eagine_embed_target_resources(TARGET eagine.sslplus.embedded)
+eagine_embed_target_resources(TARGET eagine.sslplus)
 
 eagine_add_module(
 	eagine.sslplus
