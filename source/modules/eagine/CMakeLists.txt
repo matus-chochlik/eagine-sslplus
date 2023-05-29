@@ -84,18 +84,6 @@ eagine_embed_target_resources(TARGET eagine.sslplus)
 
 eagine_add_module(
 	eagine.sslplus
-	INTERFACES sslplus
-	PARTITIONS
-		config
-		result
-		object_handle
-		object_stack
-		api_traits
-		c_api
-		constants
-		api
-		resources
-		embedded
 	SOURCES
 		api_traits
 		object_stack
