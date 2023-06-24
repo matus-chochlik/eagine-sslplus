@@ -26,30 +26,25 @@ auto main(main_ctx& ctx) -> int {
         const auto del_ca_cert{ssl.delete_x509.raii(ca_cert)};
 
         if(const auto subname{ssl.get_x509_subject_name(ca_cert)}) {
-            const auto count{
-              extract(ssl.get_name_entry_count(extract(subname)))};
+            const auto count{*ssl.get_name_entry_count(*subname)};
             const auto entry_cio{
               ctx.cio()
                 .print(identifier{"ssl"}, "CA certificate common name entries:")
                 .to_be_continued()};
 
             for(const auto index : integer_range(count)) {
-                if(const auto entry{
-                     ssl.get_name_entry(extract(subname), index)}) {
-                    const auto object{
-                      ssl.get_name_entry_object(extract(entry))};
-                    const auto value{ssl.get_name_entry_data(extract(entry))};
+                if(const auto entry{ssl.get_name_entry(*subname, index)}) {
+                    const auto object{ssl.get_name_entry_object(*entry)};
+                    const auto value{ssl.get_name_entry_data(*entry)};
 
                     std::array<char, 96> namebuf{};
-                    const auto name{ssl.get_object_text(
-                      cover(namebuf), extract(object), false)};
+                    const auto name{
+                      ssl.get_object_text(cover(namebuf), *object, false)};
 
                     entry_cio.print("${index}: ${attribute}=${value}")
                       .arg(identifier{"index"}, index)
                       .arg(identifier{"attribute"}, name)
-                      .arg(
-                        identifier{"value"},
-                        ssl.get_string_view(extract(value)));
+                      .arg(identifier{"value"}, ssl.get_string_view(*value));
                 }
             }
         }
@@ -60,8 +55,7 @@ auto main(main_ctx& ctx) -> int {
 
             if(ssl.ca_verify_certificate(ca_cert, cert)) {
                 if(const auto subname{ssl.get_x509_subject_name(cert)}) {
-                    const auto count{
-                      extract(ssl.get_name_entry_count(extract(subname)))};
+                    const auto count{*ssl.get_name_entry_count(*subname)};
                     ctx.cio()
                       .print(
                         identifier{"ssl"},
@@ -77,22 +71,21 @@ auto main(main_ctx& ctx) -> int {
 
                     for(const auto index : integer_range(count)) {
                         if(const auto entry{
-                             ssl.get_name_entry(extract(subname), index)}) {
+                             ssl.get_name_entry(*subname, index)}) {
                             const auto object{
-                              ssl.get_name_entry_object(extract(entry))};
-                            const auto value{
-                              ssl.get_name_entry_data(extract(entry))};
+                              ssl.get_name_entry_object(*entry)};
+                            const auto value{ssl.get_name_entry_data(*entry)};
 
                             std::array<char, 96> namebuf{};
                             const auto name{ssl.get_object_text(
-                              cover(namebuf), extract(object), false)};
+                              cover(namebuf), *object, false)};
 
                             entry_cio.print("${index}: ${attribute}=${value}")
                               .arg(identifier{"index"}, index)
                               .arg(identifier{"attribute"}, name)
                               .arg(
                                 identifier{"value"},
-                                ssl.get_string_view(extract(value)));
+                                ssl.get_string_view(*value));
                         }
                     }
                 } else {

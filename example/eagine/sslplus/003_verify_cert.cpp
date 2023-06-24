@@ -38,9 +38,7 @@ auto main(main_ctx& ctx) -> int {
                         "successfully verified certificate ${certPath}")
                       .arg(
                         identifier{"certPath"}, identifier{"FsPath"}, cert_path)
-                      .arg(
-                        identifier{"serialNo"},
-                        extract(ssl.get_int64(extract(serial))));
+                      .arg(identifier{"serialNo"}, *ssl.get_int64(*serial));
                 } else {
                     ctx.log()
                       .error(
