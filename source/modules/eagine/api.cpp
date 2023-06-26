@@ -183,7 +183,7 @@ public:
         const auto data{get_string_data(as)};
         const auto size{get_string_length(as)};
         if(data and size) {
-            return {extract(data), extract(size)};
+            return {*data, *size};
         }
         return {};
     }
@@ -740,9 +740,11 @@ public:
     basic_ssl_api(ApiTraits traits)
       : ApiTraits{std::move(traits)}
       , basic_ssl_operations<ApiTraits>{*static_cast<ApiTraits*>(this)}
-      , basic_ssl_constants<ApiTraits>{
-          *static_cast<ApiTraits*>(this),
-          *static_cast<basic_ssl_operations<ApiTraits>*>(this)} {}
+      , basic_ssl_constants<ApiTraits> {
+        *static_cast<ApiTraits*>(this),
+          *static_cast<basic_ssl_operations<ApiTraits>*>(this)
+    }
+    {}
 
     basic_ssl_api()
       : basic_ssl_api{ApiTraits{}} {}
@@ -773,7 +775,7 @@ public:
       memory::block dst,
       OptMdt opt_mdtype) const noexcept -> memory::block {
         if(opt_mdtype) {
-            return data_digest(data, dst, extract(opt_mdtype));
+            return data_digest(data, dst, *opt_mdtype);
         }
         return {};
     }
@@ -937,18 +939,16 @@ public:
       const x509_name name,
       const string_view ent_name,
       const bool no_name = false) const noexcept -> string_view {
-        const auto count{extract(this->get_name_entry_count(name))};
+        const auto count{this->get_name_entry_count(name)};
         std::array<char, 256> namebuf{};
-        for(const auto index : integer_range(count)) {
+        for(const auto index : opt_integer_range(count)) {
             if(const auto entry{this->get_name_entry(name, index)}) {
-                if(const auto object{
-                     this->get_name_entry_object(extract(entry))}) {
-                    const auto cur_name{this->object_to_text(
-                      cover(namebuf), extract(object), no_name)};
-                    if(are_equal(extract(cur_name), ent_name)) {
-                        if(const auto data{
-                             this->get_name_entry_data(extract(entry))}) {
-                            return this->get_string_view(extract(data));
+                if(const auto object{this->get_name_entry_object(*entry)}) {
+                    const auto cur_name{
+                      this->object_to_text(cover(namebuf), *object, no_name)};
+                    if(are_equal(*cur_name, ent_name)) {
+                        if(const auto data{this->get_name_entry_data(*entry)}) {
+                            return this->get_string_view(*data);
                         }
                     }
                 }
@@ -961,32 +961,25 @@ public:
       const x509_name name,
       const string_view ent_name,
       const string_view ent_oid) const noexcept -> string_view {
-        const auto count{extract(this->get_name_entry_count(name))};
+        const auto count{this->get_name_entry_count(name)};
         std::array<char, 256> namebuf{};
-        for(const auto index : integer_range(count)) {
+        for(const auto index : opt_integer_range(count)) {
             if(const auto entry{this->get_name_entry(name, index)}) {
-                if(const auto object{
-                     this->get_name_entry_object(extract(entry))}) {
+                if(const auto object{this->get_name_entry_object(*entry)}) {
                     if(are_equal(
-                         this
-                           ->object_to_text(
-                             cover(namebuf), extract(object), false)
+                         this->object_to_text(cover(namebuf), *object, false)
                            .or_default(),
                          ent_name)) {
-                        if(const auto data{
-                             this->get_name_entry_data(extract(entry))}) {
-                            return this->get_string_view(extract(data));
+                        if(const auto data{this->get_name_entry_data(*entry)}) {
+                            return this->get_string_view(*data);
                         }
                     }
                     if(are_equal(
-                         this
-                           ->object_to_text(
-                             cover(namebuf), extract(object), true)
+                         this->object_to_text(cover(namebuf), *object, true)
                            .or_default(),
                          ent_oid)) {
-                        if(const auto data{
-                             this->get_name_entry_data(extract(entry))}) {
-                            return this->get_string_view(extract(data));
+                        if(const auto data{this->get_name_entry_data(*entry)}) {
+                            return this->get_string_view(*data);
                         }
                     }
                 }
@@ -999,7 +992,7 @@ public:
       const x509 cert,
       const string_view ent_name) const noexcept -> string_view {
         if(const auto isuname{this->get_x509_issuer_name(cert)}) {
-            return find_name_entry(extract(isuname), ent_name);
+            return find_name_entry(*isuname, ent_name);
         }
         return {};
     }
@@ -1008,7 +1001,7 @@ public:
       const x509 cert,
       const string_view ent_name) const noexcept -> string_view {
         if(const auto subname{this->get_x509_subject_name(cert)}) {
-            return this->find_name_entry(extract(subname), ent_name);
+            return this->find_name_entry(*subname, ent_name);
         }
         return {};
     }
@@ -1018,8 +1011,7 @@ public:
       const string_view ent_name,
       const string_view ent_oid) const noexcept -> string_view {
         if(const auto subname{this->get_x509_subject_name(cert)}) {
-            return this->find_name_oid_entry(
-              extract(subname), ent_name, ent_oid);
+            return this->find_name_oid_entry(*subname, ent_name, ent_oid);
         }
         return {};
     }
