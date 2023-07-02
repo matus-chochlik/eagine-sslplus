@@ -25,6 +25,7 @@ find_package(EAGineOpenSSL REQUIRED)
 add_subdirectory(submodules)
 
 include(EAGineCoreCommon)
+include(EAGineGitInfo)
 include(EAGineSSLResources)
 
 add_subdirectory(source)
