@@ -56,7 +56,7 @@ Package: eagine-sslplus-dev
 Version: %s
 Architecture: %s
 Installed-Size: %d
-Depends: libssl3,eagine-core-dev
+Depends: libssl-dev,eagine-core-dev
 Maintainer: Matus Chochlik <chochlik@gmail.com>
 Description: C++ wrapper for the openSSL library.
 """ % (
