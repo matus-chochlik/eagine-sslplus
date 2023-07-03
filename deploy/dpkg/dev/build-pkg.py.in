@@ -64,7 +64,7 @@ Architecture: %s
 Installed-Size: %d
 Depends: libssl-dev,eagine-core-dev
 Maintainer: Matus Chochlik <chochlik@gmail.com>
-Description: C++ wrapper for the openSSL library.
+Description: C++ wrapper for the OpenSSL library.
 """ % (
     "@PKG_VERSION@",
     "@PKG_ARCH@",
