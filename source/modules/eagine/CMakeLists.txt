@@ -88,7 +88,9 @@ eagine_add_module(
 		api_traits
 		object_stack
 	IMPORTS
+		eagine.core.resource
 		eagine.core.memory
+		eagine.core
 )
 target_link_libraries(
 	eagine.sslplus
