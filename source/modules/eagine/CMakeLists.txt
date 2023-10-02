@@ -6,12 +6,15 @@ configure_file(embedded.cpp.in embedded.cppm @ONLY)
 
 eagine_add_module(
 	eagine.sslplus PARTITION config
-	IMPORTS eagine.core.types
+	IMPORTS
+		std
+		eagine.core.types
 )
 
 eagine_add_module(
 	eagine.sslplus PARTITION result
 	IMPORTS
+		std
 		eagine.core.types
 		eagine.core.memory
 		eagine.core.c_api
@@ -20,7 +23,7 @@ eagine_add_module(
 eagine_add_module(
 	eagine.sslplus PARTITION object_handle
 	IMPORTS
-		config
+		std config
 		eagine.core.identifier
 		eagine.core.c_api
 )
@@ -28,7 +31,7 @@ eagine_add_module(
 eagine_add_module(
 	eagine.sslplus PARTITION object_stack
 	IMPORTS
-		config
+		std config
 		object_handle
 		eagine.core.types
 		eagine.core.c_api
@@ -37,7 +40,7 @@ eagine_add_module(
 eagine_add_module(
 	eagine.sslplus PARTITION api_traits
 	IMPORTS
-		result
+		std result
 		eagine.core.memory
 		eagine.core.c_api
 )
@@ -45,20 +48,22 @@ eagine_add_module(
 eagine_add_module(
 	eagine.sslplus PARTITION c_api
 	IMPORTS
-		config api_traits result
+		std config
+		api_traits result
 		eagine.core.types
 		eagine.core.c_api
 )
 
 eagine_add_module(
 	eagine.sslplus PARTITION constants
-	IMPORTS c_api
+	IMPORTS
+		std c_api
 )
 
 eagine_add_module(
 	eagine.sslplus PARTITION api
 	IMPORTS
-		config api_traits result
+		std config api_traits result
 		object_handle object_stack
 		c_api constants
 		eagine.core.types
@@ -71,13 +76,14 @@ eagine_add_module(
 eagine_add_module(
 	eagine.sslplus PARTITION resources
 	IMPORTS
+		std
 		eagine.core
 )
 
 eagine_add_module(
 	eagine.sslplus PARTITION embedded
 	IMPORTS
-		resources
+		std resources
 		eagine.core
 )
 eagine_embed_target_resources(TARGET eagine.sslplus)
@@ -88,6 +94,7 @@ eagine_add_module(
 		api_traits
 		object_stack
 	IMPORTS
+		std
 		eagine.core.resource
 		eagine.core.memory
 		eagine.core
