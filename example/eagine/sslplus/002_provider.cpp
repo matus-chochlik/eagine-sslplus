@@ -11,7 +11,7 @@ import eagine.sslplus;
 namespace eagine {
 //------------------------------------------------------------------------------
 auto main(main_ctx& ctx) -> int {
-    const sslplus::ssl_api ssl;
+    const sslplus::ssl_api ssl{ctx};
 
     string_view provider_name{"default"};
     if(const auto arg{ctx.args().find("--provider").next()}) {

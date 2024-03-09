@@ -14,7 +14,7 @@ namespace eagine {
 auto main(main_ctx& ctx) -> int {
 
     const auto& log = ctx.log();
-    const sslplus::ssl_api ssl;
+    const sslplus::ssl_api ssl{ctx};
 
     string_view engine_id("rdrand");
 
