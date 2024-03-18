@@ -23,7 +23,7 @@ auto main(main_ctx& ctx) -> int {
     }
     file_contents cert_pem{cert_path};
 
-    const sslplus::ssl_api ssl;
+    const sslplus::ssl_api ssl{ctx};
 
     if(ok cert{ssl.parse_x509(cert_pem, {})}) {
         const auto del_cert{ssl.delete_x509.raii(cert)};

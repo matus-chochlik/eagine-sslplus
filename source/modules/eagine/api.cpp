@@ -13,6 +13,7 @@ import eagine.core.memory;
 import eagine.core.string;
 import eagine.core.utility;
 import eagine.core.c_api;
+import eagine.core.main_ctx;
 import :config;
 import :api_traits;
 import :result;
@@ -728,7 +729,8 @@ public:
 //------------------------------------------------------------------------------
 export template <typename ApiTraits>
 class basic_ssl_api
-  : protected ApiTraits
+  : public main_ctx_object
+  , protected ApiTraits
   , public basic_ssl_operations<ApiTraits>
   , public basic_ssl_constants<ApiTraits> {
 public:
@@ -737,17 +739,16 @@ public:
 
     using evp_md_type = ssl_types::evp_md_type;
 
-    basic_ssl_api(ApiTraits traits)
-      : ApiTraits{std::move(traits)}
+    basic_ssl_api(main_ctx_parent parent, ApiTraits traits)
+      : main_ctx_object{"SSLAPI", parent}
+      , ApiTraits{std::move(traits)}
       , basic_ssl_operations<ApiTraits>{*static_cast<ApiTraits*>(this)}
-      , basic_ssl_constants<ApiTraits> {
-        *static_cast<ApiTraits*>(this),
-          *static_cast<basic_ssl_operations<ApiTraits>*>(this)
-    }
-    {}
+      , basic_ssl_constants<ApiTraits>{
+          *static_cast<ApiTraits*>(this),
+          *static_cast<basic_ssl_operations<ApiTraits>*>(this)} {}
 
-    basic_ssl_api()
-      : basic_ssl_api{ApiTraits{}} {}
+    basic_ssl_api(main_ctx_parent parent)
+      : basic_ssl_api{parent, ApiTraits{}} {}
 
     auto data_digest(
       const memory::const_block data,

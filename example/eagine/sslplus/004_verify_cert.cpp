@@ -20,7 +20,7 @@ auto main(main_ctx& ctx) -> int {
     const memory::const_block ca_cert_pem{
       eagine::embed<"caCert">("example-ca.crt")};
 
-    const sslplus::ssl_api ssl;
+    const sslplus::ssl_api ssl{ctx};
 
     if(ok ca_cert{ssl.parse_x509(ca_cert_pem, {})}) {
         const auto del_ca_cert{ssl.delete_x509.raii(ca_cert)};

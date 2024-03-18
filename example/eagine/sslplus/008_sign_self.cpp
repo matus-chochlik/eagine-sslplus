@@ -26,7 +26,7 @@ auto main(main_ctx& ctx) -> int {
         key_id = arg;
     }
 
-    const sslplus::ssl_api ssl;
+    const sslplus::ssl_api ssl{ctx};
 
     ssl.load_builtin_engines();
 
