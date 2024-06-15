@@ -126,3 +126,7 @@ target_link_libraries(
 	PUBLIC
 		EAGine::SSLplus::Deps::OpenSSL
 )
+
+eagine_add_license(sslplus-dev)
+eagine_add_debian_changelog(sslplus-dev)
+
