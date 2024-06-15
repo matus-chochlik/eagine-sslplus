@@ -5,14 +5,18 @@
 configure_file(embedded.cpp.in embedded.cppm @ONLY)
 
 eagine_add_module(
-	eagine.sslplus PARTITION config
+	eagine.sslplus
+	COMPONENT sslplus-dev
+	PARTITION config
 	IMPORTS
 		std
 		eagine.core.types
 )
 
 eagine_add_module(
-	eagine.sslplus PARTITION result
+	eagine.sslplus
+	COMPONENT sslplus-dev
+	PARTITION result
 	IMPORTS
 		std
 		eagine.core.types
@@ -21,7 +25,9 @@ eagine_add_module(
 )
 
 eagine_add_module(
-	eagine.sslplus PARTITION object_handle
+	eagine.sslplus
+	COMPONENT sslplus-dev
+	PARTITION object_handle
 	IMPORTS
 		std config
 		eagine.core.identifier
@@ -29,7 +35,9 @@ eagine_add_module(
 )
 
 eagine_add_module(
-	eagine.sslplus PARTITION object_stack
+	eagine.sslplus
+	COMPONENT sslplus-dev
+	PARTITION object_stack
 	IMPORTS
 		std config
 		object_handle
@@ -38,7 +46,9 @@ eagine_add_module(
 )
 
 eagine_add_module(
-	eagine.sslplus PARTITION api_traits
+	eagine.sslplus
+	COMPONENT sslplus-dev
+	PARTITION api_traits
 	IMPORTS
 		std result
 		eagine.core.memory
@@ -46,7 +56,9 @@ eagine_add_module(
 )
 
 eagine_add_module(
-	eagine.sslplus PARTITION c_api
+	eagine.sslplus
+	COMPONENT sslplus-dev
+	PARTITION c_api
 	IMPORTS
 		std config
 		api_traits result
@@ -55,13 +67,17 @@ eagine_add_module(
 )
 
 eagine_add_module(
-	eagine.sslplus PARTITION constants
+	eagine.sslplus
+	COMPONENT sslplus-dev
+	PARTITION constants
 	IMPORTS
 		std c_api
 )
 
 eagine_add_module(
-	eagine.sslplus PARTITION api
+	eagine.sslplus
+	COMPONENT sslplus-dev
+	PARTITION api
 	IMPORTS
 		std config api_traits result
 		object_handle object_stack
@@ -75,14 +91,18 @@ eagine_add_module(
 )
 
 eagine_add_module(
-	eagine.sslplus PARTITION resources
+	eagine.sslplus
+	COMPONENT sslplus-dev
+	PARTITION resources
 	IMPORTS
 		std
 		eagine.core
 )
 
 eagine_add_module(
-	eagine.sslplus PARTITION embedded
+	eagine.sslplus
+	COMPONENT sslplus-dev
+	PARTITION embedded
 	IMPORTS
 		std resources
 		eagine.core
@@ -91,6 +111,7 @@ eagine_embed_target_resources(TARGET eagine.sslplus)
 
 eagine_add_module(
 	eagine.sslplus
+	COMPONENT sslplus-dev
 	SOURCES
 		api_traits
 		object_stack
