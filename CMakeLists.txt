@@ -22,10 +22,10 @@ file(STRINGS "${EAGINE_CORE_ROOT}/VERSION" EAGINE_VERSION)
 
 find_package(EAGineOpenSSL REQUIRED)
 
-include(EAGinePackageSSLplus)
 add_subdirectory(submodules)
 include(EAGineCoreCommon)
 include(EAGineSSLResources)
+include(EAGinePackageSSLplus)
 
 add_subdirectory(source)
 add_subdirectory(example)

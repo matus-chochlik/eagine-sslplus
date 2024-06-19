@@ -57,3 +57,15 @@ eagine_example_common(004_verify_cert)
 #
 eagine_embed_target_resources(TARGET eagine-004_verify_cert)
 
+eagine_add_package_property(
+	sslplus-examples
+	GENERATOR DEBIAN
+	VARIABLE PACKAGE_DEPENDS
+	VALUE "\${CXX_RUNTIME_PKGS},\${EAGINE_CORE_RUNTIME_PKGS},\${EAGINE_SSLPLUS_RUNTIME_PKGS}")
+
+eagine_add_package_property(
+	sslplus-examples
+	GENERATOR DEBIAN
+	VARIABLE DESCRIPTION
+	VALUE "EAGine SSLplus examples.")
+

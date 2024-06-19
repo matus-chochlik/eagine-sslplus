@@ -130,3 +130,15 @@ target_link_libraries(
 eagine_add_license(sslplus-dev)
 eagine_add_debian_changelog(sslplus-dev)
 
+eagine_add_package_property(
+	sslplus-dev
+	GENERATOR DEBIAN
+	VARIABLE PACKAGE_DEPENDS
+	VALUE "eagine-core-dev (>= @EAGINE_VERSION@),libssl-dev")
+
+eagine_add_package_property(
+	sslplis-dev
+	GENERATOR DEBIAN
+	VARIABLE DESCRIPTION
+	VALUE "C++ wrapper for OpenSSL.")
+
