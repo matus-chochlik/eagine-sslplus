@@ -134,7 +134,7 @@ eagine_add_package_property(
 	sslplus-dev
 	GENERATOR DEBIAN
 	VARIABLE PACKAGE_DEPENDS
-	VALUE "eagine-core-dev (>= @EAGINE_VERSION@),libssl-dev")
+	VALUE "eagine-core-dev (>= ${EAGINE_VERSION}),libssl-dev")
 
 eagine_add_package_property(
 	sslplis-dev
