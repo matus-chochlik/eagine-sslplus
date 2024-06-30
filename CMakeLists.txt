@@ -3,13 +3,13 @@
 # See accompanying file LICENSE_1_0.txt or copy at
 # https://www.boost.org/LICENSE_1_0.txt
 #
-cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 3.27)
 
 project(
 	EAGineSSL
 	LANGUAGES CXX
-	HOMEPAGE_URL https://github.com/matus-chochlik/eagine-sslplus
-)
+	HOMEPAGE_URL https://github.com/matus-chochlik/eagine-sslplus)
+
 if(NOT EAGINE_CORE_ROOT)
 	set(EAGINE_CORE_ROOT ${PROJECT_SOURCE_DIR}/submodules/eagine-core)
 endif()
@@ -23,10 +23,9 @@ file(STRINGS "${EAGINE_CORE_ROOT}/VERSION" EAGINE_VERSION)
 find_package(EAGineOpenSSL REQUIRED)
 
 add_subdirectory(submodules)
-
 include(EAGineCoreCommon)
 include(EAGineSSLResources)
+include(EAGinePackageSSLplus)
 
 add_subdirectory(source)
 add_subdirectory(example)
-add_subdirectory(deploy)

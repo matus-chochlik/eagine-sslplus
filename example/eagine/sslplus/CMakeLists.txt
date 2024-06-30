@@ -12,8 +12,8 @@ set_target_properties(
 function(eagine_install_example TARGET_NAME)
 	install(
 		TARGETS ${TARGET_NAME}
-		DESTINATION share/eagine/example/sslplus
-	)
+		COMPONENT sslplus-examples
+		DESTINATION share/eagine/example/sslplus)
 endfunction()
 
 function(eagine_example_common EXAMPLE_NAME)
@@ -46,7 +46,6 @@ endfunction()
 configure_file(example-ca.crt example-ca.crt)
 configure_file(example.crt example.crt)
 
-
 eagine_example_common(001_log_ca_cert)
 eagine_example_common(002_hash_self)
 eagine_example_common(002_provider)
@@ -56,4 +55,19 @@ eagine_example_common(004_verify_cert)
 # eagine_example_common(008_sign_self)
 #
 eagine_embed_target_resources(TARGET eagine-004_verify_cert)
+
+eagine_add_license(sslplus-examples)
+eagine_add_debian_changelog(sslplus-examples)
+
+eagine_add_package_property(
+	sslplus-examples
+	GENERATOR DEBIAN
+	VARIABLE PACKAGE_DEPENDS
+	VALUE "\${CXX_RUNTIME_PKGS},\${EAGINE_CORE_RUNTIME_PKGS},\${EAGINE_SSLPLUS_RUNTIME_PKGS}")
+
+eagine_add_package_property(
+	sslplus-examples
+	GENERATOR DEBIAN
+	VARIABLE DESCRIPTION
+	VALUE "EAGine SSLplus examples.")
 
