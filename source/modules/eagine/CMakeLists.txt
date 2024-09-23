@@ -10,8 +10,7 @@ eagine_add_module(
 	PARTITION config
 	IMPORTS
 		std
-		eagine.core.types
-)
+		eagine.core.types)
 
 eagine_add_module(
 	eagine.sslplus
@@ -21,8 +20,7 @@ eagine_add_module(
 		std
 		eagine.core.types
 		eagine.core.memory
-		eagine.core.c_api
-)
+		eagine.core.c_api)
 
 eagine_add_module(
 	eagine.sslplus
@@ -31,8 +29,7 @@ eagine_add_module(
 	IMPORTS
 		std config
 		eagine.core.identifier
-		eagine.core.c_api
-)
+		eagine.core.c_api)
 
 eagine_add_module(
 	eagine.sslplus
@@ -42,8 +39,7 @@ eagine_add_module(
 		std config
 		object_handle
 		eagine.core.types
-		eagine.core.c_api
-)
+		eagine.core.c_api)
 
 eagine_add_module(
 	eagine.sslplus
@@ -52,8 +48,7 @@ eagine_add_module(
 	IMPORTS
 		std result
 		eagine.core.memory
-		eagine.core.c_api
-)
+		eagine.core.c_api)
 
 eagine_add_module(
 	eagine.sslplus
@@ -63,16 +58,14 @@ eagine_add_module(
 		std config
 		api_traits result
 		eagine.core.types
-		eagine.core.c_api
-)
+		eagine.core.c_api)
 
 eagine_add_module(
 	eagine.sslplus
 	COMPONENT sslplus-dev
 	PARTITION constants
 	IMPORTS
-		std c_api
-)
+		std c_api)
 
 eagine_add_module(
 	eagine.sslplus
@@ -87,8 +80,7 @@ eagine_add_module(
 		eagine.core.string
 		eagine.core.utility
 		eagine.core.c_api
-		eagine.core.main_ctx
-)
+		eagine.core.main_ctx)
 
 eagine_add_module(
 	eagine.sslplus
@@ -96,8 +88,7 @@ eagine_add_module(
 	PARTITION resources
 	IMPORTS
 		std
-		eagine.core
-)
+		eagine.core)
 
 eagine_add_module(
 	eagine.sslplus
@@ -105,8 +96,8 @@ eagine_add_module(
 	PARTITION embedded
 	IMPORTS
 		std resources
-		eagine.core
-)
+		eagine.core)
+
 eagine_embed_target_resources(TARGET eagine.sslplus)
 
 eagine_add_module(
@@ -119,13 +110,12 @@ eagine_add_module(
 		std
 		eagine.core.resource
 		eagine.core.memory
-		eagine.core
-)
+		eagine.core)
+
 target_link_libraries(
 	eagine.sslplus
 	PUBLIC
-		EAGine::SSLplus::Deps::OpenSSL
-)
+		EAGine::SSLplus::Deps::OpenSSL)
 
 eagine_add_license(sslplus-dev)
 eagine_add_debian_changelog(sslplus-dev)
